@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Google SDE Roadmap — Harsh</title>
+<title>SDE Roadmap — Harsh</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0a0f;--s1:#111118;--s2:#1a1a24;--bd:#2a2a3a;--bd2:#3a3a50;--tx:#e8e8f0;--mu:#7a7a9a;--ac:#6c63ff;--g:#4ade80;--o:#fb923c;--b:#60a5fa;--p:#a78bfa;--y:#ffd700;--teal:#00d4aa;--r:#f87171;--mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif}
@@ -118,7 +118,7 @@ h1 span{color:var(--ac)}
 .proj-count{font-family:var(--mono);font-size:10px;color:var(--mu);margin-bottom:10px}
 .proj-prog{margin-bottom:1.2rem}
 
-/* ── NOTES PAGE (UPDATED WITH PREVIEW) ── */
+/* ── NEW NOTES PAGE (GRID LAYOUT) ── */
 .notes-topbar{display:flex;gap:10px;margin-bottom:1.5rem;align-items:center;flex-wrap:wrap}
 .notes-search{flex:1;min-width:200px;background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:11px 14px;color:var(--tx);font-family:var(--sans);font-size:13px;outline:none;transition:border-color .15s}
 .notes-search:focus{border-color:var(--ac)}
@@ -133,18 +133,14 @@ h1 span{color:var(--ac)}
 .nc-preview{font-size:12px;color:var(--mu);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;flex:1}
 .btn-back{background:none;border:none;color:var(--mu);cursor:pointer;font-family:var(--sans);font-size:13px;display:flex;align-items:center;gap:6px;margin-bottom:16px;padding:0;transition:color .15s;font-weight:500}
 .btn-back:hover{color:var(--tx)}
-
 .note-editor{background:var(--s1);border:1px solid var(--bd);border-radius:12px;overflow:hidden;width:100%}
-.note-toolbar{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--bd);flex-wrap:wrap}
+.note-toolbar{display:flex;align-items:center;gap:4px;padding:9px 12px;border-bottom:1px solid var(--bd);flex-wrap:wrap}
 .ntbtn{padding:5px 10px;font-size:12px;border-radius:6px;border:1px solid var(--bd);background:none;color:var(--mu);cursor:pointer;transition:all .15s;font-family:var(--sans)}
 .ntbtn:hover{background:var(--s2);color:var(--tx);border-color:var(--bd2)}
-
 .note-title-input{width:100%;background:none;border:none;border-bottom:1px solid var(--bd);padding:16px 20px;color:var(--tx);font-size:20px;font-weight:600;font-family:var(--sans);outline:none;transition:all .15s;}
 .note-title-input::placeholder{color:var(--mu)}
-
 .note-content-area{width:100%;background:none;border:none;padding:20px;color:var(--tx);font-size:14px;font-family:var(--sans);outline:none;resize:none;line-height:1.8;min-height:500px;display:block;}
 .note-content-area::placeholder{color:var(--mu)}
-
 .note-actions{display:flex;gap:7px;padding:12px 20px;border-top:1px solid var(--bd);align-items:center;justify-content:space-between;background:var(--s2)}
 .nbtnsave{padding:8px 20px;font-size:13px;font-weight:500;border-radius:8px;border:1px solid rgba(74,222,128,.4);background:rgba(74,222,128,.1);color:var(--g);cursor:pointer;font-family:var(--sans);transition:all .15s}
 .nbtnsave:hover{background:rgba(74,222,128,.2)}
@@ -213,12 +209,12 @@ footer{border-top:1px solid var(--bd);padding:1.2rem;text-align:center;font-fami
 </head>
 <body>
 <nav>
-  <div class="nb">// HARSH → GOOGLE</div>
+  <div class="nb">// HARSH → SDE</div>
   <div class="nl">
     <button class="active" onclick="show('home')">Home</button>
     <button onclick="show('analytics')">Analytics</button>
     <button onclick="show('dsa')">DSA</button>
-    <button onclick="show('google')">Google</button>
+    <button onclick="show('systems')">Systems</button>
     <button onclick="show('aiml')">AI/ML</button>
     <button onclick="show('projects')">Projects</button>
     <button onclick="show('notes')">Notes</button>
@@ -228,9 +224,9 @@ footer{border-top:1px solid var(--bd);padding:1.2rem;text-align:center;font-fami
 <!-- HOME -->
 <div id="pg-home" class="page active">
   <div class="hero">
-    <div class="htag">🎯 TARGET: GOOGLE SDE</div>
+    <div class="htag">🎯 TARGET: FAANG SDE</div>
     <h1>Your <span>dream job</span><br>has a plan now.</h1>
-    <p>Complete roadmap for DSA, System Design, CS fundamentals, AI/ML — everything needed to crack Google SDE. Built around Fraz's sheet. Free resources only. 2 problems/day.</p>
+    <p>Complete roadmap for DSA, System Design, CS fundamentals, AI/ML — everything needed to crack top-tier SDE interviews. Built around Fraz's sheet. Free resources only. 2 problems/day.</p>
     <div class="stats4">
       <div class="sb"><div class="n">~10</div><div class="l">months</div></div>
       <div class="sb"><div class="n">2/day</div><div class="l">problems</div></div>
@@ -243,7 +239,7 @@ footer{border-top:1px solid var(--bd);padding:1.2rem;text-align:center;font-fami
     <div class="grid2" style="margin-bottom:2rem">
       <div class="card" onclick="show('analytics')"><div class="ci" style="background:rgba(0,212,170,.1)">📊</div><h3>Analytics</h3><p>Track your SDE readiness score, progress, streaks, activity heatmap, and earned badges.</p></div>
       <div class="card" onclick="show('dsa')"><div class="ci" style="background:rgba(74,222,128,.1)">🧩</div><h3>DSA Plan</h3><p>Fraz's sheet broken into 4 phases, week-by-week schedule, daily problems, revision days.</p></div>
-      <div class="card" onclick="show('google')"><div class="ci" style="background:rgba(96,165,250,.1)">🏢</div><h3>Google Full Path</h3><p>System Design, CS fundamentals, OOP, OS, Networks, Behavioral prep — all free resources.</p></div>
+      <div class="card" onclick="show('systems')"><div class="ci" style="background:rgba(96,165,250,.1)">🏢</div><h3>Systems & CS</h3><p>System Design, CS fundamentals, OOP, OS, Networks, Behavioral prep — all free resources.</p></div>
       <div class="card" onclick="show('aiml')"><div class="ci" style="background:rgba(251,146,60,.1)">🤖</div><h3>AI/ML Track</h3><p>Math → ML → Deep Learning → LLMs. 1 hour/day parallel to DSA. All free.</p></div>
       <div class="card" onclick="show('projects')"><div class="ci" style="background:rgba(167,139,250,.1)">🛠️</div><h3>Projects (300+)</h3><p>Python, AI/ML, and Full-Stack projects. Beginner to Advanced. Build your portfolio.</p></div>
       <div class="card" onclick="show('notes')"><div class="ci" style="background:rgba(255,215,0,.1)">📝</div><h3>Notes</h3><p>Personal notes system. Write, save, tag, and search your learning notes — all stored locally.</p></div>
@@ -253,7 +249,7 @@ footer{border-top:1px solid var(--bd);padding:1.2rem;text-align:center;font-fami
     <div class="tl">
       <div class="tli"><div class="tld" style="border-color:var(--g)"></div><div class="tlm">Months 1–3</div><h4 style="color:var(--g)">Foundation — Phase 1</h4><p>Sorting, Two Pointers, Prefix Sum, Hashing, Sliding Window, Matrix. ~40% of easy/medium interview questions.</p></div>
       <div class="tli"><div class="tld" style="border-color:var(--b)"></div><div class="tlm">Months 3–6</div><h4 style="color:var(--b)">Core Patterns — Phase 2</h4><p>Linked List, Stack, Binary Search, Recursion, Binary Tree. Most SDE interviews live here.</p></div>
-      <div class="tli"><div class="tld" style="border-color:var(--o)"></div><div class="tlm">Months 6–9</div><h4 style="color:var(--o)">Advanced — Phase 3</h4><p>BST, Heap, Greedy, Graphs, DP Level 1. Google loves graphs and DP.</p></div>
+      <div class="tli"><div class="tld" style="border-color:var(--o)"></div><div class="tlm">Months 6–9</div><h4 style="color:var(--o)">Advanced — Phase 3</h4><p>BST, Heap, Greedy, Graphs, DP Level 1. Top companies love graphs and DP.</p></div>
       <div class="tli"><div class="tld" style="border-color:var(--p)"></div><div class="tlm">Months 9–12</div><h4 style="color:var(--p)">Expert + Interview Prep — Phase 4</h4><p>Tries, Bit Manipulation, DP Level 2. Parallel: mock interviews, system design, behavioral. Apply month 10.</p></div>
     </div>
   </div>
@@ -266,7 +262,7 @@ footer{border-top:1px solid var(--bd);padding:1.2rem;text-align:center;font-fami
     <p style="color:var(--mu);font-size:12px;margin-bottom:1.5rem">Your complete learning overview — updated in real time</p>
     
     <div class="readiness-box">
-      <div style="font-size:12px;color:var(--mu);font-family:var(--mono);letter-spacing:0.1em">GOOGLE SDE READINESS SCORE</div>
+      <div style="font-size:12px;color:var(--mu);font-family:var(--mono);letter-spacing:0.1em">INTERVIEW READINESS SCORE</div>
       <div class="readiness-val" id="idx-readiness">0%</div>
       <div style="font-size:11px;color:var(--mu);">Weighted algorithm based on DSA (60%) + Core CS/System Design (40%)</div>
     </div>
@@ -334,12 +330,12 @@ footer{border-top:1px solid var(--bd);padding:1.2rem;text-align:center;font-fami
   </div>
 </div>
 
-<!-- GOOGLE -->
-<div id="pg-google" class="page">
+<!-- SYSTEMS -->
+<div id="pg-systems" class="page">
   <div class="wrap" style="padding-top:2rem">
-    <h2 style="font-size:20px;font-weight:600;margin-bottom:5px">Google SDE — Complete Plan</h2>
+    <h2 style="font-size:20px;font-weight:600;margin-bottom:5px">Systems & Core CS Plan</h2>
     <p style="color:var(--mu);font-size:12px;margin-bottom:1.5rem">Everything beyond DSA. Work on these in parallel. All resources are free.</p>
-    <div id="google-content"></div>
+    <div id="systems-content"></div>
   </div>
 </div>
 
@@ -401,7 +397,7 @@ footer{border-top:1px solid var(--bd);padding:1.2rem;text-align:center;font-fami
   </div>
 </div>
 
-<footer>Built for Harsh · Google SDE Dream · Start today, not tomorrow · All resources free 🆓</footer>
+<footer>Built for Harsh · Top Tier SDE Dream · Start today, not tomorrow · All resources free 🆓</footer>
 
 <script>
 // ── NAV ──────────────────────────────────────────────────────────────────────
@@ -435,7 +431,7 @@ const phases=[
     {w:2,t:'Sorting medium + Custom',days:[{d:'Mon',t:'Count Inversions (Merge Sort variation)',g:'solve'},{d:'Tue',t:'Counting Sort + Relative Sort Array',g:'solve'},{d:'Wed',t:'Top K Frequent Elements (bucket sort idea)',g:'solve'},{d:'Thu',t:'Custom Sort String + Largest Number',g:'solve'},{d:'Fri',t:'Sort Colors (Dutch flag) + Week 1 revision',g:'mixed'},{d:'Sat',t:'Redo 3 hardest problems from this week.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
     {w:3,t:'Two Pointers — arrays',days:[{d:'Mon',t:'Merge Sorted Array + Sort Array by Parity',g:'solve'},{d:'Tue',t:'Remove Duplicates + Remove Element',g:'solve'},{d:'Wed',t:'Two Sum II + 3Sum',g:'solve'},{d:'Thu',t:'3Sum Closest + Container With Most Water',g:'solve'},{d:'Fri',t:'Next Permutation + one revision',g:'mixed'},{d:'Sat',t:'Revise Two Pointer pattern. Write template from memory.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:"Focus on the template — left/right movement logic."},
     {w:4,t:'Two Pointers — strings',days:[{d:'Mon',t:'Reverse String + Valid Palindrome',g:'solve'},{d:'Tue',t:'Valid Palindrome II + Reverse Words in String',g:'solve'},{d:'Wed',t:'String Compression + Minimum Length After Deleting Ends',g:'solve'},{d:'Thu',t:'Separate Black and White Balls + Move Pieces to Obtain String',g:'solve'},{d:'Fri',t:'2 unsolved Two Pointer problems of your choice',g:'solve'},{d:'Sat',t:'Revision — all Two Pointer problems done so far.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
-    {w:5,t:'Prefix Sum',days:[{d:'Mon',t:'Range Sum Query + Left Right Sum Differences',g:'solve'},{d:'Tue',t:'Product of Array Except Self + Minimum Penalty for a Shop',g:'solve'},{d:'Wed',t:'Subarray Sum Equals K — hashing + prefix sum combo',g:'solve'},{d:'Thu',t:'Subarray Sums Divisible by K + Continuous Subarray Sum',g:'solve'},{d:'Fri',t:'Range Sum Query 2D + one revision',g:'mixed'},{d:'Sat',t:'Revision — understand the modular hashing trick cold.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:'Prefix Sum + Hashing combo is one of the most common Google interview patterns.'},
+    {w:5,t:'Prefix Sum',days:[{d:'Mon',t:'Range Sum Query + Left Right Sum Differences',g:'solve'},{d:'Tue',t:'Product of Array Except Self + Minimum Penalty for a Shop',g:'solve'},{d:'Wed',t:'Subarray Sum Equals K — hashing + prefix sum combo',g:'solve'},{d:'Thu',t:'Subarray Sums Divisible by K + Continuous Subarray Sum',g:'solve'},{d:'Fri',t:'Range Sum Query 2D + one revision',g:'mixed'},{d:'Sat',t:'Revision — understand the modular hashing trick cold.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:'Prefix Sum + Hashing combo is one of the most common tech interview patterns.'},
     {w:6,t:'Hashing basics',days:[{d:'Mon',t:'Contains Duplicate + Find All Duplicates in Array',g:'solve'},{d:'Tue',t:'Valid Anagram + Group Anagrams',g:'solve'},{d:'Wed',t:'Majority Element + Majority Element II',g:'solve'},{d:'Thu',t:'Isomorphic Strings + Word Pattern',g:'solve'},{d:'Fri',t:'4Sum II + Pairs of Songs Divisible by 60',g:'solve'},{d:'Sat',t:'Revision + review all Phase 1 topics so far.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
     {w:7,t:'Hashing medium + Matrix',days:[{d:'Mon',t:'Tuple with Same Product + Count Bad Pairs',g:'solve'},{d:'Tue',t:'Brick Wall + Minimum Absolute Difference Queries',g:'solve'},{d:'Wed',t:'Set Matrix Zeroes + Rotate Image',g:'solve'},{d:'Thu',t:'Spiral Matrix + Spiral Matrix II',g:'solve'},{d:'Fri',t:'Valid Sudoku + one revision',g:'mixed'},{d:'Sat',t:'Full Phase 1 revision — pick 5 problems, redo them.',g:'rev'},{d:'Sun',t:'Rest. Phase 1 almost done!',g:'rest'}],tip:''},
     {w:8,t:'Sliding Window — fixed',days:[{d:'Mon',t:'Maximum Average Subarray I + Find All Anagrams in String',g:'solve'},{d:'Tue',t:'Permutation in String + Max Vowels in Substring',g:'solve'},{d:'Wed',t:'Max Sum Distinct Subarrays Length K + K Radius Averages',g:'solve'},{d:'Thu',t:'Sliding Window Maximum + Maximum Points from Cards',g:'learn'},{d:'Fri',t:'Sliding Window Median + one revision',g:'mixed'},{d:'Sat',t:'Revision — fixed window template from memory.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:'Fixed window: k never changes. Master this before dynamic.'},
@@ -446,9 +442,9 @@ const phases=[
    topics:[{n:'Linked List',h:'Fast/slow pointer, reverse, LRU'},{n:'Stack',h:'Parentheses, monotonic stack'},{n:'Queue',h:'BFS base, deque'},{n:'Binary Search',h:'Arrays + answer space'},{n:'Recursion & Backtracking',h:'Subsets, permutations, pruning'},{n:'Binary Tree',h:'DFS, BFS, paths, LCA'},],
    weeks:[
     {w:10,t:'Linked List basics',days:[{d:'Mon',t:'Reverse Linked List + Middle of Linked List',g:'solve'},{d:'Tue',t:'Linked List Cycle + Linked List Cycle II',g:'solve'},{d:'Wed',t:'Palindrome Linked List + Remove Nth Node',g:'solve'},{d:'Thu',t:'Add Two Numbers + Odd Even Linked List',g:'solve'},{d:'Fri',t:'Merge Two Sorted Lists + Copy List with Random Pointer',g:'solve'},{d:'Sat',t:'Revision — draw each problem on paper.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:'Draw every linked list problem on paper before coding.'},
-    {w:11,t:'Linked List medium + design',days:[{d:'Mon',t:'Sort List + Merge K Sorted Lists',g:'solve'},{d:'Tue',t:'Reverse Nodes in K-Group + Delete Middle Node',g:'solve'},{d:'Wed',t:'LRU Cache — read design approach carefully',g:'learn'},{d:'Thu',t:'Design HashMap + Design Browser History',g:'solve'},{d:'Fri',t:'Flatten a Linked List + one revision',g:'mixed'},{d:'Sat',t:'Revision. LRU Cache is must-know for Google.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
+    {w:11,t:'Linked List medium + design',days:[{d:'Mon',t:'Sort List + Merge K Sorted Lists',g:'solve'},{d:'Tue',t:'Reverse Nodes in K-Group + Delete Middle Node',g:'solve'},{d:'Wed',t:'LRU Cache — read design approach carefully',g:'learn'},{d:'Thu',t:'Design HashMap + Design Browser History',g:'solve'},{d:'Fri',t:'Flatten a Linked List + one revision',g:'mixed'},{d:'Sat',t:'Revision. LRU Cache is a must-know for FAANG.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
     {w:12,t:'Stack — parentheses + design',days:[{d:'Mon',t:'Valid Parentheses + Maximum Nesting Depth',g:'solve'},{d:'Tue',t:'Minimum Add to Make Valid + Minimum Remove to Make Valid',g:'solve'},{d:'Wed',t:'Score of Parentheses + Longest Valid Parentheses',g:'solve'},{d:'Thu',t:'Min Stack + Design Stack With Increment',g:'solve'},{d:'Fri',t:'Evaluate Reverse Polish Notation + Simplify Path',g:'solve'},{d:'Sat',t:'Revision. Min Stack trick from memory.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
-    {w:13,t:'Monotonic Stack',days:[{d:'Mon',t:'Next Greater Element I + Daily Temperatures',g:'solve'},{d:'Tue',t:'Next Greater Element II + Car Fleet',g:'solve'},{d:'Wed',t:'Sum of Subarray Minimums + Remove K Digits',g:'solve'},{d:'Thu',t:'Merge Intervals + Asteroid Collision',g:'solve'},{d:'Fri',t:'Trapping Rain Water + one revision',g:'mixed'},{d:'Sat',t:'Revision — Monotonic Stack is its own pattern.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:'Monotonic Stack solves "next greater/smaller element" in O(n). Very common at Google.'},
+    {w:13,t:'Monotonic Stack',days:[{d:'Mon',t:'Next Greater Element I + Daily Temperatures',g:'solve'},{d:'Tue',t:'Next Greater Element II + Car Fleet',g:'solve'},{d:'Wed',t:'Sum of Subarray Minimums + Remove K Digits',g:'solve'},{d:'Thu',t:'Merge Intervals + Asteroid Collision',g:'solve'},{d:'Fri',t:'Trapping Rain Water + one revision',g:'mixed'},{d:'Sat',t:'Revision — Monotonic Stack is its own pattern.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:'Monotonic Stack solves "next greater/smaller element" in O(n). Very common in interviews.'},
     {w:14,t:'Binary Search basics',days:[{d:'Mon',t:'Binary Search + Search Insert Position',g:'solve'},{d:'Tue',t:'Search in Rotated Sorted Array + Find Min in Rotated',g:'solve'},{d:'Wed',t:'Find First and Last Position + Search 2D Matrix',g:'solve'},{d:'Thu',t:'Koko Eating Bananas + Capacity to Ship Packages',g:'solve'},{d:'Fri',t:'Minimum in Rotated Array II + one revision',g:'mixed'},{d:'Sat',t:'Revision. Binary search on ANSWER SPACE = key insight.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:'Binary search on the answer is the advanced form. Once you get it, hard problems open up.'},
     {w:15,t:'Binary Search hard + Recursion',days:[{d:'Mon',t:'Find Peak Element + Single Element in Sorted Array',g:'solve'},{d:'Tue',t:'Median of Two Sorted Arrays (read) + Split Array Largest Sum',g:'learn'},{d:'Wed',t:'Recursion theory + Print 1 to N + Fibonacci recursively',g:'learn'},{d:'Thu',t:'Reverse String recursively + Palindrome check recursively',g:'solve'},{d:'Fri',t:'Find Largest in Array recursively + Check Sorted',g:'solve'},{d:'Sat',t:'Revision. Understand call stack on paper.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
     {w:16,t:'Backtracking',days:[{d:'Mon',t:'Subsets + Subsets II',g:'solve'},{d:'Tue',t:'Permutations + Permutations II',g:'solve'},{d:'Wed',t:'Combination Sum + Combination Sum II',g:'solve'},{d:'Thu',t:'Letter Combinations of Phone Number + Palindrome Partitioning',g:'solve'},{d:'Fri',t:'Word Search + one revision',g:'mixed'},{d:'Sat',t:'Revision. Backtrack template: try → recurse → undo.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:'Every backtracking problem uses the same skeleton. Master template first.'},
@@ -457,7 +453,7 @@ const phases=[
     {w:19,t:'Binary Tree — advanced',days:[{d:'Mon',t:'Construct Tree from Preorder + Inorder',g:'solve'},{d:'Tue',t:'Serialize and Deserialize Binary Tree + Count Complete Nodes',g:'solve'},{d:'Wed',t:'Vertical Order Traversal + Zigzag Level Order',g:'solve'},{d:'Thu',t:'All Nodes Distance K + Time to Infect Tree',g:'solve'},{d:'Fri',t:'Distribute Coins + one revision',g:'mixed'},{d:'Sat',t:'Revision. Binary Tree is biggest interview topic.',g:'rev'},{d:'Sun',t:'Rest. PHASE 2 COMPLETE 🎉',g:'rest'}],tip:''},
    ]
   },
-  {id:'p3',lbl:'Phase 3 — Advanced',sub:'Months 6–9 · Most important for Google',nc:'n3',bc:'bo',btext:'5 topics',
+  {id:'p3',lbl:'Phase 3 — Advanced',sub:'Months 6–9 · Most important for FAANG',nc:'n3',bc:'bo',btext:'5 topics',
    topics:[{n:'Binary Search Tree',h:'Validation, kth element, range queries'},{n:'Heap / Priority Queue',h:'Top K, median stream, merge K'},{n:'Greedy',h:'Intervals, scheduling, optimal choices'},{n:'Graphs',h:'BFS/DFS, topo sort, Union Find, Dijkstra'},{n:'Dynamic Programming L1',h:'1D/2D DP, string DP, stocks'},],
    weeks:[
     {w:20,t:'Binary Search Tree',days:[{d:'Mon',t:'Validate BST + Kth Smallest in BST',g:'solve'},{d:'Tue',t:'LCA of BST + Insert into BST',g:'solve'},{d:'Wed',t:'Delete Node in BST + Convert Sorted Array to BST',g:'solve'},{d:'Thu',t:'Range Sum of BST + Two Sum in BST',g:'solve'},{d:'Fri',t:'Recover BST + one revision',g:'mixed'},{d:'Sat',t:'Revision. BST property (left < root < right) is the key.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
@@ -479,22 +475,22 @@ const phases=[
     {w:31,t:'DP Level 2 — Bitmask DP',days:[{d:'Mon',t:'Can I Win + Partition to K Equal Sum Subsets',g:'solve'},{d:'Tue',t:'Smallest Sufficient Team + Min Cost to Connect Two Groups',g:'solve'},{d:'Wed',t:'Shortest Path Visiting All Nodes + Maximum Students',g:'solve'},{d:'Thu',t:'Stickers to Spell Word + Number of Ways to Wear Hats',g:'solve'},{d:'Fri',t:'Find Minimum Time to Finish All Jobs',g:'solve'},{d:'Sat',t:'Revision. Bitmask DP is hard — be patient.',g:'rev'},{d:'Sun',t:'Rest. Phase 4 COMPLETE! Focus on interview prep. 🎯',g:'rest'}],tip:'Bitmask DP is competitive territory. Skip the hardest ones and move on if stuck.'},
    ]
   },
-  {id:'px',lbl:'Skip for Now',sub:'Competitive programming — NOT needed for Google SDE',nc:'nx',bc:'bx',btext:'skip',
+  {id:'px',lbl:'Skip for Now',sub:'Competitive programming — NOT needed for SDE roles',nc:'nx',bc:'bx',btext:'skip',
    topics:[{n:'Combinatorics & Geometry',h:'Rarely in SDE interviews'},{n:'Game Theory',h:'Only for competitive programming'},{n:'String Matching Algos',h:'KMP/Z-algo — very niche'},{n:'Advanced Algorithms',h:'Segment Tree, Fenwick — pure CP'},],weeks:[]
   },
 ];
 
-const googleSections=[
-  {title:'System Design',icon:'🏗️',color:'rgba(96,165,250,.1)',when:'Start Month 4 — 1 hour/week',note:'System Design is a dedicated round at Google. Start early. Study one system per week.',
-   items:[{n:'System Design Primer — GitHub (10k+ stars, completely free)',u:'https://github.com/donnemartin/system-design-primer'},{n:'Design a URL shortener (TinyURL) — solve on paper',u:'https://www.youtube.com/results?search_query=design+url+shortener+system+design'},{n:'Design Twitter / Instagram feed',u:'https://www.youtube.com/results?search_query=design+twitter+system+design'},{n:'Design YouTube / Netflix',u:'https://www.youtube.com/results?search_query=design+youtube+system+design'},{n:'Design Google Search',u:'https://www.youtube.com/results?search_query=design+google+search+system+design'},{n:'Design WhatsApp / Chat system',u:'https://www.youtube.com/results?search_query=design+whatsapp+system+design'},{n:'CAP theorem + eventual consistency',u:'https://www.youtube.com/watch?v=8UryASGBiR4'},{n:'Load balancing, caching, CDN — concepts',u:'https://github.com/donnemartin/system-design-primer#load-balancer'},{n:'Databases: SQL vs NoSQL, sharding, replication',u:'https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms'},{n:'Gaurav Sen — System Design YouTube playlist (free)',u:'https://www.youtube.com/playlist?list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX'},{n:'Mock system design — Pramp.com (free)',u:'https://www.pramp.com'},]},
-  {title:'CS Fundamentals',icon:'💻',color:'rgba(74,222,128,.1)',when:'Start Month 2 — 30 min/day',note:'Google asks OS and networking questions. Short to study but high value.',
+const systemsSections=[
+  {title:'System Design',icon:'🏗️',color:'rgba(96,165,250,.1)',when:'Start Month 4 — 1 hour/week',note:'System Design is a dedicated round at most top companies. Start early. Study one system per week.',
+   items:[{n:'System Design Primer — GitHub (10k+ stars, completely free)',u:'https://github.com/donnemartin/system-design-primer'},{n:'Design a URL shortener (TinyURL) — solve on paper',u:'https://www.youtube.com/results?search_query=design+url+shortener+system+design'},{n:'Design Twitter / Instagram feed',u:'https://www.youtube.com/results?search_query=design+twitter+system+design'},{n:'Design YouTube / Netflix',u:'https://www.youtube.com/results?search_query=design+youtube+system+design'},{n:'Design a Search Engine',u:'https://www.youtube.com/results?search_query=design+a+search+engine+system+design'},{n:'Design WhatsApp / Chat system',u:'https://www.youtube.com/results?search_query=design+whatsapp+system+design'},{n:'CAP theorem + eventual consistency',u:'https://www.youtube.com/watch?v=8UryASGBiR4'},{n:'Load balancing, caching, CDN — concepts',u:'https://github.com/donnemartin/system-design-primer#load-balancer'},{n:'Databases: SQL vs NoSQL, sharding, replication',u:'https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms'},{n:'Gaurav Sen — System Design YouTube playlist (free)',u:'https://www.youtube.com/playlist?list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX'},{n:'Mock system design — Pramp.com (free)',u:'https://www.pramp.com'},]},
+  {title:'CS Fundamentals',icon:'💻',color:'rgba(74,222,128,.1)',when:'Start Month 2 — 30 min/day',note:'Tech giants ask OS and networking questions. Short to study but high value.',
    items:[{n:'OS — processes, threads, scheduling (Neso Academy)',u:'https://www.youtube.com/playlist?list=PLBlnK6fEyqRiVhbXDGLXDk_OQAeuVcp2O'},{n:'Memory management — heap, stack, virtual memory, paging',u:'https://www.youtube.com/playlist?list=PLBlnK6fEyqRiVhbXDGLXDk_OQAeuVcp2O'},{n:'Deadlocks — conditions, prevention, Banker\'s algorithm',u:'https://www.youtube.com/results?search_query=deadlock+operating+system+neso+academy'},{n:'Computer Networks — TCP/IP, HTTP, DNS, OSI model',u:'https://www.youtube.com/playlist?list=PLBlnK6fEyqRgMCUAG0XRw78UA8qnv6jEx'},{n:'Database fundamentals — ACID, transactions, indexing',u:'https://www.youtube.com/results?search_query=database+fundamentals+ACID+transactions'},{n:'DBMS full course — Gate Smashers (free)',u:'https://www.youtube.com/playlist?list=PLxCzCOWd7aiFAN6I8CuViBuCdJgiOkT2Y'},{n:'OOP — SOLID principles',u:'https://www.youtube.com/results?search_query=SOLID+principles+object+oriented+programming'},{n:'Design Patterns — Refactoring.Guru (free)',u:'https://refactoring.guru/design-patterns'},{n:'Concurrency — mutex, semaphore, race condition, deadlock',u:'https://www.youtube.com/results?search_query=concurrency+mutex+semaphore+explained'},]},
-  {title:'Coding Practice beyond DSA',icon:'⌨️',color:'rgba(255,215,0,.1)',when:'Ongoing from Month 3',note:'Target 300+ problems on LeetCode before applying. Filter Google tag for last 6 months.',
-   items:[{n:'LeetCode — filter Google tag, last 6 months (free)',u:'https://leetcode.com/problemset/?search=google'},{n:'LeetCode Weekly Contest — join every Sunday from Month 6',u:'https://leetcode.com/contest/'},{n:'NeetCode 150 — finish remaining problems (free)',u:'https://neetcode.io/practice'},{n:'Pramp — free mock coding interviews',u:'https://www.pramp.com'},{n:'LeetCode Discuss — Google interview experiences',u:'https://leetcode.com/discuss/interview-experience/?currentPage=1&orderBy=hot&query=google'},{n:'Codeforces Div 3 contests — optional, good for speed',u:'https://codeforces.com/contests'},{n:'Blind 75 — complete if not done',u:'https://neetcode.io/practice'},]},
-  {title:'Behavioral / HR Round',icon:'🎤',color:'rgba(251,146,60,.1)',when:'Start Month 8 — "Googleyness" matters',note:'Google specifically tests "Googleyness and leadership". Prepare real stories.',
-   items:[{n:'Prepare 8–10 STAR format stories from your projects',u:'https://www.youtube.com/results?search_query=STAR+method+behavioral+interview'},{n:'"Tell me about a conflict with a teammate"',u:'https://www.youtube.com/results?search_query=tell+me+about+conflict+google+interview'},{n:'"Tell me about a time you failed"',u:'https://www.youtube.com/results?search_query=failure+question+google+interview'},{n:'"Why Google?" — craft a genuine specific answer',u:'https://www.youtube.com/results?search_query=why+google+interview+answer'},{n:'Interviewing.io — free mock behavioral interviews',u:'https://interviewing.io'},{n:'Research Google products, culture, recent AI news',u:'https://blog.google'},]},
-  {title:'Google Interview Process',icon:'🔍',color:'rgba(167,139,250,.1)',when:'Know this before applying at Month 10',note:'Apply via referral if possible — skips initial screening and goes faster.',
-   items:[{n:'Step 1: Apply on Google Careers or via referral',u:'https://careers.google.com'},{n:'Step 2: Online Assessment — 2 LeetCode medium, 90 min',u:'https://leetcode.com/problemset/'},{n:'Step 3: Phone Screen — 1 coding problem, 45 min',u:'https://www.pramp.com'},{n:'Step 4: Onsite — 2 coding + 1 system design + 1 behavioral',u:'https://www.youtube.com/results?search_query=google+onsite+interview+experience'},{n:'Watch: Google SDE interview experience videos',u:'https://www.youtube.com/results?search_query=google+software+engineer+interview+experience+2024'},{n:'Read: Glassdoor Google interview reviews',u:'https://www.glassdoor.com/Interview/Google-Software-Engineer-Interview-Questions-EI_IE9079.0,6_KO7,24.htm'},{n:'Get a referral — connect with Google employees on LinkedIn',u:'https://www.linkedin.com/search/results/people/?keywords=google+software+engineer'},]},
+  {title:'Coding Practice beyond DSA',icon:'⌨️',color:'rgba(255,215,0,.1)',when:'Ongoing from Month 3',note:'Target 300+ problems on LeetCode before applying. Filter company tags for last 6 months.',
+   items:[{n:'LeetCode — filter company tags, last 6 months (free)',u:'https://leetcode.com/problemset/'},{n:'LeetCode Weekly Contest — join every Sunday from Month 6',u:'https://leetcode.com/contest/'},{n:'NeetCode 150 — finish remaining problems (free)',u:'https://neetcode.io/practice'},{n:'Pramp — free mock coding interviews',u:'https://www.pramp.com'},{n:'LeetCode Discuss — Interview experiences',u:'https://leetcode.com/discuss/interview-experience/'},{n:'Codeforces Div 3 contests — optional, good for speed',u:'https://codeforces.com/contests'},{n:'Blind 75 — complete if not done',u:'https://neetcode.io/practice'},]},
+  {title:'Behavioral / HR Round',icon:'🎤',color:'rgba(251,146,60,.1)',when:'Start Month 8 — Culture fit matters',note:'Interviewers test behavioral and leadership skills. Prepare real stories.',
+   items:[{n:'Prepare 8–10 STAR format stories from your projects',u:'https://www.youtube.com/results?search_query=STAR+method+behavioral+interview'},{n:'"Tell me about a conflict with a teammate"',u:'https://www.youtube.com/results?search_query=tell+me+about+conflict+interview'},{n:'"Tell me about a time you failed"',u:'https://www.youtube.com/results?search_query=failure+question+interview'},{n:'"Why this company?" — craft a genuine specific answer',u:'https://www.youtube.com/results?search_query=why+this+company+interview+answer'},{n:'Interviewing.io — free mock behavioral interviews',u:'https://interviewing.io'},{n:'Research company products, culture, recent tech news',u:'https://www.theverge.com/'},]},
+  {title:'Top Tech Interview Process',icon:'🔍',color:'rgba(167,139,250,.1)',when:'Know this before applying at Month 10',note:'Apply via referral if possible — skips initial screening and goes faster.',
+   items:[{n:'Step 1: Apply on Career portals or via referral',u:'https://www.linkedin.com/jobs/'},{n:'Step 2: Online Assessment — 2 LeetCode medium, 90 min',u:'https://leetcode.com/problemset/'},{n:'Step 3: Phone Screen — 1 coding problem, 45 min',u:'https://www.pramp.com'},{n:'Step 4: Onsite — 2 coding + 1 system design + 1 behavioral',u:'https://www.youtube.com/results?search_query=FAANG+onsite+interview+experience'},{n:'Watch: software engineer interview experience 2024 videos',u:'https://www.youtube.com/results?search_query=FAANG+software+engineer+interview+experience+2024'},{n:'Read: Glassdoor tech interview reviews',u:'https://www.glassdoor.com/Interview/index.htm'},{n:'Get a referral — connect with engineers on LinkedIn',u:'https://www.linkedin.com/search/results/people/'},]},
 ];
 
 const aimlSections=[
@@ -502,7 +498,7 @@ const aimlSections=[
   {phase:'Phase 2 — Python for ML',color:'var(--b)',months:'Month 2 · skip if you know Python',note:'NumPy, Pandas, Matplotlib are the ML trifecta.',res:[{n:'Kaggle — Learn Python (free, interactive)',u:'https://www.kaggle.com/learn/python',h:'5h'},{n:'Kaggle — NumPy + Pandas course (free)',u:'https://www.kaggle.com/learn/pandas',h:'5h'},{n:'Kaggle — Data Visualization (free)',u:'https://www.kaggle.com/learn/data-visualization',h:'4h'},{n:'Scikit-learn official tutorial (free)',u:'https://scikit-learn.org/stable/tutorial/index.html',h:'3h'},]},
   {phase:'Phase 3 — Core Machine Learning',color:'var(--o)',months:'Months 3–5 · 1 hour/day',note:'This is the heart of ML. Andrew Ng on YouTube is completely free.',res:[{n:'Andrew Ng — Machine Learning (Stanford, free YouTube)',u:'https://www.youtube.com/playlist?list=PLoROMvodv4rMiGQp3WXShtMGgzqpfVfbU',h:'60h'},{n:'StatQuest — Decision Trees, Random Forest, SVM (free)',u:'https://www.youtube.com/c/joshstarmer',h:'10h'},{n:'Implement Linear Regression from scratch in Python',u:'https://www.youtube.com/results?search_query=linear+regression+from+scratch+python',h:'3h'},{n:'Implement Logistic Regression from scratch',u:'https://www.youtube.com/results?search_query=logistic+regression+from+scratch+python',h:'3h'},{n:'Kaggle — Titanic ML competition (free)',u:'https://www.kaggle.com/competitions/titanic',h:'5h'},{n:'Kaggle — House Prices competition (free)',u:'https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques',h:'5h'},{n:'Cross-validation, regularization, bias-variance — StatQuest',u:'https://www.youtube.com/results?search_query=bias+variance+tradeoff+statquest',h:'4h'},]},
   {phase:'Phase 4 — Deep Learning',color:'var(--p)',months:'Months 5–8 · 1 hour/day',note:'PyTorch is the standard — learn it.',res:[{n:'MIT 6.S191 — Deep Learning (free YouTube)',u:'https://www.youtube.com/playlist?list=PLtBw6njQRU-rwp5__7C0oIVt26ZgjG9NI',h:'20h'},{n:'fast.ai — Practical Deep Learning (completely free)',u:'https://course.fast.ai',h:'40h'},{n:'PyTorch official tutorials (free)',u:'https://pytorch.org/tutorials/',h:'15h'},{n:'Build: Image classifier CNN on MNIST from scratch',u:'https://www.youtube.com/results?search_query=CNN+MNIST+from+scratch+pytorch',h:'5h'},{n:'Build: Sentiment analysis LSTM from scratch',u:'https://www.youtube.com/results?search_query=LSTM+sentiment+analysis+pytorch+from+scratch',h:'6h'},{n:'Illustrated Transformer — Jay Alammar blog (free)',u:'https://jalammar.github.io/illustrated-transformer/',h:'3h'},{n:'Hugging Face — NLP course (completely free)',u:'https://huggingface.co/learn/nlp-course',h:'15h'},]},
-  {phase:'Phase 5 — LLMs & GenAI',color:'var(--ac)',months:'Months 8–12 · your current interest',note:'This is where your AI/ML and Google SDE ambitions meet. Build real projects.',res:[{n:'Andrej Karpathy — Neural Networks: Zero to Hero (free)',u:'https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ',h:'15h'},{n:'Build GPT from scratch — Karpathy makemore series',u:'https://www.youtube.com/watch?v=kCc8FmEb1nY',h:'8h'},{n:'LangChain — build a RAG document Q&A app (free)',u:'https://python.langchain.com/docs/tutorials/',h:'8h'},{n:'Hugging Face — build and deploy a model (free)',u:'https://huggingface.co/models',h:'5h'},{n:'Read: "Attention Is All You Need" — Transformer paper',u:'https://arxiv.org/abs/1706.03762',h:'3h'},{n:'Read: GPT-3 paper (free on arXiv)',u:'https://arxiv.org/abs/2005.14165',h:'2h'},{n:'Kaggle LLM competitions — at least one (free)',u:'https://www.kaggle.com/competitions?search=llm',h:'15h'},{n:'Build 1 end-to-end ML project for GitHub',u:'https://github.com',h:'20h'},]},
+  {phase:'Phase 5 — LLMs & GenAI',color:'var(--ac)',months:'Months 8–12 · your current interest',note:'This is where your AI/ML and software engineering ambitions meet. Build real projects.',res:[{n:'Andrej Karpathy — Neural Networks: Zero to Hero (free)',u:'https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ',h:'15h'},{n:'Build GPT from scratch — Karpathy makemore series',u:'https://www.youtube.com/watch?v=kCc8FmEb1nY',h:'8h'},{n:'LangChain — build a RAG document Q&A app (free)',u:'https://python.langchain.com/docs/tutorials/',h:'8h'},{n:'Hugging Face — build and deploy a model (free)',u:'https://huggingface.co/models',h:'5h'},{n:'Read: "Attention Is All You Need" — Transformer paper',u:'https://arxiv.org/abs/1706.03762',h:'3h'},{n:'Read: GPT-3 paper (free on arXiv)',u:'https://arxiv.org/abs/2005.14165',h:'2h'},{n:'Kaggle LLM competitions — at least one (free)',u:'https://www.kaggle.com/competitions?search=llm',h:'15h'},{n:'Build 1 end-to-end ML project for GitHub',u:'https://github.com',h:'20h'},]},
 ];
 
 // ── PROJECTS DATA ─────────────────────────────────────────────────────────────
@@ -588,10 +584,10 @@ function updDSA(){
   if(document.getElementById('idx-readiness')) buildAnalytics(); 
 }
 
-// ── BUILD GOOGLE ──────────────────────────────────────────────────────────────
-function buildGoogle(){
-  const cont=document.getElementById('google-content');cont.innerHTML='';
-  googleSections.forEach((sec,si)=>{
+// ── BUILD SYSTEMS ─────────────────────────────────────────────────────────────
+function buildSystems(){
+  const cont=document.getElementById('systems-content');cont.innerHTML='';
+  systemsSections.forEach((sec,si)=>{
     const block=document.createElement('div');
     block.innerHTML=`<div class="sec-hdr"><div class="sec-ico" style="background:${sec.color}">${sec.icon}</div><div><div class="sec-t">${sec.title}</div><div class="sec-s">${sec.when}</div></div></div>`;
     if(sec.note){const n=document.createElement('div');n.className='note';n.style.borderColor=sec.color.includes('rgba')?sec.color:'var(--ac)';n.textContent=sec.note;block.appendChild(n);}
@@ -925,12 +921,12 @@ function buildAnalytics(){
 function buildReadinessScore(){
   const topicTotal=phases.reduce((a,p)=>a+p.topics.length,0);
   const topicDone=Object.keys(TD).filter(k=>TD[k]).length;
-  const gTotal=googleSections.reduce((a,s)=>a+s.items.length,0);
-  const googleDone=Object.keys(GD).filter(k=>GD[k]).length;
+  const sysTotal=systemsSections.reduce((a,s)=>a+s.items.length,0);
+  const sysDone=Object.keys(GD).filter(k=>GD[k]).length;
   
   const dsaScore = topicTotal > 0 ? (topicDone / topicTotal) : 0;
-  const gScore = gTotal > 0 ? (googleDone / gTotal) : 0;
-  const readiness = Math.round((dsaScore * 0.6 + gScore * 0.4) * 100) || 0;
+  const sScore = sysTotal > 0 ? (sysDone / sysTotal) : 0;
+  const readiness = Math.round((dsaScore * 0.6 + sScore * 0.4) * 100) || 0;
   
   document.getElementById('idx-readiness').textContent = readiness + '%';
 }
@@ -1065,7 +1061,7 @@ function updateWeekGoalUI(done,target){
   document.getElementById('wk-label').textContent=done+' / '+target+' problems this week ('+pct+'%)';
 }
 
-buildDSA();buildGoogle();buildAIML();buildProjects();renderNoteList();
+buildDSA();buildSystems();buildAIML();buildProjects();renderNoteList();
 </script>
 </body>
 </html>
