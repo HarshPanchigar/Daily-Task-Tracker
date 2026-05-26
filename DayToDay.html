@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Tracker Pro</title>
+    <style>
+        :root {
+            --bg: #0d0d0d;
+            --surface: #1a1a1a;
+            --border: #333333;
+            --text-main: #ffffff; 
+            --text-muted: #a3a3a3;
+            --placeholder: #737373;
+            --accent: #ffffff;
+            --danger: #ef4444;
+            --danger-muted: #7f1d1d;
+            --timer: #fbbf24;
+            --toggle-bg: #141414;
+            --canvas-dot: #2a2a2a;
+        }
+
+        * {
+            box-sizing: border-box; margin: 0; padding: 0;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 14.5px; 
+        }
+
+        /* Stealth Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        body {
+            background-color: var(--bg); color: var(--text-main);
+            /* Fluid padding based on screen width */
+            padding: 5rem 3vw 3rem 3vw; 
+            display: flex; flex-direction: column; align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* Drag & Drop Import Overlay */
+        body.dragover::after {
+            content: 'Drop backup file here (.json)';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(13, 13, 13, 0.95); backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center;
+            color: var(--text-main); font-size: 24px; font-weight: normal; z-index: 999;
+            border: 4px dashed var(--border);
+        }
+
+        .top-controls {
+            position: fixed; top: 20px; right: 24px; display: flex; align-items: center; gap: 16px; z-index: 50;
+        }
+
+        .view-toggle { display: flex; background: var(--toggle-bg); border: 1px solid var(--border); border-radius: 6px; padding: 4px; }
+        .toggle-btn {
+            background: transparent; color: var(--text-muted); border: none; padding: 4px 20px;
+            border-radius: 4px; cursor: pointer; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s;
+        }
+        .toggle-btn.active { background: var(--border); color: var(--text-main); }
+        .toggle-btn:hover:not(.active) { color: var(--accent); }
+
+        .info-btn {
+            background: transparent; color: var(--text-muted); border: none; cursor: pointer;
+            font-size: 13px; transition: color 0.2s; letter-spacing: 1px; padding: 4px;
+        }
+        .info-btn:hover { color: var(--text-main); }
+
+        @media (max-width: 600px) { .top-controls { right: 50%; transform: translateX(50%); top: 16px; gap: 12px; } }
+
+        /* Full-Screen Fluid Grid */
+        .container {
+            display: grid; 
+            /* 1fr makes columns expand equally to fill the entire width */
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 2vw; 
+            width: 100%; 
+            max-width: 1800px; /* Allows it to span almost any monitor */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .container.zen-mode { grid-template-columns: minmax(250px, 600px); justify-content: center; }
+        .container.zen-mode .column:nth-child(2),
+        .container.zen-mode .column:nth-child(3) { display: none; }
+
+        /* Stacks smoothly on small windows/mobile */
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
+
+        /* Advanced Planning Canvas */
+        .canvas-container {
+            display: none; 
+            position: relative;
+            width: 100%;
+            max-width: 1800px; /* Full screen width */
+            height: calc(100vh - 120px);
+            background-color: var(--bg);
+            background-image: radial-gradient(var(--canvas-dot) 1px, transparent 1px);
+            background-size: 20px 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: default; 
+            touch-action: none; 
+        }
+        .canvas-container.active { display: block; }
+        
+        #notesLayer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            transform-origin: 0 0; pointer-events: none; 
+        }
+
+        .canvas-hint {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: var(--border); font-size: 16px; pointer-events: none; user-select: none;
+            letter-spacing: 2px; text-transform: uppercase; z-index: 0;
+        }
+
+        .canvas-tools {
+            position: absolute; bottom: 20px; right: 20px;
+            display: flex; gap: 10px; z-index: 100;
+        }
+        .canvas-tool-btn {
+            background: var(--surface); color: var(--text-muted); border: 1px solid var(--border);
+            padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;
+            text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s;
+        }
+        .canvas-tool-btn:hover { color: var(--text-main); border-color: #555; background: #222; }
+
+        /* Advanced Rich Text Notes */
+        .canvas-note {
+            position: absolute; background: var(--bg); border: 1px solid var(--border);
+            border-radius: 6px; display: flex; flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); min-width: 180px; min-height: 100px;
+            pointer-events: auto; resize: both; overflow: hidden; 
+        }
+        .note-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 4px 8px; background: var(--surface); cursor: grab;
+            border-bottom: 1px solid var(--border); border-radius: 6px 6px 0 0;
+        }
+        .note-header:active { cursor: grabbing; }
+        
+        .note-header-left { display: flex; align-items: center; gap: 8px; flex: 1; }
+        .note-drag-icon { color: #555; display: flex; align-items: center; flex-shrink: 0; }
+        
+        .note-title-input {
+            background: transparent; border: none; color: var(--text-main); outline: none;
+            font-size: 13px; font-weight: bold; width: 100%; cursor: text;
+        }
+        .note-title-input::placeholder { color: #555; font-weight: normal; }
+
+        .note-delete {
+            background: transparent; color: #555; border: none; cursor: pointer; font-size: 16px;
+            padding: 0 4px; transition: color 0.2s; flex-shrink: 0;
+        }
+        .note-delete:hover { color: var(--danger); }
+        
+        .note-body {
+            flex: 1; background: transparent; color: var(--text-main);
+            padding: 10px; outline: none; font-size: 13.5px; line-height: 1.5;
+            width: 100%; height: 100%; overflow-y: auto; cursor: text;
+            word-wrap: break-word; white-space: pre-wrap;
+        }
+        .note-body b { color: var(--accent); }
+        .note-body i { opacity: 0.8; }
+
+        /* Common Elements */
+        .column { display: flex; flex-direction: column; gap: 12px; }
+        .header-wrapper { display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
+        h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: normal; display: flex; justify-content: space-between; }
+        .shortcut-hint { opacity: 0.3; font-size: 10px; }
+        .progress-track { height: 1px; background: var(--border); width: 100%; }
+        .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.4s; }
+        
+        .input-wrapper { display: flex; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 4px; transition: border-color 0.2s; }
+        .input-wrapper:focus-within { border-color: #555; }
+        input[type="text"].main-input { flex: 1; background: transparent; border: none; color: var(--text-main); padding: 6px 10px; outline: none; min-width: 0; }
+        input[type="text"]::placeholder { color: var(--placeholder); }
+        button.add-btn { background: transparent; color: var(--text-muted); border: none; padding: 0 10px; cursor: pointer; transition: color 0.2s; font-size: 16px; flex-shrink: 0; }
+        button.add-btn:hover { color: var(--accent); }
+
+        ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+        li { display: flex; align-items: flex-start; justify-content: space-between; padding: 8px; border-radius: 4px; transition: background-color 0.1s; }
+        li:hover { background: var(--surface); }
+        li.dragging { opacity: 0.4; background: var(--border); }
+        li.drag-over { border-top: 1px solid var(--accent); }
+        li.priority .checkbox { border-color: var(--danger); }
+        li.priority.completed .checkbox { background: var(--danger-muted); border-color: var(--danger-muted); }
+
+        .drag-handle { color: #555555; cursor: grab; display: flex; align-items: center; padding-right: 8px; margin-top: 2px; transition: color 0.2s; flex-shrink: 0; }
+        .drag-handle:hover { color: var(--text-main); }
+        .drag-handle:active { cursor: grabbing; }
+
+        .task-content { display: flex; align-items: flex-start; gap: 12px; flex: 1; min-width: 0; }
+        .checkbox {
+            width: 14px; height: 14px; border: 1px solid var(--text-muted); border-radius: 2px;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+            margin-top: 4px; cursor: pointer; transition: all 0.2s;
+        }
+        li.completed .checkbox { background: var(--text-muted); border-color: var(--text-muted); }
+
+        .task-info { display: flex; flex-direction: column; gap: 2px; flex: 1; cursor: text; }
+        .task-text { user-select: none; line-height: 1.4; word-break: break-word; }
+        li.completed .task-text { text-decoration: line-through; color: var(--text-muted); }
+        .task-meta { display: flex; align-items: center; gap: 8px; }
+        .task-date { font-size: 10.5px; color: #555555; user-select: none; }
+        .timer-badge { font-size: 10.5px; color: var(--text-muted); cursor: pointer; user-select: none; display: flex; align-items: center; gap: 4px; transition: color 0.2s; }
+        .timer-badge:hover { color: var(--text-main); }
+        .timer-badge.active { color: var(--timer); }
+        .edit-input { background: var(--bg); color: var(--text-main); border: 1px solid var(--border); padding: 2px 6px; border-radius: 2px; outline: none; width: 100%; font-family: inherit; font-size: inherit; }
+        
+        .delete-btn { background: transparent; color: var(--text-muted); border: none; cursor: pointer; font-size: 16px; opacity: 0; padding: 0 4px; transition: opacity 0.2s, color 0.2s; flex-shrink: 0; margin-top: 1px; }
+        li:hover .delete-btn { opacity: 1; }
+        .delete-btn:hover { color: var(--danger); }
+        
+        .sweep-container { display: flex; justify-content: flex-end; min-height: 20px; }
+        .sweep-btn { background: transparent; color: #555555; border: none; font-size: 11px; cursor: pointer; transition: color 0.2s; }
+        .sweep-btn:hover { color: var(--text-main); }
+
+        /* Command Palette */
+        .cmd-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(2px);
+            display: flex; align-items: flex-start; justify-content: center; padding-top: 15vh;
+            opacity: 0; pointer-events: none; transition: opacity 0.1s ease; z-index: 300;
+        }
+        .cmd-overlay.show { opacity: 1; pointer-events: all; }
+        .cmd-content {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+            width: 100%; max-width: 500px; box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            transform: translateY(-10px); transition: transform 0.1s ease;
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        .cmd-overlay.show .cmd-content { transform: translateY(0); }
+        .cmd-input { width: 100%; background: transparent; border: none; color: var(--text-main); padding: 16px 20px; outline: none; font-size: 15px; font-family: inherit; }
+        .cmd-list { list-style: none; margin: 0; padding: 0; max-height: 260px; overflow-y: auto; border-top: 1px solid var(--border); display: none; }
+        .cmd-list.active { display: block; }
+        .cmd-item { padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: var(--text-muted); border-left: 2px solid transparent; }
+        .cmd-item.selected, .cmd-item:hover { background: var(--bg); color: var(--text-main); border-left-color: var(--accent); }
+        .cmd-name { font-weight: bold; color: var(--accent); font-size: 13px; }
+        .cmd-desc { font-size: 11.5px; opacity: 0.7; }
+
+        /* Overlays */
+        .toast {
+            position: fixed; bottom: -50px; left: 50%; transform: translateX(-50%);
+            background: var(--text-main); color: var(--bg); padding: 8px 18px; border-radius: 20px;
+            display: flex; align-items: center; gap: 16px; font-size: 13px; font-weight: bold;
+            transition: bottom 0.3s ease; z-index: 100;
+        }
+        .toast.show { bottom: 24px; }
+        .toast-btn { background: var(--bg); color: var(--text-main); border: none; padding: 4px 10px; border-radius: 12px; cursor: pointer; font-size: 12px; }
+        
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(3px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.2s ease; z-index: 200;
+        }
+        .modal-overlay.show { opacity: 1; pointer-events: all; }
+        .modal-content {
+            background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+            width: 100%; max-width: 450px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            transform: translateY(10px); transition: transform 0.2s ease;
+        }
+        .modal-overlay.show .modal-content { transform: translateY(0); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+        .modal-header h3 { font-size: 13px; color: var(--text-main); font-weight: normal; letter-spacing: 1px; }
+        .modal-close { background: transparent; color: var(--text-muted); border: none; cursor: pointer; font-size: 18px; }
+        .modal-close:hover { color: var(--danger); }
+        .modal-section { margin-bottom: 20px; }
+        .modal-section:last-child { margin-bottom: 0; }
+        .modal-section h4 { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 1px; }
+        .modal-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: var(--text-main); }
+        .modal-key { color: var(--accent); background: var(--surface); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); font-size: 11px; }
+        .modal-desc { color: #888; }
+    </style>
+</head>
+<body>
+
+    <div class="top-controls">
+        <div class="view-toggle">
+            <button id="btn-current" class="toggle-btn" onclick="switchView('current')">Current</button>
+            <button id="btn-next" class="toggle-btn active" onclick="switchView('next')">Next</button>
+            <button id="btn-plan" class="toggle-btn" onclick="switchView('plan')">Plan</button>
+        </div>
+        <button class="info-btn" onclick="openModal()">[ i ]</button>
+    </div>
+
+    <!-- Tracker Lists -->
+    <div class="container" id="mainContainer">
+        <div class="column">
+            <div class="header-wrapper">
+                <h2 id="title-daily">Next Day <span class="shortcut-hint">[1]</span></h2>
+                <div class="progress-track"><div class="progress-fill" id="dailyProgress"></div></div>
+            </div>
+            <div class="input-wrapper">
+                <input type="text" class="main-input" id="dailyInput" placeholder="add task..." onkeypress="handleKeyPress(event, 'daily')">
+                <button class="add-btn" onclick="addTask('daily')">+</button>
+            </div>
+            <ul id="dailyList"></ul>
+            <div class="sweep-container" id="dailySweep"></div>
+        </div>
+
+        <div class="column">
+            <div class="header-wrapper">
+                <h2 id="title-weekly">Next Week <span class="shortcut-hint">[2]</span></h2>
+                <div class="progress-track"><div class="progress-fill" id="weeklyProgress"></div></div>
+            </div>
+            <div class="input-wrapper">
+                <input type="text" class="main-input" id="weeklyInput" placeholder="add task..." onkeypress="handleKeyPress(event, 'weekly')">
+                <button class="add-btn" onclick="addTask('weekly')">+</button>
+            </div>
+            <ul id="weeklyList"></ul>
+            <div class="sweep-container" id="weeklySweep"></div>
+        </div>
+
+        <div class="column">
+            <div class="header-wrapper">
+                <h2 id="title-monthly">Next Month <span class="shortcut-hint">[3]</span></h2>
+                <div class="progress-track"><div class="progress-fill" id="monthlyProgress"></div></div>
+            </div>
+            <div class="input-wrapper">
+                <input type="text" class="main-input" id="monthlyInput" placeholder="add task..." onkeypress="handleKeyPress(event, 'monthly')">
+                <button class="add-btn" onclick="addTask('monthly')">+</button>
+            </div>
+            <ul id="monthlyList"></ul>
+            <div class="sweep-container" id="monthlySweep"></div>
+        </div>
+    </div>
+
+    <!-- Advanced Planning Canvas -->
+    <div class="canvas-container" id="canvasContainer" ondblclick="createCanvasNote(event)">
+        <div class="canvas-hint" id="canvasHint">Double-click to add note</div>
+        
+        <div class="canvas-tools" id="canvasTools">
+            <button class="canvas-tool-btn" onclick="autoArrangeNotes()">⊞ Arrange Notes</button>
+        </div>
+
+        <div id="notesLayer"></div>
+    </div>
+
+    <div id="undoToast" class="toast">
+        <span id="toastMessage">Task deleted</span>
+        <button class="toast-btn" id="toastAction" onclick="undoDelete()">Undo</button>
+    </div>
+
+    <!-- Smart Command Palette -->
+    <div class="cmd-overlay" id="cmdPalette" onclick="closeCmd(event)">
+        <div class="cmd-content">
+            <input type="text" id="cmdInput" class="cmd-input" placeholder="> type a command..." autocomplete="off">
+            <ul id="cmdList" class="cmd-list"></ul>
+        </div>
+    </div>
+
+    <!-- Cheat Sheet Modal -->
+    <div class="modal-overlay" id="cheatSheetModal" onclick="closeModal(event)">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>COMMANDS</h3>
+                <button class="modal-close" onclick="closeModal(event, true)">×</button>
+            </div>
+            <div class="modal-section">
+                <h4>HOTKEYS</h4>
+                <div class="modal-row"><span class="modal-key">Ctrl+K / Cmd+K</span><span class="modal-desc">Command Palette</span></div>
+                <div class="modal-row"><span class="modal-key">F</span><span class="modal-desc">Toggle Zen Mode</span></div>
+            </div>
+            <div class="modal-section">
+                <h4>CANVAS CONTROLS</h4>
+                <div class="modal-row"><span class="modal-key">Double Click</span><span class="modal-desc">Spawn Note</span></div>
+                <div class="modal-row"><span class="modal-key">Ctrl + B / I</span><span class="modal-desc">Bold / Italic Text</span></div>
+                <div class="modal-row"><span class="modal-key">Drag / Scroll</span><span class="modal-desc">Pan Canvas</span></div>
+                <div class="modal-row"><span class="modal-key">Ctrl + Scroll</span><span class="modal-desc">Zoom Canvas</span></div>
+            </div>
+            <div class="modal-section">
+                <h4>PALETTE COMMANDS</h4>
+                <div class="modal-row"><span class="modal-key">/plan</span><span class="modal-desc">Open Planning Canvas</span></div>
+                <div class="modal-row"><span class="modal-key">/arrange</span><span class="modal-desc">Gather & Snap Notes</span></div>
+                <div class="modal-row"><span class="modal-key">/backup</span><span class="modal-desc">Download data (.json)</span></div>
+                <div class="modal-row"><span class="modal-key">/import</span><span class="modal-desc">Restore from .json</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Data Setup ---
+        let currentView = 'next'; 
+        let appData = JSON.parse(localStorage.getItem('appDataPro'));
+
+        if (!appData) {
+            let oldGoals = JSON.parse(localStorage.getItem('goals'));
+            appData = {
+                today: [], thisWeek: [], thisMonth: [],
+                nextDay: oldGoals ? (oldGoals.daily || []) : [],
+                nextWeek: oldGoals ? (oldGoals.weekly || []) : [],
+                nextMonth: oldGoals ? (oldGoals.monthly || []) : [],
+                notes: [], lastCheck: new Date().toDateString()
+            };
+            localStorage.setItem('appDataPro', JSON.stringify(appData));
+        }
+        if(!appData.notes) appData.notes = [];
+
+        const viewConfig = {
+            current: { dailyKey: 'today', weeklyKey: 'thisWeek', monthlyKey: 'thisMonth', titles: ['Today', 'This Week', 'This Month'] },
+            next: { dailyKey: 'nextDay', weeklyKey: 'nextWeek', monthlyKey: 'nextMonth', titles: ['Next Day', 'Next Week', 'Next Month'] }
+        };
+
+        function getActualKey(uiType) { return viewConfig[currentView][`${uiType}Key`]; }
+
+        function checkRollover() {
+            const todayStr = new Date().toDateString();
+            if (appData.lastCheck !== todayStr) {
+                const lastDate = new Date(appData.lastCheck); const currDate = new Date();
+                appData.nextDay.forEach(t => { if (!t.rolledOver) { appData.today.push({...t, rolledOver: false, completed: false}); t.rolledOver = true; } });
+
+                const getWeek = (d) => {
+                    const date = new Date(d.getTime()); date.setHours(0, 0, 0, 0); date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+                    const week1 = new Date(date.getFullYear(), 0, 4); return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+                };
+                
+                if (getWeek(lastDate) !== getWeek(currDate) || (currDate - lastDate) > 7 * 86400000) {
+                    appData.nextWeek.forEach(t => { if (!t.rolledOver) { appData.thisWeek.push({...t, rolledOver: false, completed: false}); t.rolledOver = true; } });
+                }
+                if (lastDate.getMonth() !== currDate.getMonth() || lastDate.getFullYear() !== currDate.getFullYear()) {
+                    appData.nextMonth.forEach(t => { if (!t.rolledOver) { appData.thisMonth.push({...t, rolledOver: false, completed: false}); t.rolledOver = true; } });
+                }
+                appData.lastCheck = todayStr; saveData();
+            }
+        }
+
+        let draggedItemInfo = null, undoData = null, toastTimer = null;
+
+        // --- View & Navigation ---
+        function switchView(view) {
+            currentView = view;
+            document.getElementById('btn-current').classList.toggle('active', view === 'current');
+            document.getElementById('btn-next').classList.toggle('active', view === 'next');
+            document.getElementById('btn-plan').classList.toggle('active', view === 'plan');
+            
+            if (view === 'plan') {
+                document.getElementById('mainContainer').style.display = 'none';
+                document.getElementById('canvasContainer').classList.add('active');
+                renderCanvas();
+            } else {
+                document.getElementById('canvasContainer').classList.remove('active');
+                document.getElementById('mainContainer').style.display = 'grid';
+                document.getElementById('title-daily').innerHTML = `${viewConfig[view].titles[0]} <span class="shortcut-hint">[1]</span>`;
+                document.getElementById('title-weekly').innerHTML = `${viewConfig[view].titles[1]} <span class="shortcut-hint">[2]</span>`;
+                document.getElementById('title-monthly').innerHTML = `${viewConfig[view].titles[2]} <span class="shortcut-hint">[3]</span>`;
+                renderTasks();
+            }
+        }
+
+        function toggleZenMode() { if(currentView !== 'plan') document.getElementById('mainContainer').classList.toggle('zen-mode'); }
+        
+        // --- Palette Logic ---
+        const availableCmds = [
+            { cmd: '/focus', desc: 'Enter Zen Mode (hide week/month)' },
+            { cmd: '/unfocus', desc: 'Exit Zen Mode' },
+            { cmd: '/plan', desc: 'Open Planning Canvas' },
+            { cmd: '/arrange', desc: 'Organize Canvas Notes' },
+            { cmd: '/sweep', desc: 'Clear all completed tasks' },
+            { cmd: '/backup', desc: 'Export tasks to .json file' },
+            { cmd: '/import', desc: 'Restore tasks from .json file' }
+        ];
+        
+        let filteredCmds = []; let cmdSelectionIndex = 0;
+
+        function openCmd() { 
+            const pal = document.getElementById('cmdPalette'); pal.classList.add('show');
+            document.getElementById('cmdInput').value = ''; renderCmdList('');
+            setTimeout(() => document.getElementById('cmdInput').focus(), 50);
+        }
+        
+        function closeCmd(e, force=false) { if (force || e.target.id === 'cmdPalette') document.getElementById('cmdPalette').classList.remove('show'); }
+
+        function renderCmdList(filterText) {
+            const listEl = document.getElementById('cmdList'); const term = filterText.toLowerCase();
+            filteredCmds = availableCmds.filter(c => c.cmd.toLowerCase().includes(term) || c.desc.toLowerCase().includes(term));
+            cmdSelectionIndex = 0; 
+            if (filteredCmds.length === 0) { listEl.classList.remove('active'); return; }
+            listEl.classList.add('active'); updateCmdSelectionUI();
+        }
+
+        function updateCmdSelectionUI() {
+            const listEl = document.getElementById('cmdList');
+            listEl.innerHTML = filteredCmds.map((c, i) => `
+                <li class="cmd-item ${i === cmdSelectionIndex ? 'selected' : ''}" onclick="executeSpecificCmd('${c.cmd}')" onmouseover="cmdSelectionIndex=${i}; updateCmdSelectionUI();">
+                    <span class="cmd-name">${c.cmd}</span><span class="cmd-desc">${c.desc}</span>
+                </li>
+            `).join('');
+            const selectedItem = listEl.querySelector('.selected');
+            if(selectedItem) { selectedItem.scrollIntoView({ block: 'nearest' }); }
+        }
+
+        document.getElementById('cmdInput').addEventListener('input', (e) => renderCmdList(e.target.value));
+
+        document.getElementById('cmdInput').addEventListener('keydown', (e) => {
+            if (filteredCmds.length > 0) {
+                if (e.key === 'ArrowDown') { e.preventDefault(); cmdSelectionIndex = (cmdSelectionIndex + 1) % filteredCmds.length; updateCmdSelectionUI(); } 
+                else if (e.key === 'ArrowUp') { e.preventDefault(); cmdSelectionIndex = (cmdSelectionIndex - 1 + filteredCmds.length) % filteredCmds.length; updateCmdSelectionUI(); } 
+                else if (e.key === 'Enter') { e.preventDefault(); executeSpecificCmd(filteredCmds[cmdSelectionIndex].cmd); }
+            } else if (e.key === 'Enter') { closeCmd(null, true); }
+        });
+
+        function executeSpecificCmd(cmdStr) {
+            if (cmdStr === '/focus' || cmdStr === '/zen') { toggleZenMode(); }
+            else if (cmdStr === '/unfocus') { document.getElementById('mainContainer').classList.remove('zen-mode'); }
+            else if (cmdStr === '/plan') { switchView('plan'); }
+            else if (cmdStr === '/arrange') { autoArrangeNotes(); }
+            else if (cmdStr === '/sweep') { sweepTasks('daily'); sweepTasks('weekly'); sweepTasks('monthly'); }
+            else if (cmdStr === '/export' || cmdStr === '/backup') { exportBackup(); }
+            else if (cmdStr === '/import') { importBackup(); }
+            closeCmd(null, true);
+        }
+
+        function exportBackup() {
+            const blob = new Blob([JSON.stringify(appData, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = `tracker-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+            showToast("Backup downloaded!", null, null);
+        }
+
+        function importBackup() {
+            const input = document.createElement('input'); input.type = 'file'; input.accept = '.json';
+            input.onchange = e => { const file = e.target.files[0]; if (file) handleFileRestore(file); };
+            input.click();
+        }
+
+        function openModal() { document.getElementById('cheatSheetModal').classList.add('show'); }
+        function closeModal(e, force = false) { if (force || e.target.id === 'cheatSheetModal') document.getElementById('cheatSheetModal').classList.remove('show'); }
+
+        document.addEventListener('keydown', (e) => {
+            const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable;
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); openCmd(); return; }
+            if (!isInput) {
+                if (e.key === '1') { e.preventDefault(); if(currentView==='plan') switchView('next'); document.getElementById('dailyInput').focus(); }
+                if (e.key === '2') { e.preventDefault(); if(currentView==='plan') switchView('next'); document.getElementById('weeklyInput').focus(); }
+                if (e.key === '3') { e.preventDefault(); if(currentView==='plan') switchView('next'); document.getElementById('monthlyInput').focus(); }
+                if (e.key.toLowerCase() === 'f') { e.preventDefault(); toggleZenMode(); }
+                if (e.key === 'Backspace' && e.shiftKey) { e.preventDefault(); sweepTasks('daily'); sweepTasks('weekly'); sweepTasks('monthly'); }
+            }
+            if (e.key === 'Escape') { if(document.activeElement) document.activeElement.blur(); closeModal(null, true); closeCmd(null, true); }
+        });
+
+        // --- Drag & Drop JSON Backup Restore ---
+        document.body.addEventListener('dragover', (e) => { 
+            // Only trigger overlay if dragging a file, not an internal task item
+            if (!draggedItemInfo && e.dataTransfer.types.includes('Files')) { 
+                e.preventDefault(); document.body.classList.add('dragover'); 
+            } 
+        });
+        document.body.addEventListener('dragleave', (e) => { 
+            if (e.relatedTarget === null || e.relatedTarget === document.documentElement) { document.body.classList.remove('dragover'); } 
+        });
+        document.body.addEventListener('drop', (e) => {
+            document.body.classList.remove('dragover');
+            if (!draggedItemInfo && e.dataTransfer.files.length) { e.preventDefault(); handleFileRestore(e.dataTransfer.files[0]); }
+        });
+
+        function handleFileRestore(file) {
+            if (file.type === "application/json" || file.name.endsWith('.json')) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const imported = JSON.parse(event.target.result);
+                        if (imported && imported.lastCheck) { 
+                            if(!imported.notes) imported.notes = []; 
+                            appData = imported; saveData(); showToast("Backup Restored!", null, null);
+                            if(currentView === 'plan') renderCanvas();
+                        } else { showToast("Invalid backup file", null, null); }
+                    } catch (err) { showToast("Error reading file", null, null); }
+                };
+                reader.readAsText(file);
+            } else { showToast("Must be a .json file", null, null); }
+        }
+
+        // --- Tracker Core Functions ---
+        function saveData() { localStorage.setItem('appDataPro', JSON.stringify(appData)); if(currentView !== 'plan') renderTasks(); }
+
+        function addTask(uiType) {
+            const input = document.getElementById(`${uiType}Input`); let text = input.value.trim(); const dataKey = getActualKey(uiType);
+            if (text !== '') {
+                let isPriority = false, hasTimer = false;
+                if (text.startsWith('! ') || text === '!') { isPriority = true; text = text.substring(1).trim(); }
+                if (text.startsWith('* ') || text === '*') { hasTimer = true; text = text.substring(1).trim(); }
+                if (!isPriority && (text.startsWith('! ') || text === '!')) { isPriority = true; text = text.substring(1).trim(); }
+
+                const dateOptions = { day: 'numeric', month: 'short' };
+                const formattedDate = new Date().toLocaleDateString('en-GB', dateOptions);
+                if (text) {
+                    appData[dataKey].push({ text: text, completed: false, date: formattedDate, priority: isPriority, timer: hasTimer ? { active: false, seconds: 1500 } : null, rolledOver: false });
+                    input.value = ''; saveData();
+                }
+            }
+        }
+
+        function handleKeyPress(e, type) { if (e.key === 'Enter') addTask(type); }
+        
+        function toggleTask(uiType, index) { 
+            const arr = appData[getActualKey(uiType)]; const task = arr[index];
+            task.completed = !task.completed; arr.splice(index, 1);
+            if (task.completed) { arr.push(task); } else { arr.unshift(task); }
+            saveData(); 
+        }
+
+        function toggleTimer(uiType, index) { const task = appData[getActualKey(uiType)][index]; if (task.timer) { task.timer.active = !task.timer.active; saveData(); } }
+
+        setInterval(() => {
+            if(currentView === 'plan') return; 
+            ['daily', 'weekly', 'monthly'].forEach(uiType => {
+                const arr = appData[getActualKey(uiType)];
+                arr.forEach((task, index) => {
+                    if (task.timer && task.timer.active && task.timer.seconds > 0) {
+                        task.timer.seconds--; const el = document.getElementById(`timer-${uiType}-${index}`);
+                        if (el) {
+                            const m = Math.floor(task.timer.seconds / 60).toString().padStart(2, '0'); const s = (task.timer.seconds % 60).toString().padStart(2, '0');
+                            el.innerHTML = `⏸ ${m}:${s}`; el.classList.add('active');
+                        }
+                        if (task.timer.seconds === 0) { task.timer.active = false; showToast("Pomodoro complete!", null, null); saveData(); }
+                    }
+                });
+            });
+        }, 1000);
+
+        function startEdit(uiType, index) {
+            const dataKey = getActualKey(uiType); const li = document.getElementById(`task-${uiType}-${index}`);
+            const textSpan = li.querySelector('.task-text'); const currentText = appData[dataKey][index].text;
+            textSpan.innerHTML = `<input type="text" class="edit-input" value="${currentText}" onblur="saveEdit('${uiType}', ${index}, this.value)" onkeypress="if(event.key === 'Enter') this.blur()">`;
+            const input = textSpan.querySelector('input'); input.focus(); input.setSelectionRange(input.value.length, input.value.length);
+        }
+
+        function saveEdit(uiType, index, newText) {
+            const dataKey = getActualKey(uiType); newText = newText.trim();
+            if (newText) {
+                if (newText.startsWith('! ') || newText === '!') { appData[dataKey][index].priority = true; newText = newText.substring(1).trim(); }
+                if (newText.startsWith('* ') || newText === '*') { appData[dataKey][index].timer = { active: false, seconds: 1500 }; newText = newText.substring(1).trim(); }
+                appData[dataKey][index].text = newText;
+            } else { appData[dataKey].splice(index, 1); }
+            saveData();
+        }
+
+        function sweepTasks(uiType) { const dataKey = getActualKey(uiType); appData[dataKey] = appData[dataKey].filter(task => !task.completed); saveData(); }
+
+        function attemptDelete(uiType, index) {
+            const dataKey = getActualKey(uiType); const task = appData[dataKey][index];
+            appData[dataKey].splice(index, 1); saveData();
+            undoData = { type: 'task', dataKey, index, task }; showToast("Task deleted", "Undo", "undoDelete");
+        }
+
+        function showToast(message, actionText, actionFn) {
+            const toast = document.getElementById('undoToast'); document.getElementById('toastMessage').innerText = message;
+            const btn = document.getElementById('toastAction');
+            if (actionText) { btn.style.display = 'block'; btn.innerText = actionText; btn.setAttribute('onclick', `${actionFn}()`); } else { btn.style.display = 'none'; }
+            toast.classList.remove('show'); void toast.offsetWidth; toast.classList.add('show');
+            clearTimeout(toastTimer); toastTimer = setTimeout(() => dismissToast(), 5000);
+        }
+
+        function dismissToast() { document.getElementById('undoToast').classList.remove('show'); undoData = null; }
+        
+        function undoDelete() { 
+            if (undoData) { 
+                if(undoData.type === 'task') { appData[undoData.dataKey].splice(undoData.index, 0, undoData.task); } 
+                else if(undoData.type === 'note') { appData.notes.push(undoData.note); if(currentView === 'plan') renderCanvas(); }
+                saveData(); dismissToast(); 
+            } 
+        }
+
+        function handleDragStart(e, uiType, index) { draggedItemInfo = { uiType, index }; setTimeout(() => e.target.classList.add('dragging'), 0); }
+        function handleDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+        function handleDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+        function handleDrop(e, targetUiType, targetIndex) {
+            e.preventDefault(); e.currentTarget.classList.remove('drag-over');
+            if (draggedItemInfo && draggedItemInfo.uiType === targetUiType && draggedItemInfo.index !== targetIndex) {
+                const dataKey = getActualKey(targetUiType); const itemToMove = appData[dataKey].splice(draggedItemInfo.index, 1)[0];
+                appData[dataKey].splice(targetIndex, 0, itemToMove); saveData();
+            }
+        }
+        function handleDragEnd(e) { e.target.classList.remove('dragging'); draggedItemInfo = null; }
+        function enableDrag(el) { el.parentElement.setAttribute('draggable', 'true'); }
+        function disableDrag(el) { el.parentElement.setAttribute('draggable', 'false'); }
+
+        function renderTasks() {
+            ['daily', 'weekly', 'monthly'].forEach(uiType => {
+                const list = document.getElementById(`${uiType}List`); list.innerHTML = ''; let completedCount = 0; const arr = appData[getActualKey(uiType)];
+
+                arr.forEach((goal, index) => {
+                    const li = document.createElement('li'); li.id = `task-${uiType}-${index}`;
+                    if (goal.completed) { li.classList.add('completed'); completedCount++; }
+                    if (goal.priority) li.classList.add('priority');
+                    
+                    li.setAttribute('draggable', 'false');
+                    li.addEventListener('dragstart', (e) => handleDragStart(e, uiType, index));
+                    li.addEventListener('dragover', handleDragOver);
+                    li.addEventListener('dragleave', handleDragLeave);
+                    li.addEventListener('drop', (e) => handleDrop(e, uiType, index));
+                    li.addEventListener('dragend', handleDragEnd);
+
+                    const dateHtml = goal.date ? `<span class="task-date">${goal.date}</span>` : '';
+                    let timerHtml = '';
+                    if (goal.timer) {
+                        const m = Math.floor(goal.timer.seconds / 60).toString().padStart(2, '0'); const s = (goal.timer.seconds % 60).toString().padStart(2, '0');
+                        const icon = goal.timer.active ? '⏸' : '▶'; const activeClass = goal.timer.active ? 'active' : '';
+                        timerHtml = `<span class="timer-badge ${activeClass}" id="timer-${uiType}-${index}" onclick="toggleTimer('${uiType}', ${index})">${icon} ${m}:${s}</span>`;
+                    }
+
+                    li.innerHTML = `
+                        <div class="drag-handle" onmousedown="enableDrag(this)" onmouseup="disableDrag(this)" onmouseleave="disableDrag(this)">
+                            <svg width="12" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <circle cx="9" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/>
+                                <circle cx="15" cy="5" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="15" cy="19" r="1.5"/>
+                            </svg>
+                        </div>
+                        <div class="task-content">
+                            <div class="checkbox" onclick="toggleTask('${uiType}', ${index})"></div>
+                            <div class="task-info">
+                                <span class="task-text" ondblclick="startEdit('${uiType}', ${index})">${goal.text}</span>
+                                <div class="task-meta">${dateHtml}${timerHtml}</div>
+                            </div>
+                        </div>
+                        <button class="delete-btn" onclick="attemptDelete('${uiType}', ${index})">×</button>
+                    `;
+                    list.appendChild(li);
+                });
+
+                const total = arr.length; const percentage = total === 0 ? 0 : (completedCount / total) * 100;
+                document.getElementById(`${uiType}Progress`).style.width = `${percentage}%`;
+                const sweepContainer = document.getElementById(`${uiType}Sweep`);
+                sweepContainer.innerHTML = completedCount > 0 ? `<button class="sweep-btn" onclick="sweepTasks('${uiType}')">sweep completed</button>` : '';
+            });
+        }
+
+        // --- Advanced Canvas Mechanics (Pan, Zoom, Resize, Rich Text) ---
+        let canvasPanX = 0, canvasPanY = 0, canvasZoom = 1;
+        let isPanning = false, panStartX = 0, panStartY = 0;
+        const canvasContainer = document.getElementById('canvasContainer');
+
+        function applyCanvasTransform() {
+            const layer = document.getElementById('notesLayer');
+            layer.style.transform = `translate(${canvasPanX}px, ${canvasPanY}px) scale(${canvasZoom})`;
+            canvasContainer.style.backgroundPosition = `${canvasPanX}px ${canvasPanY}px`;
+            canvasContainer.style.backgroundSize = `${20 * canvasZoom}px ${20 * canvasZoom}px`;
+        }
+
+        // Panning
+        canvasContainer.addEventListener('mousedown', (e) => {
+            if (e.target.id === 'canvasContainer' || e.target.id === 'notesLayer' || e.target.id === 'canvasHint') {
+                isPanning = true; panStartX = e.clientX - canvasPanX; panStartY = e.clientY - canvasPanY;
+                canvasContainer.style.cursor = 'grabbing';
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isPanning) { canvasPanX = e.clientX - panStartX; canvasPanY = e.clientY - panStartY; applyCanvasTransform(); }
+        });
+
+        window.addEventListener('mouseup', () => { isPanning = false; canvasContainer.style.cursor = 'default'; });
+
+        // Zooming & Trackpad Panning
+        canvasContainer.addEventListener('wheel', (e) => {
+            e.preventDefault(); 
+            // Only zoom if CTRL or CMD is held down
+            if (e.ctrlKey || e.metaKey) { 
+                const zoomFactor = e.deltaY * -0.01;
+                let newZoom = Math.min(Math.max(0.2, canvasZoom + zoomFactor), 3);
+                const rect = canvasContainer.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left; const mouseY = e.clientY - rect.top;
+                canvasPanX -= (mouseX - canvasPanX) * (newZoom / canvasZoom - 1);
+                canvasPanY -= (mouseY - canvasPanY) * (newZoom / canvasZoom - 1);
+                canvasZoom = newZoom;
+            } else { 
+                // Normal scrolling pans the canvas
+                canvasPanX -= e.deltaX; 
+                canvasPanY -= e.deltaY; 
+            }
+            applyCanvasTransform();
+        }, { passive: false });
+
+        function autoArrangeNotes() {
+            let currentX = 20; let currentY = 20; let rowHeight = 0;
+            const gap = 30; const maxWidth = 1000;
+            
+            appData.notes.forEach((n) => {
+                if (currentX + n.w > maxWidth && currentX !== 20) {
+                    currentX = 20; currentY += rowHeight + gap; rowHeight = 0;
+                }
+                n.x = currentX; n.y = currentY;
+                currentX += n.w + gap;
+                rowHeight = Math.max(rowHeight, n.h);
+            });
+            
+            canvasPanX = 0; canvasPanY = 0; canvasZoom = 1;
+            saveData(); renderCanvas(); showToast("Notes Organized", null, null);
+        }
+
+        function createCanvasNote(e) {
+            if (e.target.closest('.canvas-note') || e.target.closest('.canvas-tools')) return;
+            const rect = canvasContainer.getBoundingClientRect();
+            let x = (e.clientX - rect.left - canvasPanX) / canvasZoom;
+            let y = (e.clientY - rect.top - canvasPanY) / canvasZoom;
+
+            const newNote = { id: Date.now().toString(), title: '', text: '', x: x, y: y, w: 220, h: 180, z: appData.notes.length + 1 };
+            appData.notes.push(newNote); saveData(); renderCanvas();
+            setTimeout(() => { const newEl = document.getElementById(`note-txt-${newNote.id}`); if(newEl) newEl.focus(); }, 50);
+        }
+
+        function deleteNote(id) {
+            const noteObj = appData.notes.find(n => n.id === id);
+            appData.notes = appData.notes.filter(n => n.id !== id);
+            saveData(); undoData = { type: 'note', note: noteObj }; showToast("Note deleted", "Undo", "undoDelete"); renderCanvas();
+        }
+
+        function updateNoteTitle(id, value) { const note = appData.notes.find(n => n.id === id); if (note) { note.title = value; saveData(); } }
+        function updateNoteContent(id, html) { const note = appData.notes.find(n => n.id === id); if (note) { note.text = html; saveData(); } }
+
+        function handleNoteKeyDown(e) {
+            // Auto Bullet Point feature for Rich Text 
+            if (e.key === 'Enter' && !e.shiftKey) {
+                const sel = window.getSelection();
+                if(!sel.focusNode) return;
+                let text = sel.focusNode.textContent || "";
+                if (text.trim().startsWith('>')) {
+                    e.preventDefault();
+                    document.execCommand('insertHTML', false, '<br>> ');
+                }
+            }
+        }
+
+        function handleNoteResize(e, id) {
+            const el = document.getElementById(`note-${id}`); const note = appData.notes.find(n => n.id === id);
+            if(note && el) { if (note.w !== el.offsetWidth || note.h !== el.offsetHeight) { note.w = el.offsetWidth; note.h = el.offsetHeight; saveData(); } }
+        }
+
+        function bringNoteToFront(id) {
+            const maxZ = Math.max(0, ...appData.notes.map(n => n.z || 0)); const note = appData.notes.find(n => n.id === id);
+            if (note && note.z !== maxZ) { note.z = maxZ + 1; document.getElementById(`note-${id}`).style.zIndex = note.z; saveData(); }
+        }
+
+        function startDragNote(e, id) {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
+            bringNoteToFront(id);
+            const el = document.getElementById(`note-${id}`); const noteObj = appData.notes.find(n => n.id === id);
+            let startX = e.clientX; let startY = e.clientY; let origX = noteObj.x; let origY = noteObj.y;
+
+            function onMove(ev) {
+                let newX = origX + (ev.clientX - startX) / canvasZoom; let newY = origY + (ev.clientY - startY) / canvasZoom;
+                noteObj.x = newX; noteObj.y = newY; el.style.left = noteObj.x + 'px'; el.style.top = noteObj.y + 'px';
+            }
+            function onUp() { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); saveData(); }
+            document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onUp);
+        }
+
+        function renderCanvas() {
+            const layer = document.getElementById('notesLayer');
+            document.getElementById('canvasHint').style.display = appData.notes.length > 0 ? 'none' : 'block';
+            
+            layer.innerHTML = appData.notes.map(n => `
+                <div class="canvas-note" id="note-${n.id}" 
+                     style="left:${n.x}px; top:${n.y}px; width:${n.w}px; height:${n.h}px; z-index:${n.z || 1};"
+                     onmousedown="bringNoteToFront('${n.id}')" onmouseup="handleNoteResize(event, '${n.id}')">
+                    <div class="note-header" onmousedown="startDragNote(event, '${n.id}')">
+                        <div class="note-header-left">
+                            <div class="note-drag-icon">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                    <circle cx="9" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/>
+                                    <circle cx="15" cy="5" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="15" cy="19" r="1.5"/>
+                                </svg>
+                            </div>
+                            <input type="text" class="note-title-input" placeholder="Title..." value="${n.title || ''}" oninput="updateNoteTitle('${n.id}', this.value)">
+                        </div>
+                        <button class="note-delete" onclick="deleteNote('${n.id}')">×</button>
+                    </div>
+                    <div class="note-body" id="note-txt-${n.id}" contenteditable="true" 
+                         oninput="updateNoteContent('${n.id}', this.innerHTML)"
+                         onkeydown="handleNoteKeyDown(event)">${n.text || ''}</div>
+                </div>
+            `).join('');
+            
+            applyCanvasTransform(); 
+        }
+
+        checkRollover();
+        switchView('next'); 
+    </script>
+</body>
+</html>

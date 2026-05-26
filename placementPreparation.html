@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Google SDE Roadmap — Harsh</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0f;--s1:#111118;--s2:#1a1a24;--bd:#2a2a3a;--bd2:#3a3a50;--tx:#e8e8f0;--mu:#7a7a9a;--ac:#6c63ff;--g:#4ade80;--o:#fb923c;--b:#60a5fa;--p:#a78bfa;--y:#ffd700;--teal:#00d4aa;--r:#f87171;--mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--bd);padding:0 1.2rem;height:52px;display:flex;align-items:center;justify-content:space-between}
+.nb{font-family:var(--mono);font-size:11px;color:var(--teal);letter-spacing:.1em;white-space:nowrap}
+.nl{display:flex;gap:1px;overflow-x:auto}
+.nl::-webkit-scrollbar{display:none}
+.nl button{padding:5px 10px;font-size:11px;color:var(--mu);cursor:pointer;border-radius:6px;border:none;background:none;font-family:var(--sans);transition:all .15s;white-space:nowrap}
+.nl button:hover{color:var(--tx);background:var(--s2)}
+.nl button.active{color:var(--ac);background:rgba(108,99,255,.14)}
+.page{display:none;padding-top:52px;min-height:100vh}
+.page.active{display:block}
+.wrap{max-width:900px;margin:0 auto;padding:0 1.2rem 4rem}
+h1{font-size:clamp(1.6rem,4vw,2.8rem);font-weight:600;line-height:1.15;letter-spacing:-.02em}
+h1 span{color:var(--ac)}
+.hero{padding:3.5rem 1.2rem 2.5rem;max-width:900px;margin:0 auto;text-align:center}
+.htag{display:inline-block;font-family:var(--mono);font-size:10px;color:var(--teal);border:1px solid var(--teal);padding:3px 12px;border-radius:20px;margin-bottom:1rem;letter-spacing:.1em}
+.hero p{font-size:14px;color:var(--mu);max-width:500px;margin:.7rem auto 2rem;line-height:1.7}
+.stats4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:520px;margin:0 auto 2rem}
+.sb{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:12px 8px;text-align:center}
+.sb .n{font-family:var(--mono);font-size:18px;color:var(--ac)}
+.sb .l{font-size:10px;color:var(--mu);margin-top:2px}
+.stitle{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.stitle::after{content:'';flex:1;height:1px;background:var(--bd)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px;cursor:pointer;transition:border-color .2s}
+.card:hover{border-color:var(--bd2)}
+.ci{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:8px}
+.card h3{font-size:13px;font-weight:500;margin-bottom:3px}
+.card p{font-size:11px;color:var(--mu);line-height:1.6}
+.tl{position:relative;padding-left:20px}
+.tl::before{content:'';position:absolute;left:5px;top:8px;bottom:8px;width:2px;background:var(--bd)}
+.tli{position:relative;padding-bottom:18px}
+.tld{position:absolute;left:-17px;top:4px;width:12px;height:12px;border-radius:50%;border:2px solid;background:var(--bg)}
+.tli h4{font-size:13px;font-weight:500;margin-bottom:3px}
+.tli p{font-size:12px;color:var(--mu);line-height:1.6}
+.tlm{font-family:var(--mono);font-size:10px;color:var(--mu);margin-bottom:4px}
+.phases{display:flex;flex-direction:column;gap:7px}
+.ph{background:var(--s1);border:1px solid var(--bd);border-radius:12px;overflow:hidden}
+.phh{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;transition:background .15s;user-select:none}
+.phh:hover{background:var(--s2)}
+.phm{display:flex;align-items:center;gap:9px}
+.phn{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;flex-shrink:0}
+.n1{background:rgba(74,222,128,.12);color:var(--g)}.n2{background:rgba(96,165,250,.12);color:var(--b)}.n3{background:rgba(251,146,60,.12);color:var(--o)}.n4{background:rgba(167,139,250,.12);color:var(--p)}.nx{background:rgba(122,122,154,.12);color:var(--mu)}
+.pht{font-size:13px;font-weight:500}.phs{font-size:11px;color:var(--mu)}
+.bdg{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid}
+.bg{color:var(--g);border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.07)}.bb{color:var(--b);border-color:rgba(96,165,250,.3);background:rgba(96,165,250,.07)}.bo{color:var(--o);border-color:rgba(251,146,60,.3);background:rgba(251,146,60,.07)}.bp{color:var(--p);border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.07)}.bx{color:var(--mu);border-color:var(--bd);background:var(--s2)}
+.chv{color:var(--mu);font-size:14px;transition:transform .22s;margin-left:6px}
+.phb{display:none;padding:0 14px 12px;border-top:1px solid var(--bd)}
+.phb.open{display:block}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:6px;margin-top:10px}
+.ti{background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:8px 10px 8px 30px;cursor:pointer;position:relative;transition:border-color .15s}
+.ti:hover{border-color:var(--bd2)}.ti.done{opacity:.45}.ti.done .tn{text-decoration:line-through;color:var(--mu)}
+.tn{font-size:12px;font-weight:500;margin-bottom:2px}.th{font-size:11px;color:var(--mu);line-height:1.4}
+.chk{position:absolute;left:8px;top:8px;width:14px;height:14px;border-radius:3px;border:1.5px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:8px;color:transparent}
+.ti.done .chk{background:var(--g);border-color:var(--g);color:#000}
+.wlist{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.wlabel{font-size:10px;color:var(--mu);font-family:var(--mono);letter-spacing:.08em;margin-top:12px;margin-bottom:6px}
+.wc{background:var(--s2);border:1px solid var(--bd);border-radius:9px;overflow:hidden}.wc.wdone{opacity:.5}
+.wh{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;cursor:pointer;transition:background .15s}
+.wh:hover{background:rgba(255,255,255,.03)}
+.whl{display:flex;align-items:center;gap:7px}
+.wnum{font-family:var(--mono);font-size:10px;color:var(--mu);min-width:44px}.wname{font-size:12px;font-weight:500}
+.mbtn{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid var(--bd2);background:none;color:var(--mu);cursor:pointer;transition:all .15s}
+.mbtn.mk{background:rgba(74,222,128,.1);color:var(--g);border-color:rgba(74,222,128,.35)}
+.wb{display:none;padding:4px 12px 10px;border-top:1px solid var(--bd)}.wb.open{display:block}
+.dr{display:grid;grid-template-columns:42px 1fr 54px;gap:5px;padding:4px 0;border-top:1px solid rgba(42,42,58,.5);align-items:start;font-size:11px}
+.dr:first-child{border-top:none;padding-top:7px}
+.dn{color:var(--mu);font-family:var(--mono);font-size:10px;padding-top:1px}.dt{color:var(--tx);line-height:1.5}
+.dtag{font-size:10px;padding:2px 5px;border-radius:20px;text-align:center;margin-top:1px;white-space:nowrap}
+.ts{background:rgba(74,222,128,.09);color:var(--g)}.tl2{background:rgba(251,146,60,.09);color:var(--o)}.tr{background:rgba(96,165,250,.09);color:var(--b)}.tt{background:rgba(122,122,154,.09);color:var(--mu)}.tm{background:rgba(167,139,250,.09);color:var(--p)}
+.wtip{margin-top:8px;padding:6px 10px;background:rgba(108,99,255,.07);border-left:2px solid var(--ac);border-radius:0 6px 6px 0;font-size:11px;color:var(--mu);line-height:1.6}
+.progw{margin-bottom:1.5rem}
+.progl{font-size:11px;color:var(--mu);margin-bottom:4px;display:flex;justify-content:space-between}
+.progb{height:3px;background:var(--s2);border-radius:3px;overflow:hidden}
+.progf{height:100%;background:linear-gradient(90deg,var(--ac),var(--teal));border-radius:3px;transition:width .4s}
+.rlist{display:flex;flex-direction:column;gap:5px;margin-bottom:1.5rem}
+.ri{display:flex;align-items:center;justify-content:space-between;background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:8px 12px;cursor:pointer;transition:border-color .15s}
+.ri:hover{border-color:var(--bd2)}.ri.rd{opacity:.4;text-decoration:line-through}
+.ril{display:flex;align-items:center;gap:7px}
+.rtag{font-size:10px;padding:2px 6px;border-radius:20px;font-family:var(--mono)}
+.rfree{background:rgba(74,222,128,.1);color:var(--g)}
+.rname{font-size:12px;color:var(--tx)}.rhr{font-size:11px;color:var(--mu)}
+.sec-hdr{display:flex;align-items:center;gap:9px;margin-bottom:9px;margin-top:1.3rem}
+.sec-ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.sec-t{font-size:14px;font-weight:500}.sec-s{font-size:11px;color:var(--mu);margin-top:1px}
+.note{font-size:11px;color:var(--mu);padding:6px 10px;border-left:2px solid;border-radius:0 5px 5px 0;background:rgba(255,255,255,.02);margin-bottom:8px;line-height:1.6}
+
+/* ── PROJECTS PAGE ── */
+.proj-tabs{display:flex;gap:6px;margin-bottom:1.5rem;flex-wrap:wrap}
+.ptab{padding:6px 14px;font-size:12px;border-radius:8px;border:1px solid var(--bd);background:none;color:var(--mu);cursor:pointer;font-family:var(--sans);transition:all .15s}
+.ptab.active{background:rgba(108,99,255,.15);border-color:var(--ac);color:var(--ac)}
+.proj-cat{display:none}.proj-cat.active{display:block}
+.proj-search{width:100%;background:var(--s1);border:1px solid var(--bd);border-radius:9px;padding:9px 14px;color:var(--tx);font-family:var(--sans);font-size:13px;outline:none;margin-bottom:1.2rem;transition:border-color .15s}
+.proj-search:focus{border-color:var(--ac)}
+.proj-search::placeholder{color:var(--mu)}
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:7px}
+.pcard{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:11px 13px;cursor:pointer;transition:all .15s;position:relative}
+.pcard:hover{border-color:var(--bd2);background:var(--s2)}
+.pcard.pdone{opacity:.5}
+.pcard.pdone .pcname{text-decoration:line-through;color:var(--mu)}
+.pcname{font-size:12px;font-weight:500;margin-bottom:3px;padding-right:20px}
+.pcdiff{font-size:10px;padding:1px 7px;border-radius:20px;display:inline-block;margin-bottom:4px}
+.diff-b{background:rgba(74,222,128,.1);color:var(--g)}
+.diff-i{background:rgba(96,165,250,.1);color:var(--b)}
+.diff-a{background:rgba(251,146,60,.1);color:var(--o)}
+.pcdesc{font-size:11px;color:var(--mu);line-height:1.5}
+.pcheck{position:absolute;right:10px;top:10px;width:15px;height:15px;border-radius:4px;border:1.5px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;transition:all .15s}
+.pcard.pdone .pcheck{background:var(--g);border-color:var(--g);color:#000}
+.proj-count{font-family:var(--mono);font-size:10px;color:var(--mu);margin-bottom:10px}
+.proj-prog{margin-bottom:1.2rem}
+
+/* ── NOTES PAGE (UPDATED WITH PREVIEW) ── */
+.notes-topbar{display:flex;gap:10px;margin-bottom:1.5rem;align-items:center;flex-wrap:wrap}
+.notes-search{flex:1;min-width:200px;background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:11px 14px;color:var(--tx);font-family:var(--sans);font-size:13px;outline:none;transition:border-color .15s}
+.notes-search:focus{border-color:var(--ac)}
+.notes-search::placeholder{color:var(--mu)}
+.btn-create-note{background:rgba(108,99,255,.15);color:var(--ac);border:1px solid rgba(108,99,255,.4);border-radius:8px;padding:11px 20px;font-weight:500;cursor:pointer;transition:all .15s;font-family:var(--sans);font-size:13px;white-space:nowrap}
+.btn-create-note:hover{background:var(--ac);color:#fff}
+.notes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;min-height:400px;align-content:start}
+.note-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;height:170px}
+.note-card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.15);background:var(--s2)}
+.nc-title{font-size:15px;font-weight:500;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--tx)}
+.nc-date{font-size:10px;color:var(--mu);font-family:var(--mono);margin-bottom:10px}
+.nc-preview{font-size:12px;color:var(--mu);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;flex:1}
+.btn-back{background:none;border:none;color:var(--mu);cursor:pointer;font-family:var(--sans);font-size:13px;display:flex;align-items:center;gap:6px;margin-bottom:16px;padding:0;transition:color .15s;font-weight:500}
+.btn-back:hover{color:var(--tx)}
+
+.note-editor{background:var(--s1);border:1px solid var(--bd);border-radius:12px;overflow:hidden;width:100%}
+.note-toolbar{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--bd);flex-wrap:wrap}
+.ntbtn{padding:5px 10px;font-size:12px;border-radius:6px;border:1px solid var(--bd);background:none;color:var(--mu);cursor:pointer;transition:all .15s;font-family:var(--sans)}
+.ntbtn:hover{background:var(--s2);color:var(--tx);border-color:var(--bd2)}
+
+.note-title-input{width:100%;background:none;border:none;border-bottom:1px solid var(--bd);padding:16px 20px;color:var(--tx);font-size:20px;font-weight:600;font-family:var(--sans);outline:none;transition:all .15s;}
+.note-title-input::placeholder{color:var(--mu)}
+
+.note-content-area{width:100%;background:none;border:none;padding:20px;color:var(--tx);font-size:14px;font-family:var(--sans);outline:none;resize:none;line-height:1.8;min-height:500px;display:block;}
+.note-content-area::placeholder{color:var(--mu)}
+
+.note-actions{display:flex;gap:7px;padding:12px 20px;border-top:1px solid var(--bd);align-items:center;justify-content:space-between;background:var(--s2)}
+.nbtnsave{padding:8px 20px;font-size:13px;font-weight:500;border-radius:8px;border:1px solid rgba(74,222,128,.4);background:rgba(74,222,128,.1);color:var(--g);cursor:pointer;font-family:var(--sans);transition:all .15s}
+.nbtnsave:hover{background:rgba(74,222,128,.2)}
+.nbtndelete{padding:8px 16px;font-size:13px;border-radius:8px;border:1px solid rgba(248,113,113,.3);background:rgba(248,113,113,.07);color:var(--r);cursor:pointer;font-family:var(--sans);transition:all .15s}
+.nbtndelete:hover{background:rgba(248,113,113,.15)}
+.note-meta{font-size:11px;color:var(--mu);font-family:var(--mono)}
+
+/* MARKDOWN PREVIEW STYLES */
+.note-preview-area{width:100%;padding:20px;color:var(--tx);font-size:14px;font-family:var(--sans);line-height:1.8;min-height:500px;overflow-y:auto;display:none;background:var(--bg)}
+.note-preview-area h1{font-size:26px;margin:1.2em 0 0.5em;font-weight:600;color:#fff}
+.note-preview-area h2{font-size:20px;margin:1.2em 0 0.5em;font-weight:600;color:#fff}
+.note-preview-area h3{font-size:16px;margin:1.2em 0 0.5em;font-weight:600;color:#fff}
+.note-preview-area p{margin-bottom:1em}
+.note-preview-area strong{color:var(--ac);font-weight:600}
+.note-preview-area em{color:var(--p);font-style:italic}
+.note-preview-area blockquote{border-left:4px solid var(--ac);padding:10px 14px;color:var(--mu);margin:1.5em 0;background:rgba(108,99,255,.06);border-radius:0 8px 8px 0;font-style:italic}
+.note-preview-area ul{margin-left:24px;margin-bottom:1em;list-style-type:disc}
+.note-preview-area li{margin-bottom:6px}
+.note-preview-area code{background:var(--s2);padding:3px 6px;border-radius:5px;font-family:var(--mono);font-size:12px;border:1px solid var(--bd);color:var(--teal)}
+.note-preview-area pre{background:var(--s1);padding:16px;border-radius:8px;border:1px solid var(--bd);overflow-x:auto;margin:1.5em 0}
+.note-preview-area pre code{border:none;padding:0;background:none;color:var(--tx)}
+
+
+/* ── ANALYTICS / PROGRESS PAGE ── */
+.readiness-box{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:24px;text-align:center;margin-bottom:1.5rem;position:relative;overflow:hidden}
+.readiness-box::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--ac),var(--teal))}
+.readiness-val{font-size:clamp(40px, 8vw, 64px);font-weight:700;color:var(--tx);font-family:var(--mono);line-height:1;margin:12px 0;text-shadow: 0 0 20px rgba(108,99,255,0.2)}
+.idx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin-bottom:1.5rem}
+.idx-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px}
+.idx-label{font-size:10px;color:var(--mu);font-family:var(--mono);letter-spacing:.08em;margin-bottom:6px}
+.idx-val{font-size:26px;font-weight:600;font-family:var(--mono)}
+.idx-sub{font-size:11px;color:var(--mu);margin-top:3px}
+.idx-phase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:1.5rem}
+.idx-phase{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px}
+.idx-phase-name{font-size:13px;font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.idx-phase-bar{height:4px;background:var(--s2);border-radius:4px;overflow:hidden;margin-bottom:6px}
+.idx-phase-fill{height:100%;border-radius:4px;transition:width .4s}
+.idx-phase-stats{font-size:11px;color:var(--mu);font-family:var(--mono)}
+.streak-box{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:1.5rem}
+.streak-days{display:flex;gap:4px;flex-wrap:wrap;margin-top:10px}
+.sday{width:13px;height:13px;border-radius:3px;background:var(--s2);border:1px solid var(--bd);cursor:pointer;transition:all .15s}
+.sday.done{background:var(--ac);border-color:var(--ac)}
+.sday:hover{border-color:var(--bd2)}
+.week-label{font-size:10px;color:var(--mu);font-family:var(--mono);margin-top:8px;margin-bottom:3px}
+.activity-heatmap{display:flex;flex-direction:column;gap:2px}
+.hmap-row{display:flex;gap:2px;align-items:center}
+.hmap-day{width:11px;height:11px;border-radius:2px;background:var(--s2)}
+.hmap-day.h1{background:rgba(108,99,255,.25)}.hmap-day.h2{background:rgba(108,99,255,.5)}.hmap-day.h3{background:rgba(108,99,255,.75)}.hmap-day.h4{background:var(--ac)}
+.hmap-label{font-size:9px;color:var(--mu);font-family:var(--mono);width:24px;flex-shrink:0}
+.timeline-bar{display:flex;height:6px;border-radius:3px;overflow:hidden;margin-bottom:12px;background:var(--s2)}
+.tbar-seg{height:100%;transition:width .4s}
+.goal-input{background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding:7px 11px;color:var(--tx);font-family:var(--mono);font-size:12px;outline:none;width:100px;margin-right:6px}
+.goal-input:focus{border-color:var(--ac)}
+.badge-grid{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.badge{padding:6px 12px;border-radius:20px;font-size:11px;font-family:var(--mono);border:1px solid;opacity:.35}
+.badge.earned{opacity:1}
+.bd-g{color:var(--g);border-color:rgba(74,222,128,.4);background:rgba(74,222,128,.08)}
+.bd-b{color:var(--b);border-color:rgba(96,165,250,.4);background:rgba(96,165,250,.08)}
+.bd-o{color:var(--o);border-color:rgba(251,146,60,.4);background:rgba(251,146,60,.08)}
+.bd-p{color:var(--p);border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.08)}
+.bd-y{color:var(--y);border-color:rgba(255,215,0,.4);background:rgba(255,215,0,.08)}
+footer{border-top:1px solid var(--bd);padding:1.2rem;text-align:center;font-family:var(--mono);font-size:10px;color:var(--mu)}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}
+@media(max-width:700px){.stats4{grid-template-columns:repeat(2,1fr)}.nl button{padding:5px 7px;font-size:10px}.idx-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nb">// HARSH → GOOGLE</div>
+  <div class="nl">
+    <button class="active" onclick="show('home')">Home</button>
+    <button onclick="show('analytics')">Analytics</button>
+    <button onclick="show('dsa')">DSA</button>
+    <button onclick="show('google')">Google</button>
+    <button onclick="show('aiml')">AI/ML</button>
+    <button onclick="show('projects')">Projects</button>
+    <button onclick="show('notes')">Notes</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="pg-home" class="page active">
+  <div class="hero">
+    <div class="htag">🎯 TARGET: GOOGLE SDE</div>
+    <h1>Your <span>dream job</span><br>has a plan now.</h1>
+    <p>Complete roadmap for DSA, System Design, CS fundamentals, AI/ML — everything needed to crack Google SDE. Built around Fraz's sheet. Free resources only. 2 problems/day.</p>
+    <div class="stats4">
+      <div class="sb"><div class="n">~10</div><div class="l">months</div></div>
+      <div class="sb"><div class="n">2/day</div><div class="l">problems</div></div>
+      <div class="sb"><div class="n">1200+</div><div class="l">questions</div></div>
+      <div class="sb"><div class="n">FREE</div><div class="l">all resources</div></div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="stitle">What's inside</div>
+    <div class="grid2" style="margin-bottom:2rem">
+      <div class="card" onclick="show('analytics')"><div class="ci" style="background:rgba(0,212,170,.1)">📊</div><h3>Analytics</h3><p>Track your SDE readiness score, progress, streaks, activity heatmap, and earned badges.</p></div>
+      <div class="card" onclick="show('dsa')"><div class="ci" style="background:rgba(74,222,128,.1)">🧩</div><h3>DSA Plan</h3><p>Fraz's sheet broken into 4 phases, week-by-week schedule, daily problems, revision days.</p></div>
+      <div class="card" onclick="show('google')"><div class="ci" style="background:rgba(96,165,250,.1)">🏢</div><h3>Google Full Path</h3><p>System Design, CS fundamentals, OOP, OS, Networks, Behavioral prep — all free resources.</p></div>
+      <div class="card" onclick="show('aiml')"><div class="ci" style="background:rgba(251,146,60,.1)">🤖</div><h3>AI/ML Track</h3><p>Math → ML → Deep Learning → LLMs. 1 hour/day parallel to DSA. All free.</p></div>
+      <div class="card" onclick="show('projects')"><div class="ci" style="background:rgba(167,139,250,.1)">🛠️</div><h3>Projects (300+)</h3><p>Python, AI/ML, and Full-Stack projects. Beginner to Advanced. Build your portfolio.</p></div>
+      <div class="card" onclick="show('notes')"><div class="ci" style="background:rgba(255,215,0,.1)">📝</div><h3>Notes</h3><p>Personal notes system. Write, save, tag, and search your learning notes — all stored locally.</p></div>
+      <div class="card"><div class="ci" style="background:rgba(248,113,113,.1)">⚡</div><h3>The Daily Rule</h3><p>2 DSA problems Mon–Fri. Saturday = revision. Sunday = rest. Consistency over intensity.</p></div>
+    </div>
+    <div class="stitle">Your 10-month timeline</div>
+    <div class="tl">
+      <div class="tli"><div class="tld" style="border-color:var(--g)"></div><div class="tlm">Months 1–3</div><h4 style="color:var(--g)">Foundation — Phase 1</h4><p>Sorting, Two Pointers, Prefix Sum, Hashing, Sliding Window, Matrix. ~40% of easy/medium interview questions.</p></div>
+      <div class="tli"><div class="tld" style="border-color:var(--b)"></div><div class="tlm">Months 3–6</div><h4 style="color:var(--b)">Core Patterns — Phase 2</h4><p>Linked List, Stack, Binary Search, Recursion, Binary Tree. Most SDE interviews live here.</p></div>
+      <div class="tli"><div class="tld" style="border-color:var(--o)"></div><div class="tlm">Months 6–9</div><h4 style="color:var(--o)">Advanced — Phase 3</h4><p>BST, Heap, Greedy, Graphs, DP Level 1. Google loves graphs and DP.</p></div>
+      <div class="tli"><div class="tld" style="border-color:var(--p)"></div><div class="tlm">Months 9–12</div><h4 style="color:var(--p)">Expert + Interview Prep — Phase 4</h4><p>Tries, Bit Manipulation, DP Level 2. Parallel: mock interviews, system design, behavioral. Apply month 10.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ANALYTICS / PROGRESS -->
+<div id="pg-analytics" class="page">
+  <div class="wrap" style="padding-top:2rem">
+    <h2 style="font-size:20px;font-weight:600;margin-bottom:5px">Progress Dashboard</h2>
+    <p style="color:var(--mu);font-size:12px;margin-bottom:1.5rem">Your complete learning overview — updated in real time</p>
+    
+    <div class="readiness-box">
+      <div style="font-size:12px;color:var(--mu);font-family:var(--mono);letter-spacing:0.1em">GOOGLE SDE READINESS SCORE</div>
+      <div class="readiness-val" id="idx-readiness">0%</div>
+      <div style="font-size:11px;color:var(--mu);">Weighted algorithm based on DSA (60%) + Core CS/System Design (40%)</div>
+    </div>
+
+    <div class="idx-grid" id="idx-stats"></div>
+    <div class="stitle">Phase Breakdown</div>
+    <div class="idx-phase-grid" id="idx-phases"></div>
+    <div class="stitle">Overall Journey</div>
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:1.5rem">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--mu);margin-bottom:8px;font-family:var(--mono)">
+        <span>Start</span><span>Phase 1</span><span>Phase 2</span><span>Phase 3</span><span>Phase 4</span><span>Goal 🎯</span>
+      </div>
+      <div class="timeline-bar" id="tbar">
+        <div class="tbar-seg" style="background:var(--g);width:0%" id="tb1"></div>
+        <div class="tbar-seg" style="background:var(--b);width:0%" id="tb2"></div>
+        <div class="tbar-seg" style="background:var(--o);width:0%" id="tb3"></div>
+        <div class="tbar-seg" style="background:var(--p);width:0%" id="tb4"></div>
+      </div>
+      <div style="font-size:11px;color:var(--mu);margin-top:6px">Topics completed across all phases</div>
+    </div>
+    <div class="stitle">Streak Calendar</div>
+    <div class="streak-box">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:13px;font-weight:500">Daily Study Tracker</span>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--teal)" id="streak-count">0 day streak</span>
+      </div>
+      <div style="font-size:11px;color:var(--mu);margin-bottom:10px">Click a day to mark as studied. Last 10 weeks shown.</div>
+      <div id="streak-grid"></div>
+    </div>
+    <div class="stitle">Weekly Goals</div>
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:1.5rem">
+      <div style="font-size:13px;font-weight:500;margin-bottom:10px">This Week's Target</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <label style="font-size:12px;color:var(--mu)">Problems this week:</label>
+        <input type="number" class="goal-input" id="wk-done" placeholder="0" min="0">
+        <label style="font-size:12px;color:var(--mu)">/ Target:</label>
+        <input type="number" class="goal-input" id="wk-target" placeholder="10" min="1" value="10">
+        <button onclick="saveWeekGoal()" style="padding:6px 14px;font-size:12px;border-radius:7px;border:1px solid var(--ac);background:rgba(108,99,255,.1);color:var(--ac);cursor:pointer;font-family:var(--sans)">Save</button>
+      </div>
+      <div class="progb"><div class="progf" id="wk-fill" style="width:0%"></div></div>
+      <div style="font-size:11px;color:var(--mu);margin-top:5px" id="wk-label">0 / 10 problems this week</div>
+    </div>
+    <div class="stitle">Badges</div>
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:1.5rem">
+      <div style="font-size:12px;color:var(--mu);margin-bottom:8px">Earn badges by completing milestones. Locked badges are shown dimmed.</div>
+      <div class="badge-grid" id="badges"></div>
+    </div>
+    <div class="stitle">Notes Summary</div>
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:1.5rem">
+      <div id="idx-notes-summary" style="font-size:12px;color:var(--mu)">No notes yet. Go to Notes tab to start writing.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DSA -->
+<div id="pg-dsa" class="page">
+  <div class="wrap" style="padding-top:2rem">
+    <h2 style="font-size:20px;font-weight:600;margin-bottom:5px">DSA Roadmap — Fraz's Sheet</h2>
+    <p style="color:var(--mu);font-size:12px;margin-bottom:1.3rem">4 phases · 31 weeks · 2 problems/day · Click any topic or week to track progress</p>
+    <div class="progw">
+      <div class="progl"><span id="dp-lbl">0 of 20 topics done</span><span id="dp-pct">0%</span></div>
+      <div class="progb"><div class="progf" id="dp-fill" style="width:0%"></div></div>
+    </div>
+    <div class="phases" id="dsa-phases"></div>
+  </div>
+</div>
+
+<!-- GOOGLE -->
+<div id="pg-google" class="page">
+  <div class="wrap" style="padding-top:2rem">
+    <h2 style="font-size:20px;font-weight:600;margin-bottom:5px">Google SDE — Complete Plan</h2>
+    <p style="color:var(--mu);font-size:12px;margin-bottom:1.5rem">Everything beyond DSA. Work on these in parallel. All resources are free.</p>
+    <div id="google-content"></div>
+  </div>
+</div>
+
+<!-- AIML -->
+<div id="pg-aiml" class="page">
+  <div class="wrap" style="padding-top:2rem">
+    <h2 style="font-size:20px;font-weight:600;margin-bottom:5px">AI/ML Learning Track</h2>
+    <p style="color:var(--mu);font-size:12px;margin-bottom:1.5rem">1 hour/day alongside DSA. Do NOT swap DSA time for this. All free resources.</p>
+    <div id="aiml-content"></div>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<div id="pg-projects" class="page">
+  <div class="wrap" style="padding-top:2rem">
+    <h2 style="font-size:20px;font-weight:600;margin-bottom:5px">Project Ideas (300+)</h2>
+    <p style="color:var(--mu);font-size:12px;margin-bottom:1.3rem">Build projects to reinforce learning and grow your GitHub portfolio. Click a project to mark as done.</p>
+    <div class="proj-tabs">
+      <button class="ptab active" onclick="switchProj('py')">🐍 Python Projects</button>
+      <button class="ptab" onclick="switchProj('aiml')">🤖 AI/ML Projects</button>
+      <button class="ptab" onclick="switchProj('full')">⚡ Full-Stack / Other</button>
+    </div>
+    <input type="text" class="proj-search" id="proj-search" placeholder="Search projects..." oninput="filterProjects()">
+    <div id="proj-py" class="proj-cat active"></div>
+    <div id="proj-aiml" class="proj-cat"></div>
+    <div id="proj-full" class="proj-cat"></div>
+  </div>
+</div>
+
+<!-- NOTES -->
+<div id="pg-notes" class="page">
+  <div class="wrap" style="padding-top:1.5rem">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <div>
+        <h2 style="font-size:20px;font-weight:600;margin-bottom:3px">Notes</h2>
+        <p style="color:var(--mu);font-size:12px">Personal learning notes — stored in your browser</p>
+      </div>
+    </div>
+    
+    <!-- MASTER VIEW (Grid) -->
+    <div id="notes-master">
+      <div class="notes-topbar">
+        <button class="btn-create-note" onclick="newNote()">+ Create New Note</button>
+        <input type="text" class="notes-search" id="notes-search" placeholder="Search your notes..." oninput="filterNotes()">
+      </div>
+      <div class="notes-grid" id="notes-list">
+        <!-- Note Cards will render here -->
+      </div>
+    </div>
+
+    <!-- DETAIL VIEW (Editor / Preview) -->
+    <div id="notes-detail" style="display:none;">
+      <button class="btn-back" onclick="closeNote()">← Back to Notes</button>
+      <div id="note-editor-area">
+        <!-- Editor injects here -->
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>Built for Harsh · Google SDE Dream · Start today, not tomorrow · All resources free 🆓</footer>
+
+<script>
+// ── NAV ──────────────────────────────────────────────────────────────────────
+function show(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nl button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('pg-'+id).classList.add('active');
+  const btn=document.querySelector(`.nl button[onclick="show('${id}')"]`);
+  if(btn)btn.classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='analytics')buildAnalytics();
+  if(id==='notes' && document.getElementById('notes-master').style.display==='none' && !activeNoteId){
+     document.getElementById('notes-master').style.display='block';
+     document.getElementById('notes-detail').style.display='none';
+  }
+}
+
+// ── STORAGE ───────────────────────────────────────────────────────────────────
+function ld(k){try{return JSON.parse(localStorage.getItem(k)||'{}')}catch{return{}}}
+function lda(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch{return[]}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+const TD=ld('td'),WD=ld('wd'),GD=ld('gd'),AD=ld('ad'),PD=ld('pd');
+let SD=ld('sd'),notes=lda('notes_v2'),activeNoteId=null;
+
+// ── DSA DATA ──────────────────────────────────────────────────────────────────
+const phases=[
+  {id:'p1',lbl:'Phase 1 — Foundation',sub:'Months 1–3 · Start here',nc:'n1',bc:'bg',btext:'6 topics',
+   topics:[{n:'Sorting',h:'Bubble, Merge, Quick, Cyclic Sort'},{n:'Two Pointers',h:'Arrays + Strings'},{n:'Prefix Sum',h:'Range queries, subarray sum'},{n:'Hashing',h:'HashMap/Set · Foundation'},{n:'Sliding Window',h:'Fixed + dynamic window sizes'},{n:'Matrix',h:'Traversal, rotation, spiral'},],
+   weeks:[
+    {w:1,t:'Sorting basics',days:[{d:'Mon',t:'Bubble Sort concept + 2 easy array sorting problems',g:'learn'},{d:'Tue',t:'Insertion + Selection Sort + 2 basic problems',g:'learn'},{d:'Wed',t:'Merge Sort theory + 1 easy + 1 medium',g:'solve'},{d:'Thu',t:'Quick Sort + 2 practice problems',g:'solve'},{d:'Fri',t:'Cyclic Sort — Missing Number + Find Duplicate',g:'solve'},{d:'Sat',t:'Revise all 10 problems. Rewrite without hints.',g:'rev'},{d:'Sun',t:'Full rest. No coding.',g:'rest'}],tip:'Sorting week is mostly theory + easy problems. Understand WHY each sort works, not just the code.'},
+    {w:2,t:'Sorting medium + Custom',days:[{d:'Mon',t:'Count Inversions (Merge Sort variation)',g:'solve'},{d:'Tue',t:'Counting Sort + Relative Sort Array',g:'solve'},{d:'Wed',t:'Top K Frequent Elements (bucket sort idea)',g:'solve'},{d:'Thu',t:'Custom Sort String + Largest Number',g:'solve'},{d:'Fri',t:'Sort Colors (Dutch flag) + Week 1 revision',g:'mixed'},{d:'Sat',t:'Redo 3 hardest problems from this week.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
+    {w:3,t:'Two Pointers — arrays',days:[{d:'Mon',t:'Merge Sorted Array + Sort Array by Parity',g:'solve'},{d:'Tue',t:'Remove Duplicates + Remove Element',g:'solve'},{d:'Wed',t:'Two Sum II + 3Sum',g:'solve'},{d:'Thu',t:'3Sum Closest + Container With Most Water',g:'solve'},{d:'Fri',t:'Next Permutation + one revision',g:'mixed'},{d:'Sat',t:'Revise Two Pointer pattern. Write template from memory.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:"Focus on the template — left/right movement logic."},
+    {w:4,t:'Two Pointers — strings',days:[{d:'Mon',t:'Reverse String + Valid Palindrome',g:'solve'},{d:'Tue',t:'Valid Palindrome II + Reverse Words in String',g:'solve'},{d:'Wed',t:'String Compression + Minimum Length After Deleting Ends',g:'solve'},{d:'Thu',t:'Separate Black and White Balls + Move Pieces to Obtain String',g:'solve'},{d:'Fri',t:'2 unsolved Two Pointer problems of your choice',g:'solve'},{d:'Sat',t:'Revision — all Two Pointer problems done so far.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
+    {w:5,t:'Prefix Sum',days:[{d:'Mon',t:'Range Sum Query + Left Right Sum Differences',g:'solve'},{d:'Tue',t:'Product of Array Except Self + Minimum Penalty for a Shop',g:'solve'},{d:'Wed',t:'Subarray Sum Equals K — hashing + prefix sum combo',g:'solve'},{d:'Thu',t:'Subarray Sums Divisible by K + Continuous Subarray Sum',g:'solve'},{d:'Fri',t:'Range Sum Query 2D + one revision',g:'mixed'},{d:'Sat',t:'Revision — understand the modular hashing trick cold.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:'Prefix Sum + Hashing combo is one of the most common Google interview patterns.'},
+    {w:6,t:'Hashing basics',days:[{d:'Mon',t:'Contains Duplicate + Find All Duplicates in Array',g:'solve'},{d:'Tue',t:'Valid Anagram + Group Anagrams',g:'solve'},{d:'Wed',t:'Majority Element + Majority Element II',g:'solve'},{d:'Thu',t:'Isomorphic Strings + Word Pattern',g:'solve'},{d:'Fri',t:'4Sum II + Pairs of Songs Divisible by 60',g:'solve'},{d:'Sat',t:'Revision + review all Phase 1 topics so far.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
+    {w:7,t:'Hashing medium + Matrix',days:[{d:'Mon',t:'Tuple with Same Product + Count Bad Pairs',g:'solve'},{d:'Tue',t:'Brick Wall + Minimum Absolute Difference Queries',g:'solve'},{d:'Wed',t:'Set Matrix Zeroes + Rotate Image',g:'solve'},{d:'Thu',t:'Spiral Matrix + Spiral Matrix II',g:'solve'},{d:'Fri',t:'Valid Sudoku + one revision',g:'mixed'},{d:'Sat',t:'Full Phase 1 revision — pick 5 problems, redo them.',g:'rev'},{d:'Sun',t:'Rest. Phase 1 almost done!',g:'rest'}],tip:''},
+    {w:8,t:'Sliding Window — fixed',days:[{d:'Mon',t:'Maximum Average Subarray I + Find All Anagrams in String',g:'solve'},{d:'Tue',t:'Permutation in String + Max Vowels in Substring',g:'solve'},{d:'Wed',t:'Max Sum Distinct Subarrays Length K + K Radius Averages',g:'solve'},{d:'Thu',t:'Sliding Window Maximum + Maximum Points from Cards',g:'learn'},{d:'Fri',t:'Sliding Window Median + one revision',g:'mixed'},{d:'Sat',t:'Revision — fixed window template from memory.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:'Fixed window: k never changes. Master this before dynamic.'},
+    {w:9,t:'Sliding Window — dynamic',days:[{d:'Mon',t:'Longest Substring Without Repeating Characters',g:'solve'},{d:'Tue',t:'Minimum Size Subarray Sum + Longest Repeating Char Replacement',g:'solve'},{d:'Wed',t:'Max Consecutive Ones III + Fruit Into Baskets',g:'solve'},{d:'Thu',t:'Subarray Product Less Than K + Minimum Window Substring',g:'solve'},{d:'Fri',t:'Subarrays with K Different Integers + one revision',g:'mixed'},{d:'Sat',t:'Revise both Sliding Window weeks.',g:'rev'},{d:'Sun',t:'Rest. PHASE 1 COMPLETE 🎉',g:'rest'}],tip:"Dynamic: expand right, shrink left."},
+   ]
+  },
+  {id:'p2',lbl:'Phase 2 — Core Patterns',sub:'Months 3–6 · Bread and butter of interviews',nc:'n2',bc:'bb',btext:'6 topics',
+   topics:[{n:'Linked List',h:'Fast/slow pointer, reverse, LRU'},{n:'Stack',h:'Parentheses, monotonic stack'},{n:'Queue',h:'BFS base, deque'},{n:'Binary Search',h:'Arrays + answer space'},{n:'Recursion & Backtracking',h:'Subsets, permutations, pruning'},{n:'Binary Tree',h:'DFS, BFS, paths, LCA'},],
+   weeks:[
+    {w:10,t:'Linked List basics',days:[{d:'Mon',t:'Reverse Linked List + Middle of Linked List',g:'solve'},{d:'Tue',t:'Linked List Cycle + Linked List Cycle II',g:'solve'},{d:'Wed',t:'Palindrome Linked List + Remove Nth Node',g:'solve'},{d:'Thu',t:'Add Two Numbers + Odd Even Linked List',g:'solve'},{d:'Fri',t:'Merge Two Sorted Lists + Copy List with Random Pointer',g:'solve'},{d:'Sat',t:'Revision — draw each problem on paper.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:'Draw every linked list problem on paper before coding.'},
+    {w:11,t:'Linked List medium + design',days:[{d:'Mon',t:'Sort List + Merge K Sorted Lists',g:'solve'},{d:'Tue',t:'Reverse Nodes in K-Group + Delete Middle Node',g:'solve'},{d:'Wed',t:'LRU Cache — read design approach carefully',g:'learn'},{d:'Thu',t:'Design HashMap + Design Browser History',g:'solve'},{d:'Fri',t:'Flatten a Linked List + one revision',g:'mixed'},{d:'Sat',t:'Revision. LRU Cache is must-know for Google.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
+    {w:12,t:'Stack — parentheses + design',days:[{d:'Mon',t:'Valid Parentheses + Maximum Nesting Depth',g:'solve'},{d:'Tue',t:'Minimum Add to Make Valid + Minimum Remove to Make Valid',g:'solve'},{d:'Wed',t:'Score of Parentheses + Longest Valid Parentheses',g:'solve'},{d:'Thu',t:'Min Stack + Design Stack With Increment',g:'solve'},{d:'Fri',t:'Evaluate Reverse Polish Notation + Simplify Path',g:'solve'},{d:'Sat',t:'Revision. Min Stack trick from memory.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
+    {w:13,t:'Monotonic Stack',days:[{d:'Mon',t:'Next Greater Element I + Daily Temperatures',g:'solve'},{d:'Tue',t:'Next Greater Element II + Car Fleet',g:'solve'},{d:'Wed',t:'Sum of Subarray Minimums + Remove K Digits',g:'solve'},{d:'Thu',t:'Merge Intervals + Asteroid Collision',g:'solve'},{d:'Fri',t:'Trapping Rain Water + one revision',g:'mixed'},{d:'Sat',t:'Revision — Monotonic Stack is its own pattern.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:'Monotonic Stack solves "next greater/smaller element" in O(n). Very common at Google.'},
+    {w:14,t:'Binary Search basics',days:[{d:'Mon',t:'Binary Search + Search Insert Position',g:'solve'},{d:'Tue',t:'Search in Rotated Sorted Array + Find Min in Rotated',g:'solve'},{d:'Wed',t:'Find First and Last Position + Search 2D Matrix',g:'solve'},{d:'Thu',t:'Koko Eating Bananas + Capacity to Ship Packages',g:'solve'},{d:'Fri',t:'Minimum in Rotated Array II + one revision',g:'mixed'},{d:'Sat',t:'Revision. Binary search on ANSWER SPACE = key insight.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:'Binary search on the answer is the advanced form. Once you get it, hard problems open up.'},
+    {w:15,t:'Binary Search hard + Recursion',days:[{d:'Mon',t:'Find Peak Element + Single Element in Sorted Array',g:'solve'},{d:'Tue',t:'Median of Two Sorted Arrays (read) + Split Array Largest Sum',g:'learn'},{d:'Wed',t:'Recursion theory + Print 1 to N + Fibonacci recursively',g:'learn'},{d:'Thu',t:'Reverse String recursively + Palindrome check recursively',g:'solve'},{d:'Fri',t:'Find Largest in Array recursively + Check Sorted',g:'solve'},{d:'Sat',t:'Revision. Understand call stack on paper.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
+    {w:16,t:'Backtracking',days:[{d:'Mon',t:'Subsets + Subsets II',g:'solve'},{d:'Tue',t:'Permutations + Permutations II',g:'solve'},{d:'Wed',t:'Combination Sum + Combination Sum II',g:'solve'},{d:'Thu',t:'Letter Combinations of Phone Number + Palindrome Partitioning',g:'solve'},{d:'Fri',t:'Word Search + one revision',g:'mixed'},{d:'Sat',t:'Revision. Backtrack template: try → recurse → undo.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:'Every backtracking problem uses the same skeleton. Master template first.'},
+    {w:17,t:'Backtracking hard + Tree intro',days:[{d:'Mon',t:'N-Queens + Sudoku Solver',g:'solve'},{d:'Tue',t:'Binary Tree theory — nodes, height, traversals',g:'learn'},{d:'Wed',t:'Inorder + Preorder + Postorder (recursive + iterative)',g:'learn'},{d:'Thu',t:'Maximum Depth + Minimum Depth + Symmetric Tree',g:'solve'},{d:'Fri',t:'Invert Binary Tree + Same Tree',g:'solve'},{d:'Sat',t:'Revision. Draw trees on paper for every problem.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
+    {w:18,t:'Binary Tree — paths + views',days:[{d:'Mon',t:'Path Sum + Path Sum II',g:'solve'},{d:'Tue',t:'Binary Tree Level Order + Right Side View',g:'solve'},{d:'Wed',t:'Lowest Common Ancestor + Diameter of Binary Tree',g:'solve'},{d:'Thu',t:'Flatten Binary Tree to Linked List + Next Right Pointers',g:'solve'},{d:'Fri',t:'Binary Tree Maximum Path Sum + one revision',g:'mixed'},{d:'Sat',t:'Phase 2 mid-revision. Redo hardest problems.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
+    {w:19,t:'Binary Tree — advanced',days:[{d:'Mon',t:'Construct Tree from Preorder + Inorder',g:'solve'},{d:'Tue',t:'Serialize and Deserialize Binary Tree + Count Complete Nodes',g:'solve'},{d:'Wed',t:'Vertical Order Traversal + Zigzag Level Order',g:'solve'},{d:'Thu',t:'All Nodes Distance K + Time to Infect Tree',g:'solve'},{d:'Fri',t:'Distribute Coins + one revision',g:'mixed'},{d:'Sat',t:'Revision. Binary Tree is biggest interview topic.',g:'rev'},{d:'Sun',t:'Rest. PHASE 2 COMPLETE 🎉',g:'rest'}],tip:''},
+   ]
+  },
+  {id:'p3',lbl:'Phase 3 — Advanced',sub:'Months 6–9 · Most important for Google',nc:'n3',bc:'bo',btext:'5 topics',
+   topics:[{n:'Binary Search Tree',h:'Validation, kth element, range queries'},{n:'Heap / Priority Queue',h:'Top K, median stream, merge K'},{n:'Greedy',h:'Intervals, scheduling, optimal choices'},{n:'Graphs',h:'BFS/DFS, topo sort, Union Find, Dijkstra'},{n:'Dynamic Programming L1',h:'1D/2D DP, string DP, stocks'},],
+   weeks:[
+    {w:20,t:'Binary Search Tree',days:[{d:'Mon',t:'Validate BST + Kth Smallest in BST',g:'solve'},{d:'Tue',t:'LCA of BST + Insert into BST',g:'solve'},{d:'Wed',t:'Delete Node in BST + Convert Sorted Array to BST',g:'solve'},{d:'Thu',t:'Range Sum of BST + Two Sum in BST',g:'solve'},{d:'Fri',t:'Recover BST + one revision',g:'mixed'},{d:'Sat',t:'Revision. BST property (left < root < right) is the key.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
+    {w:21,t:'Heap / Priority Queue',days:[{d:'Mon',t:'Kth Largest Element + Top K Frequent Elements',g:'solve'},{d:'Tue',t:'K Closest Points + Task Scheduler',g:'solve'},{d:'Wed',t:'Merge K Sorted Lists (heap) + Find Median from Data Stream',g:'solve'},{d:'Thu',t:'Reorganize String + Maximum Frequency Stack',g:'solve'},{d:'Fri',t:'IPO + one revision',g:'mixed'},{d:'Sat',t:'Revision. Know heapq API cold.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:'Python heapq = min-heap. For max-heap, push negative values.'},
+    {w:22,t:'Greedy',days:[{d:'Mon',t:'Jump Game + Jump Game II',g:'solve'},{d:'Tue',t:'Merge Intervals + Insert Interval',g:'solve'},{d:'Wed',t:'Non-overlapping Intervals + Meeting Rooms II',g:'solve'},{d:'Thu',t:'Gas Station + Candy',g:'solve'},{d:'Fri',t:'Partition Labels + one revision',g:'mixed'},{d:'Sat',t:'Revision. Greedy = locally optimal choice each step.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:"If you can't find a counterexample to your greedy choice, it's probably right."},
+    {w:23,t:'Graphs — BFS/DFS',days:[{d:'Mon',t:'Number of Islands + Clone Graph',g:'solve'},{d:'Tue',t:'Flood Fill + Pacific Atlantic Water Flow',g:'solve'},{d:'Wed',t:'Course Schedule + Course Schedule II (topological sort)',g:'solve'},{d:'Thu',t:'Number of Connected Components + Graph Valid Tree',g:'solve'},{d:'Fri',t:'Word Ladder + one revision',g:'mixed'},{d:'Sat',t:'Revision. Build adjacency list + visited set from memory.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
+    {w:24,t:'Graphs — Union Find + Dijkstra',days:[{d:'Mon',t:'Redundant Connection + Accounts Merge',g:'solve'},{d:'Tue',t:'Number of Islands II + Making a Large Island',g:'solve'},{d:'Wed',t:'Network Delay Time + Cheapest Flights Within K Stops',g:'learn'},{d:'Thu',t:'Path with Minimum Effort + Swim in Rising Water',g:'solve'},{d:'Fri',t:'Minimum Spanning Tree — Prim + Kruskal theory',g:'learn'},{d:'Sat',t:'Revision. Union Find: path compression + union by rank.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
+    {w:25,t:'Graphs advanced',days:[{d:'Mon',t:'Rotting Oranges + 01 Matrix (multi-source BFS)',g:'solve'},{d:'Tue',t:'Walls and Gates + Shortest Path in Binary Matrix',g:'solve'},{d:'Wed',t:'Find Eventual Safe States + Alien Dictionary',g:'solve'},{d:'Thu',t:'Bus Routes + Minimum Cost to Reach Destination',g:'solve'},{d:'Fri',t:'Hardest graph problem you have not solved yet',g:'solve'},{d:'Sat',t:'Full Graph revision. Large section — take your time.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
+    {w:26,t:'DP Level 1 — 1D',days:[{d:'Mon',t:'Climbing Stairs + House Robber',g:'solve'},{d:'Tue',t:'House Robber II + Min Cost Climbing Stairs',g:'solve'},{d:'Wed',t:'Coin Change + Coin Change II',g:'solve'},{d:'Thu',t:'Longest Increasing Subsequence + Number of LIS',g:'solve'},{d:'Fri',t:'Decode Ways + Word Break',g:'solve'},{d:'Sat',t:'Revision. DP: state → recurrence → base case.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:'For every DP problem: define what dp[i] means in plain English BEFORE writing any code.'},
+    {w:27,t:'DP Level 1 — 2D',days:[{d:'Mon',t:'Unique Paths + Unique Paths II',g:'solve'},{d:'Tue',t:'Minimum Path Sum + Triangle',g:'solve'},{d:'Wed',t:'Longest Common Subsequence + Edit Distance',g:'solve'},{d:'Thu',t:'Partition Equal Subset Sum (0/1 Knapsack)',g:'solve'},{d:'Fri',t:'Target Sum + Last Stone Weight II',g:'solve'},{d:'Sat',t:'Revision. LCS + Edit Distance = most classic 2D DP.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
+    {w:28,t:'DP Level 1 — string + stocks',days:[{d:'Mon',t:'Longest Palindromic Substring + Palindromic Substrings',g:'solve'},{d:'Tue',t:'Longest Palindromic Subsequence + Min Insertions for Palindrome',g:'solve'},{d:'Wed',t:'Burst Balloons + Strange Printer (interval DP)',g:'solve'},{d:'Thu',t:'Buy and Sell Stock I + II + III',g:'solve'},{d:'Fri',t:'Buy and Sell Stock IV + with Cooldown',g:'solve'},{d:'Sat',t:'Full Phase 3 revision.',g:'rev'},{d:'Sun',t:'Rest. PHASE 3 COMPLETE 🎉',g:'rest'}],tip:'Stock problems state = (day, transactions left, holding).'},
+   ]
+  },
+  {id:'p4',lbl:'Phase 4 — Expert',sub:'Months 9–12 · After Phase 3 is solid',nc:'n4',bc:'bp',btext:'3 topics',
+   topics:[{n:'Tries',h:'Prefix trees — string problems'},{n:'Bit Manipulation',h:'XOR tricks, bitmask'},{n:'Dynamic Programming L2',h:'Bitmask DP, Digit DP, DP on Trees'},],
+   weeks:[
+    {w:29,t:'Tries',days:[{d:'Mon',t:'Implement Trie + Search Suggestions System',g:'solve'},{d:'Tue',t:'Replace Words + Design Add and Search Words',g:'solve'},{d:'Wed',t:'Word Search II + Maximum XOR of Two Numbers',g:'solve'},{d:'Thu',t:'Palindrome Pairs + one revision',g:'mixed'},{d:'Fri',t:'Free pick — any Trie problem you find interesting',g:'solve'},{d:'Sat',t:'Revision. Trie insert/search implementation from memory.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:''},
+    {w:30,t:'Bit Manipulation',days:[{d:'Mon',t:'Single Number + Number of 1 Bits',g:'solve'},{d:'Tue',t:'Counting Bits + Reverse Bits',g:'solve'},{d:'Wed',t:'Missing Number + Sum of Two Integers',g:'solve'},{d:'Thu',t:'Bitwise AND of Numbers Range + XOR queries',g:'solve'},{d:'Fri',t:'Maximum Product of Word Lengths + one revision',g:'mixed'},{d:'Sat',t:'Revision. Know XOR tricks: a^a=0, a^0=a.',g:'rev'},{d:'Sun',t:'Rest.',g:'rest'}],tip:'Bit manipulation problems are short to code. Spend more time understanding the bit tricks.'},
+    {w:31,t:'DP Level 2 — Bitmask DP',days:[{d:'Mon',t:'Can I Win + Partition to K Equal Sum Subsets',g:'solve'},{d:'Tue',t:'Smallest Sufficient Team + Min Cost to Connect Two Groups',g:'solve'},{d:'Wed',t:'Shortest Path Visiting All Nodes + Maximum Students',g:'solve'},{d:'Thu',t:'Stickers to Spell Word + Number of Ways to Wear Hats',g:'solve'},{d:'Fri',t:'Find Minimum Time to Finish All Jobs',g:'solve'},{d:'Sat',t:'Revision. Bitmask DP is hard — be patient.',g:'rev'},{d:'Sun',t:'Rest. Phase 4 COMPLETE! Focus on interview prep. 🎯',g:'rest'}],tip:'Bitmask DP is competitive territory. Skip the hardest ones and move on if stuck.'},
+   ]
+  },
+  {id:'px',lbl:'Skip for Now',sub:'Competitive programming — NOT needed for Google SDE',nc:'nx',bc:'bx',btext:'skip',
+   topics:[{n:'Combinatorics & Geometry',h:'Rarely in SDE interviews'},{n:'Game Theory',h:'Only for competitive programming'},{n:'String Matching Algos',h:'KMP/Z-algo — very niche'},{n:'Advanced Algorithms',h:'Segment Tree, Fenwick — pure CP'},],weeks:[]
+  },
+];
+
+const googleSections=[
+  {title:'System Design',icon:'🏗️',color:'rgba(96,165,250,.1)',when:'Start Month 4 — 1 hour/week',note:'System Design is a dedicated round at Google. Start early. Study one system per week.',
+   items:[{n:'System Design Primer — GitHub (10k+ stars, completely free)',u:'https://github.com/donnemartin/system-design-primer'},{n:'Design a URL shortener (TinyURL) — solve on paper',u:'https://www.youtube.com/results?search_query=design+url+shortener+system+design'},{n:'Design Twitter / Instagram feed',u:'https://www.youtube.com/results?search_query=design+twitter+system+design'},{n:'Design YouTube / Netflix',u:'https://www.youtube.com/results?search_query=design+youtube+system+design'},{n:'Design Google Search',u:'https://www.youtube.com/results?search_query=design+google+search+system+design'},{n:'Design WhatsApp / Chat system',u:'https://www.youtube.com/results?search_query=design+whatsapp+system+design'},{n:'CAP theorem + eventual consistency',u:'https://www.youtube.com/watch?v=8UryASGBiR4'},{n:'Load balancing, caching, CDN — concepts',u:'https://github.com/donnemartin/system-design-primer#load-balancer'},{n:'Databases: SQL vs NoSQL, sharding, replication',u:'https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms'},{n:'Gaurav Sen — System Design YouTube playlist (free)',u:'https://www.youtube.com/playlist?list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX'},{n:'Mock system design — Pramp.com (free)',u:'https://www.pramp.com'},]},
+  {title:'CS Fundamentals',icon:'💻',color:'rgba(74,222,128,.1)',when:'Start Month 2 — 30 min/day',note:'Google asks OS and networking questions. Short to study but high value.',
+   items:[{n:'OS — processes, threads, scheduling (Neso Academy)',u:'https://www.youtube.com/playlist?list=PLBlnK6fEyqRiVhbXDGLXDk_OQAeuVcp2O'},{n:'Memory management — heap, stack, virtual memory, paging',u:'https://www.youtube.com/playlist?list=PLBlnK6fEyqRiVhbXDGLXDk_OQAeuVcp2O'},{n:'Deadlocks — conditions, prevention, Banker\'s algorithm',u:'https://www.youtube.com/results?search_query=deadlock+operating+system+neso+academy'},{n:'Computer Networks — TCP/IP, HTTP, DNS, OSI model',u:'https://www.youtube.com/playlist?list=PLBlnK6fEyqRgMCUAG0XRw78UA8qnv6jEx'},{n:'Database fundamentals — ACID, transactions, indexing',u:'https://www.youtube.com/results?search_query=database+fundamentals+ACID+transactions'},{n:'DBMS full course — Gate Smashers (free)',u:'https://www.youtube.com/playlist?list=PLxCzCOWd7aiFAN6I8CuViBuCdJgiOkT2Y'},{n:'OOP — SOLID principles',u:'https://www.youtube.com/results?search_query=SOLID+principles+object+oriented+programming'},{n:'Design Patterns — Refactoring.Guru (free)',u:'https://refactoring.guru/design-patterns'},{n:'Concurrency — mutex, semaphore, race condition, deadlock',u:'https://www.youtube.com/results?search_query=concurrency+mutex+semaphore+explained'},]},
+  {title:'Coding Practice beyond DSA',icon:'⌨️',color:'rgba(255,215,0,.1)',when:'Ongoing from Month 3',note:'Target 300+ problems on LeetCode before applying. Filter Google tag for last 6 months.',
+   items:[{n:'LeetCode — filter Google tag, last 6 months (free)',u:'https://leetcode.com/problemset/?search=google'},{n:'LeetCode Weekly Contest — join every Sunday from Month 6',u:'https://leetcode.com/contest/'},{n:'NeetCode 150 — finish remaining problems (free)',u:'https://neetcode.io/practice'},{n:'Pramp — free mock coding interviews',u:'https://www.pramp.com'},{n:'LeetCode Discuss — Google interview experiences',u:'https://leetcode.com/discuss/interview-experience/?currentPage=1&orderBy=hot&query=google'},{n:'Codeforces Div 3 contests — optional, good for speed',u:'https://codeforces.com/contests'},{n:'Blind 75 — complete if not done',u:'https://neetcode.io/practice'},]},
+  {title:'Behavioral / HR Round',icon:'🎤',color:'rgba(251,146,60,.1)',when:'Start Month 8 — "Googleyness" matters',note:'Google specifically tests "Googleyness and leadership". Prepare real stories.',
+   items:[{n:'Prepare 8–10 STAR format stories from your projects',u:'https://www.youtube.com/results?search_query=STAR+method+behavioral+interview'},{n:'"Tell me about a conflict with a teammate"',u:'https://www.youtube.com/results?search_query=tell+me+about+conflict+google+interview'},{n:'"Tell me about a time you failed"',u:'https://www.youtube.com/results?search_query=failure+question+google+interview'},{n:'"Why Google?" — craft a genuine specific answer',u:'https://www.youtube.com/results?search_query=why+google+interview+answer'},{n:'Interviewing.io — free mock behavioral interviews',u:'https://interviewing.io'},{n:'Research Google products, culture, recent AI news',u:'https://blog.google'},]},
+  {title:'Google Interview Process',icon:'🔍',color:'rgba(167,139,250,.1)',when:'Know this before applying at Month 10',note:'Apply via referral if possible — skips initial screening and goes faster.',
+   items:[{n:'Step 1: Apply on Google Careers or via referral',u:'https://careers.google.com'},{n:'Step 2: Online Assessment — 2 LeetCode medium, 90 min',u:'https://leetcode.com/problemset/'},{n:'Step 3: Phone Screen — 1 coding problem, 45 min',u:'https://www.pramp.com'},{n:'Step 4: Onsite — 2 coding + 1 system design + 1 behavioral',u:'https://www.youtube.com/results?search_query=google+onsite+interview+experience'},{n:'Watch: Google SDE interview experience videos',u:'https://www.youtube.com/results?search_query=google+software+engineer+interview+experience+2024'},{n:'Read: Glassdoor Google interview reviews',u:'https://www.glassdoor.com/Interview/Google-Software-Engineer-Interview-Questions-EI_IE9079.0,6_KO7,24.htm'},{n:'Get a referral — connect with Google employees on LinkedIn',u:'https://www.linkedin.com/search/results/people/?keywords=google+software+engineer'},]},
+];
+
+const aimlSections=[
+  {phase:'Phase 1 — Math Foundation',color:'var(--g)',months:'Months 1–2 · 30 min/day',note:'Do not skip math. ML without math = using libraries blindly.',res:[{n:'3Blue1Brown — Essence of Linear Algebra (free)',u:'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab',h:'8h'},{n:'3Blue1Brown — Essence of Calculus (free)',u:'https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr',h:'6h'},{n:'Khan Academy — Probability & Statistics (free)',u:'https://www.khanacademy.org/math/statistics-probability',h:'10h'},{n:'StatQuest with Josh Starmer — Stats + ML (free)',u:'https://www.youtube.com/c/joshstarmer',h:'15h'},]},
+  {phase:'Phase 2 — Python for ML',color:'var(--b)',months:'Month 2 · skip if you know Python',note:'NumPy, Pandas, Matplotlib are the ML trifecta.',res:[{n:'Kaggle — Learn Python (free, interactive)',u:'https://www.kaggle.com/learn/python',h:'5h'},{n:'Kaggle — NumPy + Pandas course (free)',u:'https://www.kaggle.com/learn/pandas',h:'5h'},{n:'Kaggle — Data Visualization (free)',u:'https://www.kaggle.com/learn/data-visualization',h:'4h'},{n:'Scikit-learn official tutorial (free)',u:'https://scikit-learn.org/stable/tutorial/index.html',h:'3h'},]},
+  {phase:'Phase 3 — Core Machine Learning',color:'var(--o)',months:'Months 3–5 · 1 hour/day',note:'This is the heart of ML. Andrew Ng on YouTube is completely free.',res:[{n:'Andrew Ng — Machine Learning (Stanford, free YouTube)',u:'https://www.youtube.com/playlist?list=PLoROMvodv4rMiGQp3WXShtMGgzqpfVfbU',h:'60h'},{n:'StatQuest — Decision Trees, Random Forest, SVM (free)',u:'https://www.youtube.com/c/joshstarmer',h:'10h'},{n:'Implement Linear Regression from scratch in Python',u:'https://www.youtube.com/results?search_query=linear+regression+from+scratch+python',h:'3h'},{n:'Implement Logistic Regression from scratch',u:'https://www.youtube.com/results?search_query=logistic+regression+from+scratch+python',h:'3h'},{n:'Kaggle — Titanic ML competition (free)',u:'https://www.kaggle.com/competitions/titanic',h:'5h'},{n:'Kaggle — House Prices competition (free)',u:'https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques',h:'5h'},{n:'Cross-validation, regularization, bias-variance — StatQuest',u:'https://www.youtube.com/results?search_query=bias+variance+tradeoff+statquest',h:'4h'},]},
+  {phase:'Phase 4 — Deep Learning',color:'var(--p)',months:'Months 5–8 · 1 hour/day',note:'PyTorch is the standard — learn it.',res:[{n:'MIT 6.S191 — Deep Learning (free YouTube)',u:'https://www.youtube.com/playlist?list=PLtBw6njQRU-rwp5__7C0oIVt26ZgjG9NI',h:'20h'},{n:'fast.ai — Practical Deep Learning (completely free)',u:'https://course.fast.ai',h:'40h'},{n:'PyTorch official tutorials (free)',u:'https://pytorch.org/tutorials/',h:'15h'},{n:'Build: Image classifier CNN on MNIST from scratch',u:'https://www.youtube.com/results?search_query=CNN+MNIST+from+scratch+pytorch',h:'5h'},{n:'Build: Sentiment analysis LSTM from scratch',u:'https://www.youtube.com/results?search_query=LSTM+sentiment+analysis+pytorch+from+scratch',h:'6h'},{n:'Illustrated Transformer — Jay Alammar blog (free)',u:'https://jalammar.github.io/illustrated-transformer/',h:'3h'},{n:'Hugging Face — NLP course (completely free)',u:'https://huggingface.co/learn/nlp-course',h:'15h'},]},
+  {phase:'Phase 5 — LLMs & GenAI',color:'var(--ac)',months:'Months 8–12 · your current interest',note:'This is where your AI/ML and Google SDE ambitions meet. Build real projects.',res:[{n:'Andrej Karpathy — Neural Networks: Zero to Hero (free)',u:'https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ',h:'15h'},{n:'Build GPT from scratch — Karpathy makemore series',u:'https://www.youtube.com/watch?v=kCc8FmEb1nY',h:'8h'},{n:'LangChain — build a RAG document Q&A app (free)',u:'https://python.langchain.com/docs/tutorials/',h:'8h'},{n:'Hugging Face — build and deploy a model (free)',u:'https://huggingface.co/models',h:'5h'},{n:'Read: "Attention Is All You Need" — Transformer paper',u:'https://arxiv.org/abs/1706.03762',h:'3h'},{n:'Read: GPT-3 paper (free on arXiv)',u:'https://arxiv.org/abs/2005.14165',h:'2h'},{n:'Kaggle LLM competitions — at least one (free)',u:'https://www.kaggle.com/competitions?search=llm',h:'15h'},{n:'Build 1 end-to-end ML project for GitHub',u:'https://github.com',h:'20h'},]},
+];
+
+// ── PROJECTS DATA ─────────────────────────────────────────────────────────────
+const pyProjects=[
+  {n:'Password Generator',d:'Generate strong random passwords with custom rules',diff:'b',cat:'CLI/Utility'},{n:'File Organizer',d:'Auto-sort files into folders by type/date',diff:'b',cat:'CLI/Utility'},{n:'Web Scraper',d:'BeautifulSoup scraper for any website',diff:'b',cat:'CLI/Utility'},{n:'URL Shortener',d:'CLI tool to shorten and manage URLs',diff:'b',cat:'CLI/Utility'},{n:'PDF Merger',d:'Combine multiple PDFs into one with pypdf',diff:'b',cat:'CLI/Utility'},{n:'Image Resizer',d:'Batch resize images via Pillow',diff:'b',cat:'CLI/Utility'},{n:'Text-to-Speech',d:'Convert text files to audio using pyttsx3',diff:'b',cat:'CLI/Utility'},{n:'QR Code Generator',d:'Generate QR codes for URLs or text',diff:'b',cat:'CLI/Utility'},{n:'CSV Cleaner',d:'Remove duplicates, fix formats, export clean CSV',diff:'b',cat:'CLI/Utility'},{n:'Log Analyzer',d:'Parse and summarize application log files',diff:'i',cat:'CLI/Utility'},{n:'System Monitor',d:'Display CPU, RAM, disk usage in terminal',diff:'b',cat:'CLI/Utility'},{n:'File Duplicate Finder',d:'Find and delete duplicate files by hash',diff:'i',cat:'CLI/Utility'},{n:'Batch File Renamer',d:'Rename thousands of files with regex patterns',diff:'b',cat:'CLI/Utility'},{n:'Directory Tree Visualizer',d:'Print directory structure like tree command',diff:'b',cat:'CLI/Utility'},{n:'JSON Formatter',d:'Pretty-print and validate JSON files',diff:'b',cat:'CLI/Utility'},{n:'XML Parser',d:'Extract data from XML feeds to CSV',diff:'b',cat:'CLI/Utility'},{n:'Markdown to HTML',d:'Convert .md files to styled HTML',diff:'b',cat:'CLI/Utility'},{n:'Resume Parser',d:'Extract name, skills, email from PDF resumes',diff:'i',cat:'CLI/Utility'},{n:'Invoice Generator',d:'Generate PDF invoices from JSON template',diff:'i',cat:'CLI/Utility'},{n:'Regex Tester',d:'Interactive CLI to test regex patterns',diff:'b',cat:'CLI/Utility'},{n:'Config File Generator',d:'Generate dotenv or YAML configs interactively',diff:'b',cat:'CLI/Utility'},{n:'Pomodoro CLI',d:'Terminal-based Pomodoro timer with sound',diff:'b',cat:'CLI/Utility'},{n:'Task Scheduler',d:'Schedule scripts to run at specific times',diff:'i',cat:'CLI/Utility'},{n:'Clipboard Manager',d:'Save and retrieve clipboard history',diff:'i',cat:'CLI/Utility'},{n:'Screen Recorder',d:'Record screen using OpenCV or mss',diff:'i',cat:'CLI/Utility'},
+  {n:'Blog with Flask',d:'Full blog with CRUD, auth, categories',diff:'i',cat:'Web/API'},{n:'REST API with FastAPI',d:'Full CRUD API with Pydantic validation + Swagger',diff:'i',cat:'Web/API'},{n:'Weather App',d:'Fetch and display weather via OpenWeatherMap API',diff:'b',cat:'Web/API'},{n:'News Aggregator',d:'Fetch headlines from multiple RSS feeds',diff:'b',cat:'Web/API'},{n:'Stock Price Tracker',d:'Monitor stocks and alert on price change',diff:'i',cat:'Web/API'},{n:'Cryptocurrency Dashboard',d:'Real-time crypto prices via CoinGecko API',diff:'i',cat:'Web/API'},{n:'GitHub Stats Viewer',d:'Display user GitHub stats via GitHub API',diff:'b',cat:'Web/API'},{n:'Discord Bot',d:'Bot with commands, reactions, moderation',diff:'i',cat:'Web/API'},{n:'Telegram Bot',d:'Telegram bot for reminders or info queries',diff:'b',cat:'Web/API'},{n:'Calendar App',d:'Personal calendar with Flask + SQLite',diff:'i',cat:'Web/API'},{n:'Booking System',d:'Room/appointment booking backend',diff:'i',cat:'Web/API'},{n:'E-commerce Backend',d:'Product catalog, cart, orders with FastAPI',diff:'a',cat:'Web/API'},{n:'JWT Auth Service',d:'User auth with JWT tokens in Flask/FastAPI',diff:'i',cat:'Web/API'},{n:'GraphQL API',d:'Build a GraphQL API with Strawberry or Ariadne',diff:'a',cat:'Web/API'},{n:'WebSocket Chat Server',d:'Real-time chat using websockets library',diff:'i',cat:'Web/API'},{n:'Rate Limiter Middleware',d:'Implement request rate limiting in Flask',diff:'i',cat:'Web/API'},{n:'OAuth2 Server',d:'Simple OAuth2 flow with Flask',diff:'a',cat:'Web/API'},{n:'URL Shortener API',d:'Full REST API with click analytics',diff:'i',cat:'Web/API'},{n:'Twitter Bot',d:'Auto-tweet or reply via Tweepy',diff:'i',cat:'Web/API'},{n:'Reddit Clone API',d:'Post, comment, vote system backend',diff:'a',cat:'Web/API'},
+  {n:'SQL Query Builder',d:'Programmatic SQL query builder from Python dicts',diff:'i',cat:'Database/Data'},{n:'ORM from Scratch',d:'Build a mini SQLAlchemy-like ORM',diff:'a',cat:'Database/Data'},{n:'Database Backup Tool',d:'Auto-backup MySQL/PostgreSQL databases',diff:'i',cat:'Database/Data'},{n:'Redis Cache Layer',d:'Add Redis caching to an existing Flask API',diff:'i',cat:'Database/Data'},{n:'MongoDB CRUD App',d:'Full CRUD with PyMongo and Flask',diff:'b',cat:'Database/Data'},{n:'ETL Pipeline',d:'Extract from CSV, transform, load to database',diff:'i',cat:'Database/Data'},{n:'Report Generator',d:'Generate PDF/Excel reports from database',diff:'i',cat:'Database/Data'},{n:'Data Pipeline Builder',d:'Airflow-style task dependency manager',diff:'a',cat:'Database/Data'},{n:'Feature Flag System',d:'Toggle features for users via database flags',diff:'i',cat:'Database/Data'},{n:'A/B Testing Framework',d:'Split test users and track conversion rates',diff:'a',cat:'Database/Data'},
+  {n:'Snake Game',d:'Classic snake with pygame and score tracking',diff:'b',cat:'Games'},{n:'Tetris Clone',d:'Full Tetris with scoring and level progression',diff:'i',cat:'Games'},{n:'Chess Engine',d:'Chess with alpha-beta pruning AI opponent',diff:'a',cat:'Games'},{n:'Sudoku Generator',d:'Generate and solve Sudoku puzzles',diff:'i',cat:'Games'},{n:'Minesweeper',d:'Classic Minesweeper with pygame',diff:'i',cat:'Games'},{n:'Wordle Clone',d:'Daily word guessing game with hints',diff:'b',cat:'Games'},{n:'Tic-Tac-Toe AI',d:'Unbeatable AI using minimax algorithm',diff:'b',cat:'Games'},{n:'Connect Four',d:'Two-player Connect Four with pygame',diff:'i',cat:'Games'},{n:'Maze Generator',d:'Generate and solve mazes with DFS/BFS',diff:'i',cat:'Games'},{n:'Tower of Hanoi',d:'Animated Tower of Hanoi solver',diff:'b',cat:'Games'},{n:'Flappy Bird Clone',d:'Flappy Bird with obstacles and scoring',diff:'i',cat:'Games'},{n:'Space Invaders',d:'Space Invaders clone with pygame',diff:'i',cat:'Games'},{n:'Quiz Game',d:'CLI quiz with timer, scoring, and categories',diff:'b',cat:'Games'},{n:'Crossword Generator',d:'Auto-generate crossword puzzles from word list',diff:'a',cat:'Games'},{n:'Hangman',d:'Word guessing game with ASCII art',diff:'b',cat:'Games'},
+  {n:'Price Tracker',d:'Track Amazon/Flipkart product prices and alert',diff:'i',cat:'Automation'},{n:'Email Auto-Responder',d:'Auto-reply emails based on keywords',diff:'i',cat:'Automation'},{n:'Social Media Scheduler',d:'Schedule and post to social media via APIs',diff:'i',cat:'Automation'},{n:'News Summarizer Bot',d:'Fetch and summarize news articles daily',diff:'i',cat:'Automation'},{n:'Bill Reminder System',d:'Track bills, send reminder notifications',diff:'b',cat:'Automation'},{n:'Budget Tracker',d:'Track income/expenses with charts',diff:'b',cat:'Automation'},{n:'Smart Home Controller',d:'Raspberry Pi controller for home devices',diff:'i',cat:'Automation'},{n:'IoT Sensor Logger',d:'Log temperature/humidity from sensors to DB',diff:'i',cat:'Automation'},{n:'Auto Form Filler',d:'Fill web forms automatically with Selenium',diff:'i',cat:'Automation'},{n:'Meeting Scheduler Bot',d:'Find common free time slots from calendars',diff:'i',cat:'Automation'},{n:'Web Scraping Pipeline',d:'Scheduled scraper with storage and alerts',diff:'i',cat:'Automation'},{n:'GitHub Auto Star',d:'Star repos matching certain topics automatically',diff:'b',cat:'Automation'},
+  {n:'Personal Budget Tracker',d:'Track monthly income/expenses with charts',diff:'b',cat:'Finance'},{n:'Expense Splitter',d:'Split expenses among friends, show who owes what',diff:'b',cat:'Finance'},{n:'Investment Portfolio Tracker',d:'Track stock portfolio returns and performance',diff:'i',cat:'Finance'},{n:'SIP Calculator',d:'Calculate SIP returns with visual chart',diff:'b',cat:'Finance'},{n:'EMI Calculator',d:'Calculate EMI for loans with amortization schedule',diff:'b',cat:'Finance'},{n:'Retirement Calculator',d:'Project retirement savings over time',diff:'i',cat:'Finance'},{n:'Currency Converter',d:'Real-time currency conversion via API',diff:'b',cat:'Finance'},{n:'Options Pricing Calculator',d:'Black-Scholes options pricing model',diff:'a',cat:'Finance'},{n:'Crypto Profit/Loss Tracker',d:'Track crypto trades and calculate P&L',diff:'i',cat:'Finance'},{n:'Dividend Tracker',d:'Track dividend income from stock holdings',diff:'i',cat:'Finance'},
+  {n:'Note-Taking App (CLI)',d:'Markdown notes with search and tags',diff:'b',cat:'Productivity'},{n:'Mind Map Generator',d:'Generate mind maps from text outlines',diff:'i',cat:'Productivity'},{n:'Habit Tracker',d:'Daily habit tracking with streak counters',diff:'b',cat:'Productivity'},{n:'Journal App',d:'Private journal with search and mood tags',diff:'b',cat:'Productivity'},{n:'Reading List Manager',d:'Track books to read, reading, and done',diff:'b',cat:'Productivity'},{n:'Password Manager (CLI)',d:'Encrypted local password manager',diff:'i',cat:'Productivity'},{n:'Time Tracker',d:'Track time spent on tasks and projects',diff:'i',cat:'Productivity'},{n:'Focus Timer',d:'Pomodoro + deep work timer with stats',diff:'b',cat:'Productivity'},{n:'Language Flashcards',d:'Spaced repetition flashcard system',diff:'i',cat:'Productivity'},{n:'Grammar Checker',d:'Basic grammar checking using LanguageTool API',diff:'i',cat:'Productivity'},{n:'Code Snippet Manager',d:'Store and search code snippets by tag',diff:'b',cat:'Productivity'},{n:'Documentation Generator',d:'Auto-generate docs from Python docstrings',diff:'i',cat:'Productivity'},
+  {n:'Port Scanner',d:'Scan open ports on a host (educational)',diff:'i',cat:'Network/Security'},{n:'DNS Lookup Tool',d:'Query DNS records for any domain',diff:'b',cat:'Network/Security'},{n:'SSL Certificate Checker',d:'Check SSL certificate validity and expiry',diff:'b',cat:'Network/Security'},{n:'IP Geolocation Tool',d:'Get location info for any IP address',diff:'b',cat:'Network/Security'},{n:'Email Header Analyzer',d:'Parse and analyze email headers',diff:'i',cat:'Network/Security'},{n:'WHOIS Lookup Tool',d:'Fetch domain registration info',diff:'b',cat:'Network/Security'},{n:'Hash Cracker (Educational)',d:'Demonstrate dictionary attacks on weak hashes',diff:'i',cat:'Network/Security'},{n:'Steganography Tool',d:'Hide text inside images using LSB',diff:'i',cat:'Network/Security'},{n:'Caesar Cipher',d:'Encrypt and decrypt Caesar cipher messages',diff:'b',cat:'Network/Security'},{n:'RSA Encryption Demo',d:'Demonstrate RSA key generation and encryption',diff:'i',cat:'Network/Security'},
+  {n:'Thumbnail Generator',d:'Auto-generate YouTube thumbnails with PIL',diff:'i',cat:'Image/Video'},{n:'Image Watermarker',d:'Add text/logo watermark to images in batch',diff:'b',cat:'Image/Video'},{n:'Background Remover',d:'Remove image backgrounds with rembg',diff:'b',cat:'Image/Video'},{n:'Face Blur Tool',d:'Detect and blur faces in images with OpenCV',diff:'i',cat:'Image/Video'},{n:'Video Downloader',d:'Download videos from URLs using yt-dlp',diff:'b',cat:'Image/Video'},{n:'GIF Creator',d:'Create GIFs from image sequences or video',diff:'b',cat:'Image/Video'},{n:'Photo EXIF Extractor',d:'Extract and display EXIF metadata from photos',diff:'b',cat:'Image/Video'},{n:'Color Palette Extractor',d:'Extract dominant colors from any image',diff:'b',cat:'Image/Video'},{n:'ASCII Art Generator',d:'Convert images to ASCII art in terminal',diff:'b',cat:'Image/Video'},{n:'Image Compressor',d:'Batch compress images without quality loss',diff:'b',cat:'Image/Video'},{n:'PDF to Image Converter',d:'Convert PDF pages to PNG/JPG images',diff:'b',cat:'Image/Video'},{n:'Collage Maker',d:'Arrange multiple images into a photo collage',diff:'i',cat:'Image/Video'},
+];
+
+const aimlProjects=[
+  {n:'Iris Flower Classifier',d:'Classic ML classification with scikit-learn',diff:'b',cat:'Beginner ML'},{n:'House Price Predictor',d:'Linear regression on California housing dataset',diff:'b',cat:'Beginner ML'},{n:'Titanic Survival Predictor',d:'Kaggle classic — logistic regression + EDA',diff:'b',cat:'Beginner ML'},{n:'Spam Email Classifier',d:'Naive Bayes text classification from scratch',diff:'b',cat:'Beginner ML'},{n:'Digit Recognizer (MNIST)',d:'Train CNN to classify handwritten digits',diff:'b',cat:'Beginner ML'},{n:'Customer Churn Predictor',d:'Predict which customers will leave a service',diff:'b',cat:'Beginner ML'},{n:'Movie Rating Predictor',d:'Simple collaborative filtering recommender',diff:'b',cat:'Beginner ML'},{n:'Credit Card Fraud Detection',d:'Anomaly detection on imbalanced dataset',diff:'b',cat:'Beginner ML'},{n:'Heart Disease Predictor',d:'Binary classification with medical features',diff:'b',cat:'Beginner ML'},{n:'Wine Quality Classifier',d:'Multi-class classification on wine dataset',diff:'b',cat:'Beginner ML'},{n:'Weather Prediction',d:'Predict tomorrow\'s weather from historical data',diff:'b',cat:'Beginner ML'},{n:'Stock Price Prediction',d:'LSTM for time series forecasting',diff:'i',cat:'Beginner ML'},{n:'Sentiment Analysis (Basic)',d:'Classify IMDB reviews as positive/negative',diff:'b',cat:'Beginner ML'},{n:'Face Detection',d:'Detect faces in images with OpenCV Haar cascades',diff:'b',cat:'Beginner ML'},{n:'Hand Gesture Recognition',d:'Recognize hand gestures via webcam with MediaPipe',diff:'i',cat:'Beginner ML'},
+  {n:'Text Summarizer',d:'Extractive summarization with BERT or spaCy',diff:'i',cat:'NLP'},{n:'Named Entity Recognizer',d:'Extract people, places, orgs from text',diff:'i',cat:'NLP'},{n:'Question Answering System',d:'Answer questions from a document using Transformers',diff:'i',cat:'NLP'},{n:'Text Similarity Checker',d:'Compute semantic similarity between texts',diff:'b',cat:'NLP'},{n:'Chatbot (Rule-based)',d:'Intent classification + response templates',diff:'b',cat:'NLP'},{n:'Language Detector',d:'Detect language of input text',diff:'b',cat:'NLP'},{n:'Text Classifier',d:'Multi-class document classification with BERT',diff:'i',cat:'NLP'},{n:'Keyword Extractor',d:'Extract key phrases from documents with TF-IDF',diff:'b',cat:'NLP'},{n:'Machine Translator',d:'English-to-Hindi translator with seq2seq model',diff:'a',cat:'NLP'},{n:'Grammar Corrector',d:'Fix grammatical errors using T5 model',diff:'i',cat:'NLP'},{n:'Fake News Detector',d:'Classify news articles as real or fake',diff:'i',cat:'NLP'},{n:'Emotion Classifier',d:'Detect emotions in text (joy, anger, fear, etc.)',diff:'i',cat:'NLP'},{n:'Tweet Topic Modeler',d:'Find topics in Twitter data with LDA',diff:'i',cat:'NLP'},{n:'Paraphrase Generator',d:'Generate alternative phrasings of sentences',diff:'i',cat:'NLP'},{n:'Resume Screener AI',d:'Score resumes against job descriptions',diff:'i',cat:'NLP'},
+  {n:'Object Detection App',d:'Detect objects in images with YOLO',diff:'i',cat:'Computer Vision'},{n:'Image Captioner',d:'Generate captions for images with CNN+RNN',diff:'a',cat:'Computer Vision'},{n:'Facial Emotion Recognition',d:'Classify emotions from facial expressions',diff:'i',cat:'Computer Vision'},{n:'Age and Gender Predictor',d:'Estimate age and gender from face image',diff:'i',cat:'Computer Vision'},{n:'Image Style Transfer',d:'Apply artistic styles to photos with neural nets',diff:'i',cat:'Computer Vision'},{n:'Document Scanner',d:'Perspective transform to scan documents',diff:'i',cat:'Computer Vision'},{n:'Traffic Sign Classifier',d:'Classify road signs from images',diff:'i',cat:'Computer Vision'},{n:'Plant Disease Detector',d:'Identify plant diseases from leaf images',diff:'i',cat:'Computer Vision'},{n:'Signature Verifier',d:'Verify if signature matches reference',diff:'a',cat:'Computer Vision'},{n:'Crowd Density Estimator',d:'Estimate crowd size from surveillance video',diff:'a',cat:'Computer Vision'},{n:'Car Damage Assessor',d:'Classify car damage from photos',diff:'i',cat:'Computer Vision'},{n:'Food Image Classifier',d:'Identify food dishes from photos',diff:'i',cat:'Computer Vision'},{n:'Pose Estimator',d:'Detect human body poses with MediaPipe',diff:'i',cat:'Computer Vision'},{n:'License Plate Reader',d:'OCR to read license plates from images',diff:'i',cat:'Computer Vision'},{n:'Medical Image Classifier',d:'Classify chest X-rays as normal/pneumonia',diff:'i',cat:'Computer Vision'},
+  {n:'Build GPT from Scratch',d:'Follow Karpathy\'s tutorial to build a mini GPT',diff:'a',cat:'LLM/GenAI'},{n:'RAG Document Q&A',d:'Chat with your own PDFs using LangChain + OpenAI',diff:'i',cat:'LLM/GenAI'},{n:'AI Resume Builder',d:'Generate tailored resumes with LLM prompting',diff:'i',cat:'LLM/GenAI'},{n:'Code Reviewer AI',d:'AI that reviews code and suggests improvements',diff:'i',cat:'LLM/GenAI'},{n:'AI Interview Coach',d:'Practice technical interviews with AI feedback',diff:'i',cat:'LLM/GenAI'},{n:'Study Notes Generator',d:'Auto-generate study notes from lecture transcripts',diff:'b',cat:'LLM/GenAI'},{n:'Personalized Tutor',d:'LLM tutor that adapts to your learning level',diff:'i',cat:'LLM/GenAI'},{n:'AI Story Writer',d:'Collaborative story writing with GPT',diff:'b',cat:'LLM/GenAI'},{n:'Local LLM Chatbot',d:'Run Ollama/llama.cpp locally for offline chat',diff:'i',cat:'LLM/GenAI'},{n:'PDF Chat App',d:'Upload PDF and ask questions about content',diff:'i',cat:'LLM/GenAI'},{n:'AI Email Composer',d:'Generate professional emails from bullet points',diff:'b',cat:'LLM/GenAI'},{n:'Knowledge Graph Builder',d:'Extract entities and relations from text',diff:'a',cat:'LLM/GenAI'},{n:'Multi-Agent Research Tool',d:'Agents that search and summarize research',diff:'a',cat:'LLM/GenAI'},{n:'AI Code Translator',d:'Convert code between programming languages',diff:'i',cat:'LLM/GenAI'},{n:'Prompt Injection Tester',d:'Test LLM apps for prompt injection vulnerabilities',diff:'a',cat:'LLM/GenAI'},
+  {n:'GAN Image Generator',d:'Generate faces with Generative Adversarial Network',diff:'a',cat:'Deep Learning'},{n:'Variational Autoencoder',d:'Learn latent representations of images',diff:'a',cat:'Deep Learning'},{n:'Music Genre Classifier',d:'Classify music genres from audio spectrograms',diff:'i',cat:'Deep Learning'},{n:'Speech-to-Text',d:'Transcribe speech with Whisper model',diff:'i',cat:'Deep Learning'},{n:'Text-to-Speech TTS',d:'Generate natural speech from text with TTS models',diff:'i',cat:'Deep Learning'},{n:'Image Inpainting',d:'Fill in missing regions of images with DL',diff:'a',cat:'Deep Learning'},{n:'Video Classification',d:'Classify actions in short video clips',diff:'a',cat:'Deep Learning'},{n:'3D Object Classifier',d:'Classify 3D point cloud data',diff:'a',cat:'Deep Learning'},{n:'Anomaly Detection CNN',d:'Detect manufacturing defects in images',diff:'i',cat:'Deep Learning'},{n:'Neural Machine Translator',d:'Translate text with attention mechanism',diff:'a',cat:'Deep Learning'},{n:'Time Series Forecaster',d:'Predict energy consumption with Transformer',diff:'i',cat:'Deep Learning'},{n:'Reinforcement Learning Cart-Pole',d:'Solve CartPole with DQN from scratch',diff:'i',cat:'Deep Learning'},{n:'AlphaZero-style Game AI',d:'Train self-play AI to master board games',diff:'a',cat:'Deep Learning'},{n:'Stable Diffusion Fine-tune',d:'Fine-tune Stable Diffusion on custom images',diff:'a',cat:'Deep Learning'},{n:'Federated Learning Demo',d:'Train ML model across distributed clients',diff:'a',cat:'Deep Learning'},
+  {n:'ML Model API',d:'Deploy scikit-learn model as FastAPI endpoint',diff:'b',cat:'MLOps'},{n:'Model Versioning System',d:'Track ML experiments with MLflow',diff:'i',cat:'MLOps'},{n:'Model Monitoring Dashboard',d:'Monitor model drift and performance over time',diff:'i',cat:'MLOps'},{n:'Docker ML Pipeline',d:'Containerize training and inference pipelines',diff:'i',cat:'MLOps'},{n:'CI/CD for ML Models',d:'Auto-test and deploy ML models on git push',diff:'a',cat:'MLOps'},{n:'Feature Store',d:'Centralized feature management for ML teams',diff:'a',cat:'MLOps'},{n:'Data Version Control',d:'Track dataset changes with DVC',diff:'i',cat:'MLOps'},{n:'Hyperparameter Optimizer',d:'Auto-tune models with Optuna',diff:'i',cat:'MLOps'},{n:'ML Model Explainer',d:'Explain model predictions with SHAP',diff:'i',cat:'MLOps'},{n:'A/B Test for ML Models',d:'Compare two models in production with statistical testing',diff:'a',cat:'MLOps'},
+];
+
+const fullProjects=[
+  {n:'Social Media App',d:'Full-stack Twitter clone with Next.js + FastAPI',diff:'a',cat:'Full-Stack Web'},{n:'Real-time Collaborative Notes',d:'Google Docs-style app with WebSockets',diff:'a',cat:'Full-Stack Web'},{n:'E-commerce Platform',d:'Full store with cart, payments, admin panel',diff:'a',cat:'Full-Stack Web'},{n:'Video Streaming App',d:'Upload, process, and stream videos',diff:'a',cat:'Full-Stack Web'},{n:'Job Board',d:'Post/apply for jobs with auth and notifications',diff:'i',cat:'Full-Stack Web'},{n:'Event Management System',d:'Create events, sell tickets, manage RSVPs',diff:'i',cat:'Full-Stack Web'},{n:'Online Learning Platform',d:'Create courses, video lessons, quizzes',diff:'a',cat:'Full-Stack Web'},{n:'Expense Splitting App',d:'Splitwise clone with groups and settlements',diff:'i',cat:'Full-Stack Web'},{n:'Recipe Sharing Platform',d:'Create, share, and rate recipes',diff:'i',cat:'Full-Stack Web'},{n:'Freelancer Marketplace',d:'Post gigs, hire freelancers, handle payments',diff:'a',cat:'Full-Stack Web'},{n:'Forum / Community App',d:'Reddit-style forum with voting and threads',diff:'i',cat:'Full-Stack Web'},{n:'Personal Finance Dashboard',d:'Connect bank accounts, visualize spending',diff:'a',cat:'Full-Stack Web'},{n:'Habit Tracker Web App',d:'Daily habit tracking with streaks and analytics',diff:'i',cat:'Full-Stack Web'},{n:'URL Analytics Dashboard',d:'Track clicks, locations, devices for shortened URLs',diff:'i',cat:'Full-Stack Web'},{n:'Online Code Editor',d:'Browser-based Python code editor with execution',diff:'a',cat:'Full-Stack Web'},
+  {n:'Build a Redis Clone',d:'Implement key-value store with TTL and persistence',diff:'a',cat:'System Design'},{n:'Build a Mini Database',d:'Simple B-tree based storage engine from scratch',diff:'a',cat:'System Design'},{n:'HTTP Server from Scratch',d:'Build HTTP/1.1 server without frameworks',diff:'a',cat:'System Design'},{n:'Build a Load Balancer',d:'Round-robin and least-connections LB in Python',diff:'a',cat:'System Design'},{n:'Distributed Cache',d:'Consistent hashing based distributed cache',diff:'a',cat:'System Design'},{n:'Message Queue System',d:'Simple Kafka-like message queue',diff:'a',cat:'System Design'},{n:'Mini Git Clone',d:'Implement basic git commands (init, add, commit)',diff:'a',cat:'System Design'},{n:'Key-Value Store with WAL',d:'Persistent KV store with Write-Ahead Logging',diff:'a',cat:'System Design'},{n:'Service Discovery System',d:'Register and discover microservices',diff:'a',cat:'System Design'},{n:'Rate Limiter Service',d:'Token bucket and sliding window algorithms',diff:'i',cat:'System Design'},
+  {n:'Habit Tracker Android App',d:'Flutter app for daily habits with notifications',diff:'i',cat:'Mobile/Desktop'},{n:'Expense Tracker Mobile',d:'Track expenses with camera receipt scanning',diff:'i',cat:'Mobile/Desktop'},{n:'Voice Assistant Desktop',d:'Desktop voice assistant with wake word detection',diff:'i',cat:'Mobile/Desktop'},{n:'Screen Time Tracker',d:'Monitor app usage and set limits',diff:'i',cat:'Mobile/Desktop'},{n:'Clipboard History App',d:'Desktop app to manage clipboard history',diff:'b',cat:'Mobile/Desktop'},{n:'Music Player Desktop',d:'Beautiful music player with playlist management',diff:'i',cat:'Mobile/Desktop'},{n:'PDF Reader App',d:'Cross-platform PDF reader with annotations',diff:'i',cat:'Mobile/Desktop'},
+  {n:'CI/CD Pipeline from Scratch',d:'Build GitHub Actions-style pipeline in Python',diff:'a',cat:'DevOps'},{n:'Container Orchestrator',d:'Mini Kubernetes-like container scheduler',diff:'a',cat:'DevOps'},{n:'Infrastructure Monitor',d:'Monitor servers and alert on issues',diff:'i',cat:'DevOps'},{n:'Log Aggregation System',d:'Collect, store, and search logs from services',diff:'i',cat:'DevOps'},{n:'Secret Manager',d:'Encrypted secrets storage with access control',diff:'i',cat:'DevOps'},{n:'API Gateway',d:'Route, authenticate, and rate-limit API calls',diff:'a',cat:'DevOps'},{n:'Config Management Tool',d:'Distribute config to services like Consul',diff:'a',cat:'DevOps'},{n:'Deployment Automation',d:'Zero-downtime deployment with health checks',diff:'a',cat:'DevOps'},
+  {n:'Contribute to CPython',d:'Fix a bug or improve docs in CPython',diff:'a',cat:'Open Source'},{n:'Contribute to NumPy/Pandas',d:'Fix issue or add feature in NumPy or Pandas',diff:'a',cat:'Open Source'},{n:'Contribute to FastAPI',d:'Add feature, fix bug, or improve docs',diff:'i',cat:'Open Source'},{n:'Contribute to LangChain',d:'Add integration or fix issue in LangChain',diff:'i',cat:'Open Source'},{n:'Publish a Python Package',d:'Create and publish package to PyPI',diff:'i',cat:'Open Source'},{n:'Start Your Own OSS Project',d:'Build something useful, document it, share it',diff:'a',cat:'Open Source'},
+  {n:'LeetCode Solution Tracker',d:'Personal app to track and review LC solutions',diff:'b',cat:'Interview Prep'},{n:'Algorithm Visualizer',d:'Visualize sorting, BFS, DFS, DP in browser',diff:'i',cat:'Interview Prep'},{n:'System Design Flashcards',d:'Digital flashcards for system design concepts',diff:'b',cat:'Interview Prep'},{n:'Mock Interview Platform',d:'Practice coding interviews with timed sessions',diff:'i',cat:'Interview Prep'},{n:'Competitive Programming Tracker',d:'Track Codeforces/LeetCode contest performance',diff:'b',cat:'Interview Prep'},{n:'Code Complexity Analyzer',d:'Analyze time/space complexity of code snippets',diff:'i',cat:'Interview Prep'},
+  {n:'Pixel Art Editor',d:'Browser-based pixel art creator with export',diff:'i',cat:'Fun/Creative'},{n:'Music Theory Trainer',d:'Interactive ear training and theory exercises',diff:'i',cat:'Fun/Creative'},{n:'Language Learning Game',d:'Duolingo-style language game with spaced rep',diff:'i',cat:'Fun/Creative'},{n:'ASCII Animation Player',d:'Play animations in terminal using ASCII art',diff:'b',cat:'Fun/Creative'},{n:'Procedural World Generator',d:'Generate random fantasy world maps',diff:'i',cat:'Fun/Creative'},{n:'Code Golf Solver',d:'Find shortest code to solve programming puzzles',diff:'a',cat:'Fun/Creative'},{n:'Terminal Dashboard',d:'Beautiful terminal dashboard with real-time data',diff:'i',cat:'Fun/Creative'},{n:'Interactive Fiction Engine',d:'Build text adventure games with Python',diff:'i',cat:'Fun/Creative'},
+  {n:'COVID-19 Data Dashboard',d:'Analyze and visualize pandemic data trends',diff:'b',cat:'Data Analysis'},{n:'Olympics Performance Analysis',d:'Analyze medal trends and athlete performance',diff:'b',cat:'Data Analysis'},{n:'Social Media Trend Analyzer',d:'Analyze hashtag and topic trends on Twitter',diff:'i',cat:'Data Analysis'},{n:'Real Estate Market Analysis',d:'Analyze property prices and predict trends',diff:'i',cat:'Data Analysis'},{n:'Fantasy Cricket Optimizer',d:'Optimize Dream11 team selection with data',diff:'i',cat:'Data Analysis'},{n:'IPL Match Analysis',d:'Deep dive into IPL cricket statistics',diff:'b',cat:'Data Analysis'},{n:'Climate Change Visualizer',d:'Visualize temperature and CO2 data over time',diff:'b',cat:'Data Analysis'},{n:'Startup Funding Analyzer',d:'Analyze Crunchbase startup investment patterns',diff:'i',cat:'Data Analysis'},
+];
+
+// ── BUILD DSA ─────────────────────────────────────────────────────────────────
+function buildDSA(){
+  const cont=document.getElementById('dsa-phases');cont.innerHTML='';
+  phases.forEach(ph=>{
+    const card=document.createElement('div');card.className='ph';
+    const hdr=document.createElement('div');hdr.className='phh';
+    hdr.innerHTML=`<div class="phm"><div class="phn ${ph.nc}">${ph.id==='px'?'–':ph.id.replace('p','')}</div><div><div class="pht">${ph.lbl}</div><div class="phs">${ph.sub}</div></div></div><div style="display:flex;align-items:center;gap:7px"><span class="bdg ${ph.bc}">${ph.btext}</span><span class="chv">▾</span></div>`;
+    const body=document.createElement('div');body.className='phb';
+    const tg=document.createElement('div');tg.className='tgrid';
+    ph.topics.forEach((t,i)=>{
+      const k=ph.id+'_'+i;
+      const item=document.createElement('div');item.className='ti'+(TD[k]?' done':'');
+      item.innerHTML=`<div class="chk">${TD[k]?'✓':''}</div><div class="tn">${t.n}</div><div class="th">${t.h}</div>`;
+      item.onclick=()=>{TD[k]=!TD[k];if(!TD[k])delete TD[k];sv('td',TD);item.classList.toggle('done',!!TD[k]);item.querySelector('.chk').textContent=TD[k]?'✓':'';updDSA();};
+      tg.appendChild(item);
+    });
+    body.appendChild(tg);
+    if(ph.weeks.length){
+      const wl=document.createElement('div');wl.innerHTML='<div class="wlabel">WEEKLY SCHEDULE</div>';
+      const wlist=document.createElement('div');wlist.className='wlist';
+      ph.weeks.forEach(wk=>{
+        const wk2=document.createElement('div');wk2.className='wc'+(WD['w'+wk.w]?' wdone':'');
+        const wh=document.createElement('div');wh.className='wh';
+        wh.innerHTML=`<div class="whl"><span class="wnum">Week ${wk.w}</span><span class="wname">${wk.t}</span></div><div style="display:flex;align-items:center;gap:6px"><button class="mbtn${WD['w'+wk.w]?' mk':''}" data-k="${wk.w}">${WD['w'+wk.w]?'✓ done':'mark done'}</button><span class="chv" style="font-size:12px">▾</span></div>`;
+        const wb=document.createElement('div');wb.className='wb';
+        let rows='';
+        wk.days.forEach(d=>{const tc={solve:'ts',learn:'tl2',rev:'tr',rest:'tt',mixed:'tm'}[d.g]||'ts';const tl={solve:'solve',learn:'learn',rev:'revise',rest:'rest',mixed:'mixed'}[d.g]||'solve';rows+=`<div class="dr"><div class="dn">${d.d}</div><div class="dt">${d.t}</div><div class="dtag ${tc}">${tl}</div></div>`;});
+        if(wk.tip)rows+=`<div class="wtip">💡 ${wk.tip}</div>`;
+        wb.innerHTML=rows;
+        wh.querySelector('.mbtn').addEventListener('click',e=>{e.stopPropagation();const k=e.target.dataset.k;WD[k]=!WD[k];if(!WD[k])delete WD[k];sv('wd',WD);e.target.textContent=WD[k]?'✓ done':'mark done';e.target.classList.toggle('mk',!!WD[k]);wk2.classList.toggle('wdone',!!WD[k]);updDSA();});
+        wh.addEventListener('click',()=>{const o=wb.classList.contains('open');wb.classList.toggle('open',!o);wh.querySelector('.chv').style.transform=o?'':'rotate(180deg)';});
+        wk2.appendChild(wh);wk2.appendChild(wb);wlist.appendChild(wk2);
+      });
+      wl.appendChild(wlist);body.appendChild(wl);
+    }
+    hdr.addEventListener('click',()=>{const o=body.classList.contains('open');body.classList.toggle('open',!o);hdr.querySelector('.chv').style.transform=o?'':'rotate(180deg)';});
+    card.appendChild(hdr);card.appendChild(body);cont.appendChild(card);
+  });
+  updDSA();
+}
+function updDSA(){
+  const total=phases.reduce((a,p)=>a+p.topics.length,0);
+  const done=Object.keys(TD).filter(k=>TD[k]).length;
+  const pct=Math.round(done/total*100);
+  document.getElementById('dp-lbl').textContent=done+' of '+total+' topics done';
+  document.getElementById('dp-pct').textContent=pct+'%';
+  document.getElementById('dp-fill').style.width=pct+'%';
+  if(document.getElementById('idx-readiness')) buildAnalytics(); 
+}
+
+// ── BUILD GOOGLE ──────────────────────────────────────────────────────────────
+function buildGoogle(){
+  const cont=document.getElementById('google-content');cont.innerHTML='';
+  googleSections.forEach((sec,si)=>{
+    const block=document.createElement('div');
+    block.innerHTML=`<div class="sec-hdr"><div class="sec-ico" style="background:${sec.color}">${sec.icon}</div><div><div class="sec-t">${sec.title}</div><div class="sec-s">${sec.when}</div></div></div>`;
+    if(sec.note){const n=document.createElement('div');n.className='note';n.style.borderColor=sec.color.includes('rgba')?sec.color:'var(--ac)';n.textContent=sec.note;block.appendChild(n);}
+    const list=document.createElement('div');list.className='rlist';
+    sec.items.forEach((item,ii)=>{
+      const k='g_'+si+'_'+ii;
+      const row=document.createElement('div');row.className='ri'+(GD[k]?' rd':'');
+      row.innerHTML=`<div class="ril"><span class="rtag rfree">free</span><span class="rname">${item.n}</span></div><span style="font-size:16px;color:var(--mu);cursor:pointer">↗</span>`;
+      row.querySelector('span:last-child').onclick=(e)=>{e.stopPropagation();window.open(item.u,'_blank');};
+      row.onclick=()=>{GD[k]=!GD[k];if(!GD[k])delete GD[k];sv('gd',GD);row.classList.toggle('rd',!!GD[k]);if(document.getElementById('idx-readiness')) buildAnalytics();};
+      list.appendChild(row);
+    });
+    block.appendChild(list);cont.appendChild(block);
+  });
+}
+
+// ── BUILD AIML ────────────────────────────────────────────────────────────────
+function buildAIML(){
+  const cont=document.getElementById('aiml-content');cont.innerHTML='';
+  aimlSections.forEach((sec,si)=>{
+    const block=document.createElement('div');block.style.marginBottom='1.8rem';
+    const title=document.createElement('div');title.style.cssText='display:flex;align-items:center;gap:7px;font-size:14px;font-weight:500;margin-bottom:7px';
+    title.innerHTML=`<span style="width:3px;height:16px;background:${sec.color};border-radius:2px;display:inline-block"></span>${sec.phase} <span style="font-size:11px;font-weight:400;color:var(--mu)">${sec.months}</span>`;
+    block.appendChild(title);
+    if(sec.note){const n=document.createElement('div');n.className='note';n.style.borderColor=sec.color;n.textContent=sec.note;block.appendChild(n);}
+    const list=document.createElement('div');list.className='rlist';
+    sec.res.forEach((r,ri)=>{
+      const k='a_'+si+'_'+ri;
+      const row=document.createElement('div');row.className='ri'+(AD[k]?' rd':'');
+      row.innerHTML=`<div class="ril"><span class="rtag rfree">free</span><span class="rname">${r.n}</span></div><div style="display:flex;align-items:center;gap:7px"><span class="rhr">${r.h}</span><span style="font-size:16px;color:var(--mu);cursor:pointer">↗</span></div>`;
+      row.querySelector('span[style*="cursor"]').onclick=(e)=>{e.stopPropagation();window.open(r.u,'_blank');};
+      row.onclick=()=>{AD[k]=!AD[k];if(!AD[k])delete AD[k];sv('ad',AD);row.classList.toggle('rd',!!AD[k]);if(document.getElementById('idx-readiness')) buildAnalytics();};
+      list.appendChild(row);
+    });
+    block.appendChild(list);cont.appendChild(block);
+  });
+}
+
+// ── BUILD PROJECTS ────────────────────────────────────────────────────────────
+let activeTab='py';
+function buildProjects(){
+  buildProjCat('py',pyProjects,'proj-py');
+  buildProjCat('aiml',aimlProjects,'proj-aiml');
+  buildProjCat('full',fullProjects,'proj-full');
+}
+function buildProjCat(prefix,data,containerId){
+  const cont=document.getElementById(containerId);
+  const cats=[...new Set(data.map(p=>p.cat))];
+  const done=data.filter((_,i)=>PD[prefix+'_'+i]).length;
+  const pct=Math.round(done/data.length*100);
+  cont.innerHTML=`<div class="proj-prog"><div class="progl"><span>${done} of ${data.length} projects built</span><span>${pct}%</span></div><div class="progb"><div class="progf" style="width:${pct}%"></div></div></div>`;
+  cats.forEach(cat=>{
+    const catItems=data.filter(p=>p.cat===cat);
+    const catDiv=document.createElement('div');
+    catDiv.innerHTML=`<div style="font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:.1em;margin-bottom:8px;margin-top:18px;display:flex;align-items:center;gap:8px">${cat}<span style="flex:1;height:1px;background:var(--bd);display:inline-block"></span></div>`;
+    const grid=document.createElement('div');grid.className='proj-grid';grid.dataset.cat=prefix+'_'+cat;
+    catItems.forEach(p=>{
+      const idx=data.indexOf(p);
+      const k=prefix+'_'+idx;
+      const card=document.createElement('div');card.className='pcard'+(PD[k]?' pdone':'');card.dataset.key=k;card.dataset.prefix=prefix;card.dataset.idx=idx;
+      const dl={b:'Beginner',i:'Intermediate',a:'Advanced'};
+      const dc={b:'diff-b',i:'diff-i',a:'diff-a'};
+      card.innerHTML=`<div class="pcheck">${PD[k]?'✓':''}</div><div class="pcname">${p.n}</div><span class="pcdiff ${dc[p.diff]}">${dl[p.diff]}</span><div class="pcdesc">${p.d}</div>`;
+      card.onclick=()=>{PD[k]=!PD[k];if(!PD[k])delete PD[k];sv('pd',PD);card.classList.toggle('pdone',!!PD[k]);card.querySelector('.pcheck').textContent=PD[k]?'✓':'';updateProjProgress(prefix,data,containerId);if(document.getElementById('idx-readiness')) buildAnalytics();};
+      grid.appendChild(card);
+    });
+    catDiv.appendChild(grid);cont.appendChild(catDiv);
+  });
+}
+function updateProjProgress(prefix,data,containerId){
+  const done=data.filter((_,i)=>PD[prefix+'_'+i]).length;
+  const pct=Math.round(done/data.length*100);
+  const pg=document.querySelector('#'+containerId+' .proj-prog');
+  if(pg){pg.querySelector('.progl span:first-child').textContent=`${done} of ${data.length} projects built`;pg.querySelector('.progl span:last-child').textContent=pct+'%';pg.querySelector('.progf').style.width=pct+'%';}
+}
+function switchProj(tab){
+  activeTab=tab;
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.proj-cat').forEach(c=>c.classList.remove('active'));
+  const idx=['py','aiml','full'].indexOf(tab);
+  document.querySelectorAll('.ptab')[idx].classList.add('active');
+  document.getElementById('proj-'+tab).classList.add('active');
+  document.getElementById('proj-search').value='';
+  filterProjects();
+}
+function filterProjects(){
+  const q=document.getElementById('proj-search').value.toLowerCase();
+  const active=document.querySelector('.proj-cat.active');
+  if(!active)return;
+  active.querySelectorAll('.pcard').forEach(c=>{
+    const name=c.querySelector('.pcname').textContent.toLowerCase();
+    const desc=c.querySelector('.pcdesc').textContent.toLowerCase();
+    c.style.display=(name.includes(q)||desc.includes(q))?'':'none';
+  });
+}
+
+// ── NOTES (WITH PREVIEW/EDIT TOGGLE + PARSER) ─────────────────────────────────
+function saveNotes(){sv('notes_v2',notes);}
+
+function renderNoteList(filter=''){
+  const list=document.getElementById('notes-list');
+  list.innerHTML='';
+  
+  const filtered=notes.filter(n=>!filter||n.title.toLowerCase().includes(filter)||n.content.toLowerCase().includes(filter));
+  
+  if(!filtered.length){
+    list.innerHTML=`<div style="grid-column: 1 / -1; font-size:13px; color:var(--mu); text-align:center; padding:4rem 1rem; background:var(--s1); border:1px dashed var(--bd); border-radius:12px;">No notes found. Click "+ Create New Note" to start writing.</div>`;
+    return;
+  }
+  
+  filtered.sort((a,b)=>b.updated-a.updated).forEach(n=>{
+    const item=document.createElement('div');
+    item.className='note-card';
+    const preview=n.content.replace(/[#\*_`>]/g,'').slice(0,140);
+    item.innerHTML=`
+      <div class="nc-title">${n.title||'Untitled Note'}</div>
+      <div class="nc-date">${new Date(n.updated).toLocaleDateString()}</div>
+      <div class="nc-preview">${preview||'Empty note...'}</div>
+    `;
+    // Default open in preview mode for existing notes
+    item.onclick=()=>openNote(n.id, 'preview');
+    list.appendChild(item);
+  });
+}
+
+// Extremely fast custom Markdown Mini-Parser
+function parseMD(md) {
+  if(!md) return '<div style="color:var(--mu);font-style:italic;text-align:center;margin-top:2rem">This note is empty. Click Edit to start writing.</div>';
+  
+  // Basic XSS protection
+  let html = md.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  
+  // Protect Pre/Code blocks from line break replacement
+  const preBlocks = [];
+  html = html.replace(/```([\s\S]*?)```/g, function(match, code) {
+    preBlocks.push(`<pre><code>${code}</code></pre>`);
+    return `__PRE_BLOCK_${preBlocks.length - 1}__`;
+  });
+
+  // Inline styling
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  html = html.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.*?)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.*?)$/gm, '<h1>$1</h1>');
+  html = html.replace(/^&gt; (.*?)$/gm, '<blockquote>$1</blockquote>');
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+  
+  // Lists
+  html = html.replace(/^- (.*?)$/gm, '<li>$1</li>');
+  html = html.replace(/(<li>.*?<\/li>\n*)+/g, '<ul>$&</ul>'); 
+  
+  // Dividers
+  html = html.replace(/^---$/gm, '<hr style="border:none;border-top:1px solid var(--bd);margin:2em 0">');
+  
+  // Line breaks
+  html = html.replace(/\n/g, '<br>');
+  
+  // Restore Code Blocks
+  preBlocks.forEach((block, i) => {
+    html = html.replace(`__PRE_BLOCK_${i}__`, block);
+  });
+  
+  // Cleanup stray BRs inside structured tags
+  html = html.replace(/<\/h1><br>/g, '</h1>');
+  html = html.replace(/<\/h2><br>/g, '</h2>');
+  html = html.replace(/<\/h3><br>/g, '</h3>');
+  html = html.replace(/<\/ul><br>/g, '</ul>');
+  html = html.replace(/<\/blockquote><br>/g, '</blockquote>');
+  html = html.replace(/<br><li>/g, '<li>');
+  html = html.replace(/<\/li><br>/g, '</li>');
+
+  return html;
+}
+
+function openNote(id, initialMode = 'preview'){
+  activeNoteId=id;
+  const n=notes.find(x=>x.id===id);
+  if(!n)return;
+  
+  document.getElementById('notes-master').style.display='none';
+  document.getElementById('notes-detail').style.display='block';
+  
+  const area=document.getElementById('note-editor-area');
+  area.innerHTML=`
+    <div class="note-editor">
+      <div class="note-toolbar">
+        <div style="display:flex;gap:4px;margin-right:12px;border-right:1px solid var(--bd);padding-right:12px">
+          <button class="ntbtn" id="btn-mode-preview" onclick="toggleNoteMode('preview')">👁️ Preview</button>
+          <button class="ntbtn" id="btn-mode-edit" onclick="toggleNoteMode('edit')">✏️ Edit</button>
+        </div>
+        <div id="format-tools" style="display:flex;gap:4px;flex-wrap:wrap;transition:opacity 0.2s">
+          <span style="font-size:11px;color:var(--mu);margin-right:4px;font-family:var(--sans);display:flex;align-items:center">Format:</span>
+          <button class="ntbtn" onclick="insertMD('**','**')"><b>B</b></button>
+          <button class="ntbtn" onclick="insertMD('*','*')"><em>I</em></button>
+          <button class="ntbtn" onclick="insertMD('\`','\`')">Code</button>
+          <button class="ntbtn" onclick="insertMD('\\n## ','')">H2</button>
+          <button class="ntbtn" onclick="insertMD('\\n### ','')">H3</button>
+          <button class="ntbtn" onclick="insertMD('\\n- ','')">List</button>
+          <button class="ntbtn" onclick="insertMD('\\n> ','')">Quote</button>
+          <button class="ntbtn" onclick="insertMD('\\n\\n---\\n\\n','')">Divider</button>
+        </div>
+      </div>
+      <input type="text" class="note-title-input" id="note-title" placeholder="Note title..." value="${n.title}" oninput="autoSave()">
+      <textarea class="note-content-area" id="note-content" placeholder="Start writing your learning notes here... Markdown is supported." oninput="autoSave()">${n.content}</textarea>
+      <div class="note-preview-area" id="note-preview"></div>
+      <div class="note-actions">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="note-meta">Last updated: ${new Date(n.updated).toLocaleString()}</span>
+          <span style="font-size:11px;color:var(--teal);display:none;font-weight:500" id="saved-indicator">✓ Saved</span>
+        </div>
+        <div style="display:flex;gap:7px">
+          <button class="nbtndelete" onclick="deleteNote('${id}')">Delete</button>
+          <button class="nbtnsave" onclick="saveCurrentNote()">Save Note</button>
+        </div>
+      </div>
+    </div>`;
+    
+  toggleNoteMode(initialMode);
+}
+
+function toggleNoteMode(mode) {
+  const ta = document.getElementById('note-content');
+  const pv = document.getElementById('note-preview');
+  const ft = document.getElementById('format-tools');
+  const bp = document.getElementById('btn-mode-preview');
+  const be = document.getElementById('btn-mode-edit');
+  
+  if(mode === 'preview') {
+    // Generate and inject HTML
+    pv.innerHTML = parseMD(ta.value);
+    
+    // UI Swaps
+    ta.style.display = 'none';
+    pv.style.display = 'block';
+    ft.style.opacity = '0.3';
+    ft.style.pointerEvents = 'none';
+    
+    // Button styling
+    bp.classList.add('active');
+    bp.style.background = 'rgba(108,99,255,.15)';
+    bp.style.color = 'var(--ac)';
+    bp.style.borderColor = 'rgba(108,99,255,.4)';
+    
+    be.classList.remove('active');
+    be.style.background = 'none';
+    be.style.color = 'var(--mu)';
+    be.style.borderColor = 'var(--bd)';
+  } else {
+    // UI Swaps
+    ta.style.display = 'block';
+    pv.style.display = 'none';
+    ft.style.opacity = '1';
+    ft.style.pointerEvents = 'auto';
+    
+    // Button styling
+    be.classList.add('active');
+    be.style.background = 'rgba(108,99,255,.15)';
+    be.style.color = 'var(--ac)';
+    be.style.borderColor = 'rgba(108,99,255,.4)';
+    
+    bp.classList.remove('active');
+    bp.style.background = 'none';
+    bp.style.color = 'var(--mu)';
+    bp.style.borderColor = 'var(--bd)';
+    
+    ta.focus();
+  }
+}
+
+function closeNote(){
+  saveCurrentNote(true);
+  document.getElementById('notes-master').style.display='block';
+  document.getElementById('notes-detail').style.display='none';
+  activeNoteId=null;
+  renderNoteList(document.getElementById('notes-search').value);
+  if(document.getElementById('idx-readiness')) buildAnalytics();
+}
+
+let autoSaveTimer=null;
+function autoSave(){
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer=setTimeout(()=>{saveCurrentNote(true);},1000);
+}
+
+function saveCurrentNote(silent=false){
+  if(!activeNoteId)return;
+  const n=notes.find(x=>x.id===activeNoteId);if(!n)return;
+  n.title=document.getElementById('note-title').value;
+  n.content=document.getElementById('note-content').value;
+  n.updated=Date.now();
+  saveNotes();
+  if(!silent){
+      const ind=document.getElementById('saved-indicator');
+      if(ind){ind.style.display='inline';setTimeout(()=>ind.style.display='none',2000);}
+  }
+}
+
+function newNote(){
+  const n={id:'n_'+Date.now(),title:'',content:'',created:Date.now(),updated:Date.now(),tags:[]};
+  notes.unshift(n);
+  saveNotes();
+  // Open specifically in edit mode for new notes
+  openNote(n.id, 'edit');
+  setTimeout(()=>{const t=document.getElementById('note-title');if(t)t.focus();},50);
+}
+
+function deleteNote(id){
+  if(!confirm('Are you sure you want to delete this note forever?'))return;
+  notes=notes.filter(n=>n.id!==id);
+  saveNotes();
+  closeNote();
+}
+
+function filterNotes(){
+  renderNoteList(document.getElementById('notes-search').value);
+}
+
+function insertMD(before,after){
+  const ta=document.getElementById('note-content');if(!ta)return;
+  const s=ta.selectionStart,e=ta.selectionEnd,v=ta.value;
+  ta.value=v.slice(0,s)+before+v.slice(s,e)+after+v.slice(e);
+  ta.selectionStart=s+before.length;ta.selectionEnd=e+before.length;
+  ta.focus();autoSave();
+}
+
+// ── ANALYTICS / PROGRESS ──────────────────────────────────────────────────────────
+function buildAnalytics(){
+  buildReadinessScore();buildIdxStats();buildIdxPhases();buildStreak();buildBadges();buildIdxNotesSummary();loadWeekGoal();
+}
+function buildReadinessScore(){
+  const topicTotal=phases.reduce((a,p)=>a+p.topics.length,0);
+  const topicDone=Object.keys(TD).filter(k=>TD[k]).length;
+  const gTotal=googleSections.reduce((a,s)=>a+s.items.length,0);
+  const googleDone=Object.keys(GD).filter(k=>GD[k]).length;
+  
+  const dsaScore = topicTotal > 0 ? (topicDone / topicTotal) : 0;
+  const gScore = gTotal > 0 ? (googleDone / gTotal) : 0;
+  const readiness = Math.round((dsaScore * 0.6 + gScore * 0.4) * 100) || 0;
+  
+  document.getElementById('idx-readiness').textContent = readiness + '%';
+}
+function buildIdxStats(){
+  const topicTotal=phases.reduce((a,p)=>a+p.topics.length,0);
+  const topicDone=Object.keys(TD).filter(k=>TD[k]).length;
+  const weeksDone=Object.keys(WD).filter(k=>WD[k]).length;
+  const pyDone=pyProjects.filter((_,i)=>PD['py_'+i]).length;
+  const aiDone=aimlProjects.filter((_,i)=>PD['aiml_'+i]).length;
+  const fuDone=fullProjects.filter((_,i)=>PD['full_'+i]).length;
+  const projTotal=pyProjects.length+aimlProjects.length+fullProjects.length;
+  const projDone=pyDone+aiDone+fuDone;
+  const noteCount=notes.length;
+  const streakDays=Object.keys(SD).filter(k=>SD[k]).length;
+  const stats=[
+    {l:'Topics Done',v:topicDone+'/'+topicTotal,s:Math.round(topicDone/topicTotal*100)+'% complete'},
+    {l:'Weeks Completed',v:weeksDone+'/31',s:'weekly milestones'},
+    {l:'Projects Built',v:projDone+'/'+projTotal,s:'portfolio projects'},
+    {l:'Study Streak',v:streakDays+'d',s:'days tracked'},
+    {l:'Notes Written',v:noteCount,s:'learning notes'},
+    {l:'Resources Done',v:Object.keys(GD).filter(k=>GD[k]).length+Object.keys(AD).filter(k=>AD[k]).length,s:'resources completed'},
+  ];
+  const cont=document.getElementById('idx-stats');cont.innerHTML='';
+  stats.forEach(s=>{
+    const c=document.createElement('div');c.className='idx-card';
+    c.innerHTML=`<div class="idx-label">${s.l}</div><div class="idx-val" style="color:var(--ac)">${s.v}</div><div class="idx-sub">${s.s}</div>`;
+    cont.appendChild(c);
+  });
+  const ph1=phases[0].topics.filter((_,i)=>TD['p1_'+i]).length/phases[0].topics.length;
+  const ph2=phases[1].topics.filter((_,i)=>TD['p2_'+i]).length/phases[1].topics.length;
+  const ph3=phases[2].topics.filter((_,i)=>TD['p3_'+i]).length/phases[2].topics.length;
+  const ph4=phases[3].topics.filter((_,i)=>TD['p4_'+i]).length/phases[3].topics.length;
+  const total=topicTotal;
+  const p=[phases[0].topics.length,phases[1].topics.length,phases[2].topics.length,phases[3].topics.length];
+  document.getElementById('tb1').style.width=(ph1*p[0]/total*100)+'%';
+  document.getElementById('tb2').style.width=(ph2*p[1]/total*100)+'%';
+  document.getElementById('tb3').style.width=(ph3*p[2]/total*100)+'%';
+  document.getElementById('tb4').style.width=(ph4*p[3]/total*100)+'%';
+}
+function buildIdxPhases(){
+  const cont=document.getElementById('idx-phases');cont.innerHTML='';
+  const phaseInfo=[
+    {name:'Phase 1 — Foundation',color:getComputedStyle(document.documentElement).getPropertyValue('--g'),id:'p1',topics:phases[0].topics,weeks:[1,2,3,4,5,6,7,8,9]},
+    {name:'Phase 2 — Core Patterns',color:getComputedStyle(document.documentElement).getPropertyValue('--b'),id:'p2',topics:phases[1].topics,weeks:[10,11,12,13,14,15,16,17,18,19]},
+    {name:'Phase 3 — Advanced',color:getComputedStyle(document.documentElement).getPropertyValue('--o'),id:'p3',topics:phases[2].topics,weeks:[20,21,22,23,24,25,26,27,28]},
+    {name:'Phase 4 — Expert',color:getComputedStyle(document.documentElement).getPropertyValue('--p'),id:'p4',topics:phases[3].topics,weeks:[29,30,31]},
+  ];
+  phaseInfo.forEach(ph=>{
+    const topicDone=ph.topics.filter((_,i)=>TD[ph.id+'_'+i]).length;
+    const weeksDone=ph.weeks.filter(w=>WD[String(w)]).length;
+    const pct=Math.round(topicDone/ph.topics.length*100);
+    const card=document.createElement('div');card.className='idx-phase';
+    card.innerHTML=`<div class="idx-phase-name"><span style="width:3px;height:14px;background:${ph.color};border-radius:2px;display:inline-block"></span>${ph.name}</div><div class="idx-phase-bar"><div class="idx-phase-fill" style="background:${ph.color};width:${pct}%"></div></div><div class="idx-phase-stats">${topicDone}/${ph.topics.length} topics · ${weeksDone}/${ph.weeks.length} weeks · ${pct}%</div>`;
+    cont.appendChild(card);
+  });
+}
+function buildStreak(){
+  const grid=document.getElementById('streak-grid');grid.innerHTML='';
+  const today=new Date();today.setHours(0,0,0,0);
+  const days=70;
+  let streak=0,counting=true;
+  const weeks=[];let w=[];
+  for(let i=days-1;i>=0;i--){
+    const d=new Date(today);d.setDate(d.getDate()-i);
+    const k=d.toISOString().slice(0,10);
+    const done=!!SD[k];
+    if(counting){if(done)streak++;else counting=false;}
+    w.push({k,done,d});
+    if(w.length===7){weeks.push(w);w=[];}
+  }
+  if(w.length)weeks.push(w);
+  document.getElementById('streak-count').textContent=streak+' day streak 🔥';
+  weeks.forEach(week=>{
+    const row=document.createElement('div');row.style.cssText='display:flex;gap:4px;margin-bottom:3px;align-items:center';
+    week.forEach(day=>{
+      const el=document.createElement('div');el.className='sday'+(day.done?' done':'');
+      el.title=day.d.toDateString();
+      el.onclick=()=>{SD[day.k]=!SD[day.k];if(!SD[day.k])delete SD[day.k];sv('sd',SD);buildStreak();};
+      row.appendChild(el);
+    });
+    grid.appendChild(row);
+  });
+}
+function buildBadges(){
+  const topicDone=Object.keys(TD).filter(k=>TD[k]).length;
+  const weeksDone=Object.keys(WD).filter(k=>WD[k]).length;
+  const projDone=Object.keys(PD).filter(k=>PD[k]).length;
+  const noteCount=notes.length;
+  const streakDays=Object.keys(SD).filter(k=>SD[k]).length;
+  const badgeList=[
+    {l:'🚀 First Step',desc:'Complete 1 topic',earned:topicDone>=1,cl:'bd-g'},
+    {l:'📗 Phase 1 Done',desc:'Complete all Phase 1 topics',earned:phases[0].topics.filter((_,i)=>TD['p1_'+i]).length===phases[0].topics.length,cl:'bd-g'},
+    {l:'📘 Phase 2 Done',desc:'Complete all Phase 2 topics',earned:phases[1].topics.filter((_,i)=>TD['p2_'+i]).length===phases[1].topics.length,cl:'bd-b'},
+    {l:'📙 Phase 3 Done',desc:'Complete all Phase 3 topics',earned:phases[2].topics.filter((_,i)=>TD['p3_'+i]).length===phases[2].topics.length,cl:'bd-o'},
+    {l:'📕 Phase 4 Done',desc:'Complete all Phase 4 topics',earned:phases[3].topics.filter((_,i)=>TD['p4_'+i]).length===phases[3].topics.length,cl:'bd-p'},
+    {l:'📅 7-Day Streak',desc:'7 consecutive study days',earned:streakDays>=7,cl:'bd-g'},
+    {l:'🔥 30-Day Streak',desc:'30 consecutive study days',earned:streakDays>=30,cl:'bd-o'},
+    {l:'🛠️ Builder',desc:'Complete 5 projects',earned:projDone>=5,cl:'bd-b'},
+    {l:'🏗️ Architect',desc:'Complete 25 projects',earned:projDone>=25,cl:'bd-p'},
+    {l:'✍️ Notetaker',desc:'Write 5 notes',earned:noteCount>=5,cl:'bd-g'},
+    {l:'📆 Consistent',desc:'Complete 10 weeks',earned:weeksDone>=10,cl:'bd-b'},
+    {l:'🏆 All DSA Done',desc:'Complete all 24 topics',earned:topicDone>=24,cl:'bd-y'},
+  ];
+  const cont=document.getElementById('badges');cont.innerHTML='';
+  badgeList.forEach(b=>{
+    const el=document.createElement('div');el.className=`badge ${b.cl}${b.earned?' earned':''}`;
+    el.title=b.desc;el.textContent=b.l;
+    cont.appendChild(el);
+  });
+}
+function buildIdxNotesSummary(){
+  const cont=document.getElementById('idx-notes-summary');
+  if(!notes.length){cont.innerHTML='<div style="font-size:12px;color:var(--mu)">No notes yet. Go to Notes tab to start writing.</div>';return;}
+  const recent=notes.sort((a,b)=>b.updated-a.updated).slice(0,3);
+  cont.innerHTML=`<div style="font-size:12px;color:var(--mu);margin-bottom:8px">${notes.length} notes · Last updated ${new Date(notes[0].updated).toLocaleDateString()}</div>`+recent.map(n=>`<div style="font-size:12px;padding:6px 0;border-top:1px solid var(--bd)">${n.title||'Untitled'} <span style="font-size:10px;color:var(--mu);font-family:var(--mono)">${new Date(n.updated).toLocaleDateString()}</span></div>`).join('');
+}
+function saveWeekGoal(){
+  const done=parseInt(document.getElementById('wk-done').value)||0;
+  const target=parseInt(document.getElementById('wk-target').value)||10;
+  sv('wk_goal',{done,target});
+  updateWeekGoalUI(done,target);
+}
+function loadWeekGoal(){
+  const g=ld('wk_goal');const done=g.done||0;const target=g.target||10;
+  document.getElementById('wk-done').value=done;
+  document.getElementById('wk-target').value=target;
+  updateWeekGoalUI(done,target);
+}
+function updateWeekGoalUI(done,target){
+  const pct=Math.min(100,Math.round(done/target*100));
+  document.getElementById('wk-fill').style.width=pct+'%';
+  document.getElementById('wk-label').textContent=done+' / '+target+' problems this week ('+pct+'%)';
+}
+
+buildDSA();buildGoogle();buildAIML();buildProjects();renderNoteList();
+</script>
+</body>
+</html>
