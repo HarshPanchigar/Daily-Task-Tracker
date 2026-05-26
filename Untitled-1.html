@@ -1,0 +1,1864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Aurex - Execution Core</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M 20,85 L 85,20' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' opacity='0.3'/><path d='M 15,75 L 75,15' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' opacity='0.6'/><text x='38' y='72' font-family='Arial, sans-serif' font-weight='900' font-size='56' fill='%23ffffff' text-anchor='middle' font-style='italic'>A</text><text x='66' y='72' font-family='Arial, sans-serif' font-weight='900' font-size='56' fill='%23ffffff' text-anchor='middle' font-style='italic'>x</text></svg>">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Default Dark Theme */
+  --bg:     #0a0a0f;
+  --card:   #111118;
+  --card2:  #18181f;
+  --border: #23232e;
+  --text:   #e2e2f0;
+  --muted:  #7a7a92;
+  --hover:  #1c1c26;
+  --white:  #ffffff;
+  --green:  #4ade80;
+  --red:    #f87171;
+  --yellow: #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --shadow: 0 4px 24px rgba(0,0,0,0.6);
+  --r:      12px;
+  --r2:     8px;
+  --accent-bg: #e2e2f0;
+  --accent-text: #0a0a0f;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+/* Fix for Goal Pick Modal Buttons in Spidey Theme */
+body.theme-spidey .goal-pick-btn:hover {
+  background: #ffffff !important;
+  color: #7f1d1d !important;
+  border-color: #ffffff !important;
+}
+/* Isse icon ka color bhi change ho jayega hover par */
+body.theme-spidey .goal-pick-btn:hover i {
+  color: #7f1d1d !important;
+}
+/* "Just start timer" wala button bhi fix */
+body.theme-spidey #goal-pick-skip:hover {
+  background: #ffffff !important;
+  color: #7f1d1d !important;
+}
+/* THEMES */
+body.theme-light {
+  --bg: #f4f4f9; --card: #ffffff; --card2: #f0f0f5; --border: #dcdce8;
+  --text: #0a0a1a; --muted: #666677; --hover: #eaeaf2; --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  --accent-bg: #0a0a1a; --accent-text: #ffffff;
+}
+body.theme-ocean {
+  --bg: #0b1120; --card: #121b2d; --card2: #1a263f; --border: #2a3a5a;
+  --text: #e2e8f0; --muted: #64748b; --hover: #1e293b; --accent-bg: #3b82f6; --accent-text: #ffffff;
+}
+body.theme-forest {
+  --bg: #0d1410; --card: #141f18; --card2: #1c2b22; --border: #2d4235;
+  --text: #e2e8e4; --muted: #6b8275; --hover: #22362a; --accent-bg: #10b981; --accent-text: #000000;
+}
+body.theme-rose {
+  --bg: #1a0f14; --card: #24151c; --card2: #301d26; --border: #4a2d3b;
+  --text: #f0e2e8; --muted: #8b6b7a; --hover: #3b2330; --accent-bg: #f43f5e; --accent-text: #ffffff;
+}
+body.theme-amethyst {
+  --bg: #140d1a; --card: #1d1424; --card2: #281d30; --border: #3f2d4a;
+  --text: #ebe2f0; --muted: #7f6b8b; --hover: #33233d; --accent-bg: #a855f7; --accent-text: #ffffff;
+}
+body.theme-cyberpunk {
+  --bg: #050514; --card: #0a0a20; --card2: #12122d; --border: #23234d;
+  --text: #e0fbfc; --muted: #6b7280; --hover: #1c1c3d; --accent-bg: #f000ff; --accent-text: #ffffff;
+}
+body.theme-mocha {
+  --bg: #1e1b18; --card: #2a2622; --card2: #38322d; --border: #4a433c;
+  --text: #f4e8d3; --muted: #9c8e81; --hover: #453e38; --accent-bg: #d97736; --accent-text: #000000;
+}
+body.theme-dracula {
+  --bg: #282a36; --card: #383a59; --card2: #44475a; --border: #6272a4;
+  --text: #f8f8f2; --muted: #8be9fd; --hover: #50536b; --accent-bg: #ff79c6; --accent-text: #282a36;
+}
+body.theme-midnight {
+  --bg: #0f172a; --card: #1e293b; --card2: #334155; --border: #475569;
+  --text: #f8fafc; --muted: #94a3b8; --hover: #3f4f66; --accent-bg: #38bdf8; --accent-text: #0f172a;
+}
+/* Matrix (AI Fav) Theme */
+body.theme-aifav {
+  --bg: #09090b; --card: #18181b; --card2: #27272a; --border: #3f3f46;
+  --text: #f4f4f5; --muted: #a1a1aa; --hover: #3f3f46; 
+  --accent-bg: #10b981; --accent-text: #000000;
+}
+
+/* SPIDERMAN (RICH RED GLASS & WHITE) THEME - FIXED */
+body.theme-spidey {
+  --bg: linear-gradient(135deg, #450a0a 0%, #1a0000 100%); /* Very Dark Red Base */
+  --card: rgba(185, 28, 28, 0.25); /* Tinted Red Glass */
+  --card2: rgba(220, 38, 38, 0.25); /* Lighter Red Glass */
+  --border: rgba(255, 255, 255, 0.4); /* White Borders */
+  --text: #ffffff; 
+  --muted: rgba(255, 255, 255, 0.7);
+  --hover: rgba(239, 68, 68, 0.4); 
+  --accent-bg: #ffffff; 
+  --accent-text: #7f1d1d; 
+  --green: #ffffff;   /* Pure White Highlights */
+  --blue: #ffffff;    
+  --purple: #ffffff;  
+  --yellow: #fef08a;  
+}
+
+/* Apply strong Glassmorphism specifically for Spidey theme without white washout */
+body.theme-spidey .card, body.theme-spidey .panel-section, body.theme-spidey .toolbar, 
+body.theme-spidey .modal, body.theme-spidey .time-goal-card, body.theme-spidey .mini-grid, 
+body.theme-spidey .sl-form, body.theme-spidey .sl-stat, body.theme-spidey .sl-chart-card, 
+body.theme-spidey .sl-list, body.theme-spidey .today-summary-strip, body.theme-spidey .footer-area {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+body.theme-spidey .fs-live-badge, body.theme-spidey .tracking-badge, body.theme-spidey .sl-auto-badge { 
+  color: #7f1d1d !important; font-weight: 900; background: #ffffff !important; 
+}
+body.theme-spidey .mini-grid tr.is-tracking-row td, body.theme-spidey .timeline-item.is-live { 
+  border-color: #ffffff !important; background: rgba(239, 68, 68, 0.3) !important; 
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.15) !important;
+}
+body.theme-spidey input, body.theme-spidey select {
+  background: rgba(153, 27, 27, 0.4) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.4) !important;
+}
+body.theme-spidey input:focus, body.theme-spidey select:focus {
+  border-color: #ffffff !important;
+  box-shadow: 0 0 8px rgba(255,255,255,0.5);
+}
+body.theme-spidey .prog-mini-bg { background: rgba(153, 27, 27, 0.4) !important; border: 1px solid rgba(255,255,255,0.3); }
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.6; transition: background 0.3s, color 0.3s; background-attachment: fixed; background-size: cover; }
+input, select, button, textarea { font-family: var(--font-body); }
+
+/* ---- TOOLBAR ---- */
+.toolbar { position: sticky; top: 0; z-index: 900; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 18px; background: var(--card); border-bottom: 1px solid var(--border); backdrop-filter: blur(10px); transition: 0.3s; }
+.logo { font-family: var(--font-body); font-size: 18px; font-weight: 800; letter-spacing: -0.3px; background: linear-gradient(135deg, var(--text) 60%, var(--muted)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-right: 6px; }
+.spacer { flex: 1; }
+
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--card2); color: var(--text); font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; white-space: nowrap; }
+.btn:hover { background: var(--hover); border-color: #555; }
+.btn.primary { background: var(--accent-bg); color: var(--accent-text); border-color: var(--accent-bg); }
+.btn.primary:hover { opacity: .85; }
+.btn.active { border-color: var(--text); }
+.btn.special-btn { border-color: var(--blue); color: var(--blue); background: rgba(96,165,250,0.1); }
+.btn.special-btn:hover { background: var(--blue); color: #000; }
+body.theme-spidey .btn.special-btn { border-color: #fff; color: #fff; background: rgba(255,255,255,0.1); }
+body.theme-spidey .btn.special-btn:hover { background: #fff; color: #7f1d1d; }
+
+/* ---- TOP TIMER ---- */
+.timer-wrap { display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: var(--card2); border: 1px solid var(--border); border-radius: var(--r2); transition: all 0.3s ease; }
+.timer-wrap.is-tracking { border-color: rgba(74, 222, 128, 0.4); background: rgba(74, 222, 128, 0.05); box-shadow: 0 0 8px rgba(74, 222, 128, 0.15); }
+.timer-wrap.is-break { border-color: rgba(251, 191, 36, 0.4); background: rgba(251, 191, 36, 0.05); box-shadow: 0 0 8px rgba(251, 191, 36, 0.15); }
+
+/* Spidey overrides for tracking wrap */
+body.theme-spidey .timer-wrap.is-tracking { border-color: #fff; background: rgba(255, 255, 255, 0.15); box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
+
+.tracking-dot { display: none; color: var(--green); font-weight: 800; font-size: 10px; letter-spacing: 0.5px; animation: blink 1.5s infinite; }
+.timer-wrap.is-tracking .tracking-dot { display: inline-block; color: var(--green); }
+.timer-wrap.is-break .tracking-dot { display: inline-block; color: var(--yellow); }
+
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.timer-digits { font-family: var(--font-mono); font-size: 18px; font-weight: 600; letter-spacing: 1.5px; min-width: 86px; text-align: center; }
+.timer-goal-tag { font-size: 13px; font-weight: 600; color: var(--text); max-width: 140px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 4px 10px; background: var(--card); border: 1px solid var(--border); border-radius: 99px; display: none; }
+.timer-goal-tag.visible { display: block; }
+#timer-mode-btn { padding: 8px; width: 34px; justify-content: center; font-size: 14px; border-radius: var(--r2); }
+
+/* ---- MAIN LAYOUT ---- */
+.main-layout { display: grid; grid-template-columns: 1fr; gap: 0; min-height: calc(100vh - 120px); }
+.panel-section { padding: 18px; background: var(--card); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 16px; box-shadow: var(--shadow); transition: 0.3s; }
+.panel-title { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.panel-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); flex-shrink: 0; }
+.panel-title .dot.yellow { background: var(--yellow); }
+.panel-title .dot.purple { background: var(--purple); }
+
+.task-input-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.task-input-row input.main-inp { flex: 1; min-width: 200px; background: var(--card2); border: 1px solid var(--border); color: var(--text); padding: 10px 14px; border-radius: var(--r2); font-size: 14px; outline: none; font-weight: 500; transition: 0.3s; }
+.task-input-row input.main-inp:focus { border-color: var(--text); }
+.time-inputs { display: flex; gap: 4px; flex: none; }
+.time-inputs input { width: 65px; background: var(--card2); border: 1px solid var(--border); color: var(--text); padding: 10px 8px; border-radius: var(--r2); font-size: 13px; outline: none; text-align: center; }
+.time-inputs input:focus { border-color: var(--text); }
+
+/* ---- MINI DATE GRID TABLE ---- */
+.mini-grid-wrap { overflow-x: auto; padding-bottom: 4px; }
+.mini-grid { width: 100%; min-width: max-content; border-collapse: collapse; background: var(--card2); border: 1px solid var(--border); border-radius: var(--r2); overflow: hidden; font-size: 13px; transition: 0.3s; }
+.mini-grid th, .mini-grid td { border: 1px solid var(--border); }
+.mini-grid .gh-row th { padding: 8px 6px; font-size: 11px; color: var(--muted); text-align: center; letter-spacing: .5px; font-family: var(--font-mono); background: var(--card); }
+.mini-grid .name-col { min-width: 160px; padding: 0 12px; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; }
+.mini-grid .name-col.done-name { text-decoration: line-through; color: var(--muted); }
+
+/* Custom Drag Handle */
+.drag-handle { cursor: grab; padding-right: 6px; color: var(--muted); transition: 0.2s; user-select: none; font-size: 16px; }
+.drag-handle:hover { color: var(--text); }
+.drag-handle:active { cursor: grabbing; color: var(--accent-bg); }
+
+.mini-grid .day-cell { min-width: 28px; width: 28px; text-align: center; cursor: pointer; font-size: 12px; transition: background .1s; padding: 0; font-weight: 700; }
+.mini-grid .day-cell:hover { background: var(--hover); }
+.mini-grid .day-cell.done-cell { background: var(--accent-bg) !important; color: var(--accent-text); }
+.mini-grid .day-cell.today-cell { background: rgba(255,255,255,0.05); }
+body.theme-light .mini-grid .day-cell.today-cell { background: rgba(0,0,0,0.05); }
+body.theme-spidey .mini-grid .day-cell.today-cell { background: rgba(255,255,255,0.05); }
+body.theme-spidey .mini-grid .day-cell.today-cell.done-cell { background: #ffffff !important; color: #7f1d1d !important; }
+
+.mini-grid .day-cell.future-cell { opacity: .15; cursor: default; }
+.mini-grid .weekend-hdr { color: #888; }
+body.theme-spidey .mini-grid .weekend-hdr { color: rgba(255,255,255,0.5); }
+.mini-grid tbody tr { height: 40px; transition: all 0.2s; }
+.mini-grid tbody tr:hover td { background: var(--hover); }
+.mini-grid .del-col { width: 32px; text-align: center; cursor: pointer; color: var(--muted); font-size: 12px; opacity: 0; }
+.mini-grid tbody tr:hover .del-col { opacity: 1; }
+.mini-grid .del-col:hover { color: var(--red) !important; }
+.mini-grid .pct-col { width: 44px; text-align: center; font-size: 12px; color: var(--muted); font-family: var(--font-mono); font-weight: 600; }
+
+/* DRAG AND DROP CSS */
+.mini-grid tbody tr.dragging, .time-goal-card.dragging { opacity: 0.5; background: var(--hover); border: 2px dashed var(--muted); }
+.mini-grid tbody tr.drag-over, .time-goal-card.drag-over { border-top: 2px solid var(--blue); }
+
+/* ---- TASK ROW HIGHLIGHT ---- */
+.mini-grid tr.is-tracking-row { position: relative; z-index: 2; }
+.mini-grid tr.is-tracking-row td { background: rgba(74, 222, 128, 0.15) !important; border-top: 2px solid var(--green) !important; border-bottom: 2px solid var(--green) !important; }
+.mini-grid tr.is-tracking-row td:first-child { border-left: 2px solid var(--green) !important; }
+.mini-grid tr.is-tracking-row td:last-child { border-right: 2px solid var(--green) !important; }
+.tracking-badge { display: inline-flex; align-items: center; font-size: 10px; color: #000; background: var(--green); padding: 2px 6px; border-radius: 4px; margin-left: 10px; font-weight: 800; letter-spacing: 0.5px; animation: blink 1.2s infinite; vertical-align: middle; }
+
+/* ---- TIME GOAL CARDS (Progress below table) ---- */
+.time-goal-card { background: var(--card2); border: 1px solid var(--border); border-radius: var(--r2); padding: 14px 16px; margin-bottom: 10px; transition: 0.2s; }
+.time-goal-card.is-tracking-row { border-color: var(--green); background: rgba(74, 222, 128, 0.05); }
+
+.empty-state { color: var(--muted); font-size: 14px; padding: 16px 0; text-align: center; font-weight: 500; }
+.prog-mini { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.prog-mini-label { font-size: 13px; font-weight: 600; color: var(--muted); width: 80px; flex-shrink: 0; }
+.prog-mini-bg { flex: 1; height: 6px; background: var(--card2); border: 1px solid var(--border); border-radius: 99px; overflow: hidden; margin: 0 4px; }
+.prog-mini-fill { height: 100%; border-radius: 99px; transition: width 1s linear, background 0.3s ease; }
+.prog-mini-num { font-size: 13px; color: var(--text); width: 44px; text-align: right; font-family: var(--font-mono); font-weight: 600;}
+
+/* ---- RIGHT CONTENT ---- */
+.right-content { overflow-y: auto; width: 100%; }
+.dash { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; padding: 16px; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; box-shadow: var(--shadow); position: relative; overflow: hidden; transition: 0.3s; }
+.card-label { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 10px; }
+.big-number { font-size: 48px; font-weight: 800; line-height: 1; }
+.sub-text { font-size: 13px; color: var(--muted); margin-top: 6px; font-weight: 500; }
+.chart-area { height: 86px; margin-top: 14px; }
+.compact-month-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.nav-select { background: var(--card2); color: var(--text); border: 1px solid var(--border); padding: 6px 14px; border-radius: var(--r2); font-size: 14px; font-weight: 600; outline: none; height: 38px; cursor: pointer; transition: 0.3s; }
+.nav-select:hover { border-color: var(--text); }
+.nav-arrow { height: 38px; width: 38px; justify-content: center; padding: 0; font-size: 14px; }
+
+/* ---- FOOTER STATS & BACKUP ---- */
+.footer-area { padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-top: 1px solid var(--border); background: var(--bg); transition: 0.3s; }
+.footer-stats { font-size: 13px; font-weight: 600; color: var(--muted); font-family: var(--font-mono); display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.footer-btns { display: flex; gap: 10px; }
+#save-indicator { transition: color 0.3s; font-weight: 700; }
+.divider { opacity: 0.3; }
+
+/* ---- TOAST & UNDO BUTTON ---- */
+.toast { position: fixed; bottom: 20px; right: 20px; background: var(--card); border: 1px solid var(--border); padding: 12px 18px; border-radius: var(--r); display: flex; align-items: center; gap: 12px; z-index: 9999; box-shadow: var(--shadow); font-size: 14px; font-weight: 600; min-width: 280px; justify-content: space-between; transition: 0.3s; }
+.undo-btn { background: var(--text); color: var(--bg); border: none; padding: 6px 12px; border-radius: var(--r2); font-size: 12px; font-weight: 800; cursor: pointer; font-family: var(--font-body); transition: 0.2s; }
+.undo-btn:hover { opacity: 0.8; transform: scale(0.95); }
+
+/* Switch Toggle CSS */
+.switch { position: relative; display: inline-block; width: 42px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--card2); border: 1px solid var(--border); transition: .4s; border-radius: 24px; }
+.slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: var(--muted); transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: var(--green); border-color: var(--green); }
+input:checked + .slider:before { transform: translateX(18px); background-color: #000; }
+
+/* ---- COMPACT SCHEDULE MODAL CSS ---- */
+#schedule-modal .modal { max-width: 500px; width: 95%; max-height: 80vh; padding: 16px; display: flex; flex-direction: column; }
+.fs-input-area { display: none; gap: 8px; background: var(--card2); padding: 10px; border-radius: var(--r2); border: 1px solid var(--border); margin-bottom: 10px; flex-wrap: wrap; }
+.fs-input-area.open { display: flex; }
+.fs-input-area select, .fs-input-area input { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: var(--r2); font-size: 13px; outline: none; font-family: var(--font-body); flex:1; min-width:110px; color-scheme: dark; }
+body.theme-light .fs-input-area input, body.theme-spidey .fs-input-area input { color-scheme: light; }
+.fs-input-area select:focus, .fs-input-area input:focus { border-color: var(--text); }
+
+.timeline-wrap { display: flex; flex-direction: column; gap: 0; position: relative; padding-left: 16px; margin-top: 10px; overflow-y: auto; max-height: 60vh; padding-right: 5px; }
+.timeline-item { position: relative; padding: 10px 14px; background: var(--card2); border: 1px solid var(--border); border-radius: var(--r2); margin-bottom: 10px; transition: 0.3s; }
+.timeline-item::before { content: ""; position: absolute; left: -22px; top: 16px; width: 10px; height: 10px; border-radius: 50%; background: var(--muted); border: 3px solid var(--bg); z-index: 2; transition: 0.3s; }
+.timeline-item::after { content: ""; position: absolute; left: -18px; top: 28px; bottom: -20px; width: 2px; background: var(--border); z-index: 1; transition: 0.3s; }
+.timeline-item:last-child::after { display: none; }
+.timeline-item.is-live { border-color: var(--green); background: rgba(74,222,128,0.05); }
+.timeline-item.is-live::before { background: var(--green); box-shadow: 0 0 12px var(--green); border-color: var(--card); }
+.timeline-time { font-family: var(--font-mono); font-weight: 700; font-size: 12px; color: var(--muted); margin-bottom: 2px; transition: 0.3s; }
+.timeline-item.is-live .timeline-time { color: var(--green); }
+.timeline-content { display: flex; justify-content: space-between; align-items: center; }
+.timeline-title { font-size: 14px; font-weight: 800; color: var(--text); }
+.fs-live-badge { display: none; font-size: 9px; background: var(--green); color: #000; padding: 2px 6px; border-radius: 4px; font-weight: 800; letter-spacing: 0.5px; animation: blink 1.2s infinite; margin-left: 8px; vertical-align: middle; }
+.timeline-item.is-live .fs-live-badge { display: inline-block; }
+
+/* ---- ONBOARDING MODAL ---- */
+.ob-step { background: var(--card2); padding: 12px 16px; border-radius: var(--r2); font-size: 13px; color: var(--text); border: 1px solid var(--border); }
+
+/* ---- CALENDAR & OTHERS ---- */
+#cal-view { padding: 16px; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+.cal-head { text-align: center; font-size: 12px; font-weight: 700; color: var(--muted); padding: 8px; letter-spacing: .5px; text-transform: uppercase; }
+.cal-cell { background: var(--card); border: 1px solid var(--border); border-radius: var(--r2); padding: 10px; min-height: 100px; box-shadow: var(--shadow); transition: 0.3s; }
+.cal-cell.today { border-color: var(--purple); border-width: 2px; }
+.cal-date { font-size: 16px; font-weight: 800; margin-bottom: 6px; }
+.cal-chip { font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 4px; margin-bottom: 4px; display: inline-block; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cal-chip.routine-done { background: rgba(96,165,250,.2); color: var(--blue); }
+.cal-chip.special-done { background: rgba(251,191,36,.2); color: var(--yellow); }
+.cal-chip.miss { background: var(--border); color: var(--muted); }
+#sl-view { padding: 16px; }
+.sl-title { font-size: 22px; font-weight: 800; margin-bottom: 18px; }
+.sl-form { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 18px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: 12px; align-items: end; margin-bottom: 18px; box-shadow: var(--shadow); transition: 0.3s; }
+.sl-field label { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: .5px; text-transform: uppercase; display: block; margin-bottom: 6px; }
+.sl-input { width: 100%; background: var(--card2); border: 1px solid var(--border); color: var(--text); padding: 9px 12px; border-radius: var(--r2); font-size: 14px; font-weight: 600; outline: none; color-scheme: dark; transition: 0.3s; }
+.sl-input:focus { border-color: var(--text); }
+body.theme-light .sl-input, body.theme-spidey .sl-input { color-scheme: light; }
+.now-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text); padding: 9px 12px; border-radius: var(--r2); font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: 0.3s; }
+.now-btn:hover { background: var(--hover); border-color: var(--text); }
+.sl-stats { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.sl-stat { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 16px 20px; flex: 1; min-width: 110px; box-shadow: var(--shadow); transition: 0.3s; }
+.sl-val { font-size: 28px; font-weight: 800; margin-top: 6px; }
+.sl-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
+.sl-chart-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 18px; box-shadow: var(--shadow); transition: 0.3s; }
+.sl-chart-wrap { height: 180px; margin-top: 10px; position: relative; }
+.sl-list { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 18px; box-shadow: var(--shadow); transition: 0.3s; }
+.sl-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.sl-row:last-child { border-bottom: none; }
+.sl-date2 { font-size: 13px; font-weight: 500; color: var(--muted); min-width: 86px; font-family: var(--font-mono); }
+.sl-subj { font-weight: 700; font-size: 15px; flex: 1; }
+.sl-time2 { font-size: 13px; font-weight: 500; color: var(--muted); min-width: 100px; font-family: var(--font-mono); }
+.sl-dur2 { font-weight: 800; font-size: 15px; min-width: 56px; text-align: right; font-family: var(--font-mono); }
+.sl-del2 { cursor: pointer; color: var(--muted); font-size: 13px; padding: 4px 8px; transition: 0.2s; }
+.sl-del2:hover { color: var(--red); }
+.sl-empty { text-align: center; color: var(--muted); padding: 32px; font-size: 14px; font-weight: 500; }
+.sl-auto-badge { font-size: 10px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; padding: 4px 8px; border-radius: 99px; background: var(--green); color: #000; white-space: nowrap; }
+
+.reason-row { margin-bottom: 10px; }
+.reason-hdr { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+.reason-bg { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.reason-fill { height: 100%; background: var(--text); border-radius: 99px; transition: width .4s; }
+
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,.8); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+.modal { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 26px 30px; min-width: 320px; max-width: 480px; box-shadow: var(--shadow); transition: 0.3s; }
+.modal h3 { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+.modal p { font-size: 14px; font-weight: 500; color: var(--muted); margin-bottom: 18px; }
+.reason-btns { display: flex; flex-direction: column; gap: 8px; }
+.r-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text); padding: 12px 16px; border-radius: var(--r2); font-size: 14px; font-weight: 600; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px; transition: background .12s; }
+.r-btn:hover { background: var(--text); color: var(--bg); }
+/* Fix for hover buttons in Spidey Theme */
+body.theme-spidey .r-btn:hover {
+  background: #ffffff !important;
+  color: #7f1d1d !important; 
+}
+#goal-pick-modal .modal { max-width: 500px; width: 500px; }
+.goal-pick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+.goal-pick-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text); padding: 14px 16px; border-radius: var(--r2); font-size: 14px; font-weight: 700; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px; transition: all .12s; }
+.goal-pick-btn:hover { background: var(--text); color: var(--bg); border-color: var(--text); }
+.today-summary-strip { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 16px; background: var(--card); border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 500; transition: 0.3s; }
+.strip-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 99px; font-size: 13px; font-weight: 700; }
+.strip-badge.green { background: rgba(74,222,128,.12); color: var(--green); }
+.strip-badge.blue { background: rgba(96,165,250,.12); color: var(--blue); }
+.strip-badge.yellow { background: rgba(251,191,36,.12); color: var(--yellow); }
+.strip-badge.purple { background: rgba(167,139,250,.12); color: var(--purple); }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+@media(max-width:900px){
+  .sl-form { grid-template-columns: 1fr 1fr; }
+  .sl-charts { grid-template-columns: 1fr; }
+  .goal-pick-grid { grid-template-columns: 1fr; }
+  #goal-pick-modal .modal { width: 90vw; }
+}
+</style>
+</head>
+<body class="theme-dark">
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+<div class="logo" style="display: flex; align-items: center; gap: 8px; font-size: 26px;">
+  <svg viewBox="0 0 100 100" width="38" height="38" style="flex-shrink: 0;">
+    <path d="M 20,85 L 85,20" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity="0.3"/>
+    <path d="M 15,75 L 75,15" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+    <text x="38" y="72" font-family="Arial, sans-serif" font-weight="900" font-size="56" fill="currentColor" text-anchor="middle" font-style="italic">A</text>
+    <text x="66" y="72" font-family="Arial, sans-serif" font-weight="900" font-size="56" fill="currentColor" text-anchor="middle" font-style="italic">x</text>
+  </svg>
+  <!-- <span style="font-weight: 900; letter-spacing: -0.5px;">AUREX</span> -->
+  <!-- <span style="font-size: 14px; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; margin-left: 2px; margin-top: 4px;">| Focus OS</span> -->
+</div>
+  <div class="timer-wrap" id="timer-wrap">
+    <span class="tracking-dot" id="tracking-dot">● TRACKING</span>
+    <button class="btn" id="timer-mode-btn" title="Toggle Mode: Stopwatch / 25m / 5m">⏱️</button>
+    <div class="timer-digits" id="timer-digits">00:00:00</div>
+    <div class="timer-goal-tag" id="timer-goal-tag"></div>
+    <button class="btn primary" id="timer-btn"><i class="fa-solid fa-play" id="timer-icon"></i> <span id="timer-label">Start</span></button>
+    <button class="btn" id="timer-reset" title="Reset"><i class="fa-solid fa-rotate-left"></i></button>
+  </div>
+  
+  <div class="spacer"></div>
+  <button class="btn" id="home-btn"><i class="fa-solid fa-house"></i> Home</button>
+  
+  <!-- SCHEDULE BUTTON IN HEADER -->
+  <button class="btn" id="schedule-btn"><i class="fa-solid fa-calendar-day"></i> Schedule</button>
+  
+  <button class="btn" id="cal-btn"><i class="fa-solid fa-calendar"></i> Calendar</button>
+  <button class="btn" id="sl-btn"><i class="fa-solid fa-clock"></i> Study Log</button>
+  <button class="btn" id="theme-btn"><i class="fa-solid fa-palette"></i> Theme</button>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="main-layout" id="main-layout">
+  <div class="right-content" id="right-content">
+    <div class="today-summary-strip" id="today-strip"></div>
+
+    <div class="dash" id="dashboard">
+      <div class="card">
+        <div class="card-label">Today's Completion</div>
+        <div class="big-number" id="today-pct">0%</div>
+        <div class="sub-text" id="today-sub">0 of 0 tasks done</div>
+        <div class="chart-area"><canvas id="daily-chart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Monthly Average</div>
+        <div class="big-number" id="avg-pct">0%</div>
+        <div class="sub-text" id="streak-txt">This Month</div>
+        <div class="chart-area"><canvas id="line-chart"></canvas></div>
+      </div>
+      <div class="card" id="stop-card">
+        <div class="card-label">Focus Reasons</div>
+        <div id="stop-body" style="margin-top:8px;">
+          <div style="color:var(--muted);font-size:13px;font-weight:500;">Stop the timer to see reasons here.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-label">Today's Progress</div>
+        <div id="task-progress-area" style="margin-top:16px;"></div>
+      </div>
+    </div>
+
+    <div id="tasks-view" style="padding: 0 16px 16px;">
+      <div class="compact-month-nav">
+        <button class="btn nav-arrow" id="prev-m"><i class="fa-solid fa-chevron-left"></i></button>
+        <select class="nav-select" id="m-sel"></select>
+        <select class="nav-select" id="y-sel"></select>
+        <button class="btn nav-arrow" id="next-m"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-title"><span class="dot"></span> Daily Routine Tasks</div>
+        <div class="task-input-row">
+          <input id="dt-input" class="main-inp" placeholder="Add daily routine task..." />
+          <div class="time-inputs">
+            <input id="dt-hrs" type="number" placeholder="Hrs" min="0" step="1" />
+            <input id="dt-mins" type="number" placeholder="Min" min="0" max="59" step="1" />
+          </div>
+          <button class="btn" style="background:rgba(96,165,250,.12);border-color:rgba(96,165,250,.3);color:var(--blue);font-size:15px;padding:10px 18px;" id="dt-add-btn"><i class="fa-solid fa-plus"></i></button>
+        </div>
+        <div class="mini-grid-wrap" id="dt-grid-wrap"></div>
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-title"><span class="dot yellow"></span> Today's Special Tasks</div>
+        <div class="task-input-row">
+          <input id="ts-input" class="main-inp" placeholder="Add today's special task..." />
+          <div class="time-inputs">
+            <input id="ts-hrs" type="number" placeholder="Hrs" min="0" step="1" />
+            <input id="ts-mins" type="number" placeholder="Min" min="0" max="59" step="1" />
+          </div>
+          <button class="btn" style="background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.3);color:var(--yellow);font-size:15px;padding:10px 18px;" id="ts-add-btn"><i class="fa-solid fa-plus"></i></button>
+        </div>
+        <div class="mini-grid-wrap" id="ts-grid-wrap"></div>
+      </div>
+
+      <!-- Live progress for tasks with hours set appears here automatically -->
+      <div class="panel-section" id="time-goals-panel" style="display:none; background: transparent; border: none; box-shadow: none; padding: 0;">
+        <div class="panel-title"><span class="dot purple"></span> Today's Time Tracked (Goals)</div>
+        <div id="tg-list-wrap"></div>
+      </div>
+
+    </div>
+
+    <div id="cal-view" style="display:none;"></div>
+    <div id="sl-view" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- FOOTER WITH STATS & BACKUP BUTTONS -->
+<div class="footer-area">
+  <div class="footer-stats">
+    <span>Total Goal: <span id="ft-total-goal">0</span></span> <span class="divider">|</span>
+    <span>Completion: <span id="ft-completion">0%</span></span> <span class="divider">|</span>
+    <span>Best Streak: <span id="ft-best-streak">0</span>🔥</span> <span class="divider">|</span>
+    <span>Done: <span id="ft-done">0/0</span></span> <span class="divider">|</span>
+    <span id="save-indicator" style="color:var(--green)">Auto saved</span>
+  </div>
+  <div class="footer-btns">
+    <button class="btn" id="backup-btn" title="Download backup"><i class="fa-solid fa-download"></i> Backup</button>
+    <button class="btn" id="import-btn" title="Import backup"><i class="fa-solid fa-upload"></i> Restore</button>
+    <input type="file" id="import-file" accept=".json" style="display:none"/>
+  </div>
+</div>
+
+<!-- COMPACT SCHEDULE TIMELINE MODAL -->
+<div class="overlay" id="schedule-modal" style="display:none; z-index: 9500;">
+  <div class="modal">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+      <h3 style="margin:0; font-size:18px;"><i class="fa-solid fa-list-check" style="color:var(--blue)"></i> Schedule Planner</h3>
+      <div>
+        <button class="btn" id="fs-edit-toggle" style="margin-right:8px; padding: 4px 10px; font-size: 12px;"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+        <i class="fa-solid fa-xmark" style="cursor:pointer; font-size:18px; color:var(--muted); transition:0.2s;" onclick="document.getElementById('schedule-modal').style.display='none'" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'"></i>
+      </div>
+    </div>
+    
+    <div class="fs-input-area" id="fs-add-area">
+      <select id="fs-task-select" style="flex:2;"></select>
+      <div style="display: flex; gap: 8px;">
+        <input type="time" id="fs-start" title="Start Time"/>
+        <input type="time" id="fs-end" title="End Time"/>
+      </div>
+      <button class="btn primary" id="fs-add-btn" style="padding: 6px 16px; font-size:13px; width: 100%; justify-content: center;"><i class="fa-solid fa-plus"></i> Add to Timeline</button>
+    </div>
+
+    <div id="fs-list" class="timeline-wrap">
+      <!-- Timeline items injected here -->
+    </div>
+    
+  </div>
+</div>
+
+<!-- ONBOARDING WELCOME MODAL -->
+<div class="overlay" id="onboarding-modal" style="display:none; z-index: 10000;">
+  <div class="modal" style="max-width: 450px;">
+    <div style="text-align:center; font-size:40px; margin-bottom:10px;">🚀</div>
+    <h3 style="text-align:center;">Welcome to AUREX!</h3>
+    <p style="text-align:center; margin-bottom: 20px;">Let's quickly show you how to dominate your goals.</p>
+    
+    <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
+      <div class="ob-step"><b>1. Add Tasks:</b> Add daily routines & special tasks. Add "Hrs & Min" to set time targets!</div>
+      <div class="ob-step"><b>2. Time Blocking:</b> Click "Schedule" in the top header to map your day out in a timeline.</div>
+      <div class="ob-step"><b>3. Break Tracking:</b> Hit Stop -> 'Break' to track rest time. Auto-saves to Study Log!</div>
+      <div class="ob-step"><b>4. Unbreakable Timer:</b> The timer is linked to your system clock. It keeps running even if you close the tab!</div>
+    </div>
+    
+    <button class="btn primary" id="ob-close-btn" style="width:100%; justify-content:center; padding:12px; font-size:15px;">Got it, Let's Go!</button>
+  </div>
+</div>
+
+<!-- THEME MODAL -->
+<div class="overlay" id="theme-modal" style="display:none;">
+  <div class="modal" style="max-width: 500px;">
+    <h3><i class="fa-solid fa-palette"></i> Select Theme</h3>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px;">
+      <button class="r-btn" onclick="setTheme('dark', true, true)">🌙 Dark (Default)</button>
+      <button class="r-btn" onclick="setTheme('light', true, true)">☀️ Light</button>
+      <button class="r-btn" onclick="setTheme('ocean', true, true)">🌊 Ocean Blue</button>
+      <button class="r-btn" onclick="setTheme('forest', true, true)">🌲 Forest Green</button>
+      <button class="r-btn" onclick="setTheme('rose', true, true)">🌹 Sunset Rose</button>
+      <button class="r-btn" onclick="setTheme('amethyst', true, true)">🔮 Amethyst</button>
+      <button class="r-btn" onclick="setTheme('cyberpunk', true, true)">🌃 Cyberpunk</button>
+      <button class="r-btn" onclick="setTheme('mocha', true, true)">☕ Mocha</button>
+      <button class="r-btn" onclick="setTheme('dracula', true, true)">🧛‍♂️ Dracula</button>
+      <button class="r-btn" onclick="setTheme('midnight', true, true)">🌌 Midnight</button>
+      <button class="r-btn" onclick="setTheme('spidey', true, true)">🕸️ Spidey</button>
+      <button class="r-btn" onclick="setTheme('aifav', true, true)">🧬 Matrix</button>
+    </div>
+    
+    <!-- Auto Theme Toggle -->
+    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+      <span style="font-size: 14px; font-weight: 600;">Surprise Me Daily (Auto Theme)</span>
+      <label class="switch">
+        <input type="checkbox" id="auto-theme-toggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+</div>
+
+<!-- STOP REASON MODAL -->
+<div class="overlay" id="stop-modal" style="display:none;">
+  <div class="modal">
+    <h3>Why stopping?</h3>
+    <p id="stop-modal-sub">Pick a reason</p>
+    <div class="reason-btns">
+      <button class="r-btn" data-r="Break">☕ Break (Tracks Break Time)</button>
+      <button class="r-btn" data-r="Distracted">📱 Got distracted</button>
+      <button class="r-btn" data-r="Emergency">🚨 Emergency</button>
+      <button class="r-btn" data-r="Other">💭 Other</button>
+      <button class="r-btn" data-r="Done" style="background:var(--green);color:#000;border:none;">✅ Work done — log to Study Log</button>
+    </div>
+  </div>
+</div>
+
+<!-- GOAL PICK MODAL -->
+<div class="overlay" id="goal-pick-modal" style="display:none;">
+  <div class="modal">
+    <h3>What are you working on?</h3>
+    <p>Pick a task to track</p>
+    <div class="goal-pick-grid" id="goal-pick-grid"></div>
+    <div style="margin-top:14px;">
+      <button class="btn" style="width:100%;justify-content:center;padding:12px;" id="goal-pick-skip">
+        <i class="fa-solid fa-clock"></i> &nbsp;Just start timer (no task)
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== CONSTANTS =====
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS_SHORT = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+const THEMES = ['dark', 'light', 'ocean', 'forest', 'rose', 'amethyst', 'cyberpunk', 'mocha', 'dracula', 'midnight', 'spidey', 'aifav'];
+const TODAY = new Date();
+
+// ===== STATE =====
+let vY = TODAY.getFullYear(), vM = TODAY.getMonth(); 
+let dailyTasks, studyLog, stopReasons, taskChecks;
+let currentView = 'home';
+let lineChart = null, dailyChart = null, slBar = null, slDonut = null;
+
+// Unbreakable Timer & Break State
+let timerBaseSecs = 0, timerSecs = 0, timerRunning = false, timerInterval = null, timerStartedAt = 0;
+let timerGoalId = null, timerStartTime = null;
+let timerMode = 'stopwatch';
+
+let breakRunning = false, breakStartedAt = 0, currentBreakReason = '';
+
+// ===== LOAD / SAVE =====
+function loadAll() {
+  dailyTasks = JSON.parse(localStorage.getItem('gt_dailytasks2') || 'null') || defaultDailyTasks();
+  if (!dailyTasks.schedule) dailyTasks.schedule = [];
+
+  taskChecks = JSON.parse(localStorage.getItem('gt_taskchecks') || '{}');
+  studyLog = JSON.parse(localStorage.getItem('gt_studylog') || '[]');
+  stopReasons = JSON.parse(localStorage.getItem('gt_stopreasons') || '{}');
+  
+  timerMode = localStorage.getItem('gt_tmode') || 'stopwatch';
+  timerBaseSecs = parseInt(localStorage.getItem('gt_tbase') || '0');
+  timerRunning = localStorage.getItem('gt_trunning') === 'true';
+  timerStartedAt = parseInt(localStorage.getItem('gt_tstart') || '0');
+  timerGoalId = localStorage.getItem('gt_tgoal') || null;
+  timerStartTime = localStorage.getItem('gt_tstarttime') ? new Date(localStorage.getItem('gt_tstarttime')) : null;
+  
+  breakRunning = localStorage.getItem('gt_brunning') === 'true';
+  breakStartedAt = parseInt(localStorage.getItem('gt_bstart') || '0');
+  currentBreakReason = localStorage.getItem('gt_breason') || '';
+
+  if (timerRunning && timerStartedAt) {
+      timerSecs = timerBaseSecs + Math.floor((Date.now() - timerStartedAt) / 1000);
+  } else {
+      timerSecs = timerBaseSecs;
+  }
+  
+  const savedTheme = localStorage.getItem('gt_theme') || 'dark';
+  setTheme(savedTheme, false);
+  handleAutoThemeLoad();
+  updateTimerModeIcon();
+  checkFirstVisit();
+}
+
+function checkFirstVisit() {
+  if (!localStorage.getItem('gt_first_visit')) {
+      document.getElementById('onboarding-modal').style.display = 'flex';
+  }
+  document.getElementById('ob-close-btn').onclick = () => {
+      document.getElementById('onboarding-modal').style.display = 'none';
+      localStorage.setItem('gt_first_visit', 'done');
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.3 } });
+  };
+}
+
+function saveDT() { localStorage.setItem('gt_dailytasks2', JSON.stringify(dailyTasks)); flashSave(); }
+function saveChecks() { localStorage.setItem('gt_taskchecks', JSON.stringify(taskChecks)); flashSave(); }
+function saveSL() { localStorage.setItem('gt_studylog', JSON.stringify(studyLog)); flashSave(); }
+function saveSR() { localStorage.setItem('gt_stopreasons', JSON.stringify(stopReasons)); flashSave(); }
+
+function saveTimer() {
+  localStorage.setItem('gt_tbase', timerBaseSecs);
+  localStorage.setItem('gt_tsecs', timerSecs);
+  localStorage.setItem('gt_trunning', timerRunning);
+  localStorage.setItem('gt_tstart', timerStartedAt);
+  localStorage.setItem('gt_tgoal', timerGoalId || '');
+  localStorage.setItem('gt_tstarttime', timerStartTime ? timerStartTime.toISOString() : '');
+  localStorage.setItem('gt_tmode', timerMode);
+  
+  localStorage.setItem('gt_brunning', breakRunning);
+  localStorage.setItem('gt_bstart', breakStartedAt);
+  localStorage.setItem('gt_breason', currentBreakReason);
+}
+
+function flashSave() {
+  const el = document.getElementById('save-indicator');
+  if (el) { 
+    el.textContent = '✓ Saved'; 
+    el.style.color = 'var(--blue)';
+    clearTimeout(el._t); 
+    el._t = setTimeout(() => {
+        el.textContent = 'Auto saved';
+        el.style.color = 'var(--green)';
+    }, 1500); 
+  }
+}
+
+// ===== TOAST WITH UNDO LOGIC =====
+let undoTimeout = null;
+function showUndoToast(msg, onUndo) {
+  const old = document.querySelector('.toast'); if (old) old.remove();
+  const t = document.createElement('div'); t.className = 'toast'; 
+  t.innerHTML = `<span>${msg}</span><button class="undo-btn">UNDO</button>`;
+  document.body.appendChild(t);
+  
+  t.querySelector('.undo-btn').onclick = () => {
+    onUndo(); 
+    t.remove(); 
+    clearTimeout(undoTimeout); 
+    showToast("✓ Restored successfully");
+  };
+  
+  clearTimeout(undoTimeout);
+  undoTimeout = setTimeout(() => t.remove && t.remove(), 7000); 
+}
+
+function showToast(msg) {
+  const old = document.querySelector('.toast'); if (old) old.remove();
+  const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = `<span>${msg}</span>`;
+  document.body.appendChild(t); setTimeout(() => t.remove && t.remove(), 3500);
+}
+
+function defaultDailyTasks() {
+  return { routine: [ { id: 'dt1', name: 'Check emails' }, { id: 'dt2', name: 'Plan the day' } ], special: [], schedule: [] };
+}
+
+// ===== HELPERS =====
+function dim(y, m) { return new Date(y, m + 1, 0).getDate(); }
+function isToday(y, m, d) { return y === TODAY.getFullYear() && m === TODAY.getMonth() && d === TODAY.getDate(); }
+function isFuture(y, m, d) { return new Date(y, m, d) > TODAY; }
+function todayISO() { return TODAY.toISOString().slice(0, 10); }
+function nowHHMM() { const n = new Date(); return pad(n.getHours()) + ':' + pad(n.getMinutes()); }
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function fmtDur(m) { 
+  m = Math.floor(m);
+  if (m < 60) return m + 'm'; 
+  const h = Math.floor(m / 60), r = m % 60; 
+  return r ? `${h}h ${r}m` : `${h}h`; 
+}
+
+function calcDur(s, e) {
+  const [sh, sm] = s.split(':').map(Number); const [eh, em] = e.split(':').map(Number);
+  let a = sh * 60 + sm, b = eh * 60 + em; if (b < a) b += 1440; return b - a;
+}
+function tcKey(id, y, m, d) { return `${id}_${y}_${m}_${d}`; }
+
+function getTodayLoggedMins(subjectName) {
+  const td = todayISO();
+  let mins = studyLog.filter(x => x.date === td && x.subject.toLowerCase() === subjectName.toLowerCase()).reduce((s, x) => s + x.dur, 0);
+  
+  if (timerRunning && timerGoalId) {
+     const allTasks = [...(dailyTasks.routine || []), ...(dailyTasks.special || [])];
+     const t = allTasks.find(x => x.id === timerGoalId);
+     if (t && t.name.toLowerCase() === subjectName.toLowerCase()) {
+         mins += (timerSecs / 60);
+     }
+  }
+  return mins;
+}
+
+function checkAnyTaskDone(dateObj) {
+  const y = dateObj.getFullYear(), m = dateObj.getMonth(), d = dateObj.getDate();
+  const rDone = (dailyTasks.routine || []).some(t => taskChecks[tcKey(t.id, y, m, d)]);
+  const sDone = (dailyTasks.special || []).some(t => taskChecks[tcKey(t.id, y, m, d)]);
+  return rDone || sDone;
+}
+
+function calcBestStreak() {
+  let max = 0; let curr = 0;
+  let d = new Date(TODAY);
+  for(let i=0; i<365; i++) {
+    if (checkAnyTaskDone(d)) {
+      curr++;
+      if(curr > max) max = curr;
+    } else {
+      curr = 0;
+    }
+    d.setDate(d.getDate() - 1);
+  }
+  return max;
+}
+
+// ===== HIGHLIGHT ROWS LOGIC =====
+function updateGridHighlights() {
+  document.querySelectorAll('.mini-grid tr, .time-goal-card').forEach(el => {
+    el.classList.remove('is-tracking-row');
+    const badge = el.querySelector('.tracking-badge');
+    if (badge) badge.remove();
+    
+    if (timerRunning && timerGoalId && (el.dataset.taskid === timerGoalId)) {
+      el.classList.add('is-tracking-row');
+      const nameTd = el.querySelector('.name-col') || el.querySelector('.goal-name-text');
+      if (nameTd && !nameTd.querySelector('.tracking-badge')) {
+        const b = document.createElement('span');
+        b.className = 'tracking-badge';
+        b.innerHTML = '&nbsp;● TRACKING';
+        nameTd.appendChild(b);
+      }
+    }
+  });
+}
+
+// ===== LIVE PROGRESS BAR UPDATER =====
+function updateLiveProgressBars() {
+  const allTasks = [...(dailyTasks.routine || []), ...(dailyTasks.special || [])];
+  const timeTasks = allTasks.filter(t => t.targetMins > 0);
+  
+  timeTasks.forEach(tg => {
+     const card = document.querySelector(`.time-goal-card[data-taskid="${tg.id}"]`);
+     if (card) {
+         const loggedMins = getTodayLoggedMins(tg.name);
+         const targetMins = tg.targetMins;
+         let pct = Math.min(100, (loggedMins / targetMins) * 100);
+         const isDone = pct >= 100;
+
+         const fill = card.querySelector('.prog-mini-fill');
+         const pctText = card.querySelector('.tg-pct-text');
+         const timeText = card.querySelector('.tg-time-text');
+
+         if (fill) {
+             fill.style.width = pct + '%';
+             fill.style.background = isDone ? 'var(--green)' : 'var(--purple)';
+         }
+         if (pctText) {
+             pctText.textContent = Math.floor(pct) + '%';
+             pctText.style.color = isDone ? 'var(--green)' : 'var(--text)';
+         }
+         if (timeText) {
+             timeText.textContent = `${fmtDur(loggedMins)} / ${fmtDur(targetMins)}`;
+         }
+     }
+  });
+}
+
+// ===== NEW COMPACT SCHEDULE MODAL LOGIC =====
+document.getElementById('schedule-btn').onclick = () => {
+    document.getElementById('schedule-modal').style.display = 'flex';
+    renderScheduleWidget();
+    
+    setTimeout(() => {
+        const liveItem = document.querySelector('#fs-list .is-live');
+        if(liveItem) {
+            liveItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, 150);
+};
+
+document.getElementById('schedule-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'schedule-modal') e.target.style.display = 'none';
+});
+
+document.getElementById('fs-edit-toggle').onclick = () => {
+    const addArea = document.getElementById('fs-add-area');
+    addArea.classList.toggle('open');
+};
+
+function renderScheduleWidget() {
+    const list = document.getElementById('fs-list');
+    const select = document.getElementById('fs-task-select');
+    
+    // Fill Select Dropdown
+    const td = todayISO();
+    const allTasks = [
+        ...(dailyTasks.routine || []), 
+        ...(dailyTasks.special || []).filter(t => !t.date || t.date === td)
+    ];
+    select.innerHTML = '<option value="">-- Select a Task --</option>' + allTasks.map(t => `<option value="${t.name}">${t.name}</option>`).join('');
+
+    // Fill Timeline List
+    let sch = dailyTasks.schedule || [];
+    sch.sort((a,b) => a.start.localeCompare(b.start));
+    
+    if(sch.length === 0) {
+        list.innerHTML = `<div class="empty-state" style="margin-top:40px;">No timeline schedule set. Click Edit to add tasks!</div>`;
+    } else {
+        list.innerHTML = sch.map((item, idx) => `
+            <div class="timeline-item" data-start="${item.start}" data-end="${item.end}">
+                <div class="timeline-time">${item.start} - ${item.end}</div>
+                <div class="timeline-content">
+                    <div class="timeline-title">${item.name} <span class="fs-live-badge">● LIVE NOW</span></div>
+                    <i class="fa-solid fa-trash fs-del" style="cursor:pointer; color:var(--muted); font-size:14px; padding:5px; transition:0.2s;" data-idx="${idx}" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'"></i>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    list.querySelectorAll('.fs-del').forEach(el => {
+        el.onclick = () => {
+            dailyTasks.schedule.splice(el.dataset.idx, 1);
+            saveDT(); renderScheduleWidget();
+        }
+    });
+
+    checkActiveSchedule();
+}
+
+document.getElementById('fs-add-btn').onclick = () => {
+    const name = document.getElementById('fs-task-select').value;
+    const start = document.getElementById('fs-start').value;
+    const end = document.getElementById('fs-end').value;
+    
+    if(!name || !start || !end) return alert('Please select a task and set start/end times!');
+    
+    if(!dailyTasks.schedule) dailyTasks.schedule = [];
+    dailyTasks.schedule.push({name, start, end});
+    saveDT(); renderScheduleWidget();
+    document.getElementById('fs-start').value = '';
+    document.getElementById('fs-end').value = '';
+};
+
+// Lightweight check for Live highlighting
+function checkActiveSchedule() {
+    const now = nowHHMM();
+    document.querySelectorAll('.timeline-item').forEach(row => {
+        const s = row.dataset.start;
+        const e = row.dataset.end;
+        let isActive = false;
+        
+        if (s < e) {
+            if (now >= s && now < e) isActive = true;
+        } else {
+            // Night shift
+            if (now >= s || now < e) isActive = true;
+        }
+
+        if (isActive) row.classList.add('is-live');
+        else row.classList.remove('is-live');
+    });
+}
+
+setInterval(() => {
+    if (document.getElementById('schedule-modal').style.display === 'flex') {
+        checkActiveSchedule();
+    }
+}, 10000);
+
+
+// ===== DRAG AND DROP HANDLERS (Only from Handles!) =====
+let draggedIdx = null, dragType = null;
+
+function setupDragAndDrop(wrap) {
+  wrap.querySelectorAll('.draggable-row').forEach(el => {
+    el.addEventListener('dragstart', function(e) {
+      draggedIdx = parseInt(this.dataset.index);
+      dragType = this.dataset.type;
+      this.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    el.addEventListener('dragend', function() {
+      this.classList.remove('dragging');
+      wrap.querySelectorAll('.draggable-row').forEach(r => r.classList.remove('drag-over'));
+      this.removeAttribute('draggable'); 
+    });
+    el.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      if (this.dataset.type === dragType) this.classList.add('drag-over');
+    });
+    el.addEventListener('dragleave', function() { this.classList.remove('drag-over'); });
+    el.addEventListener('drop', function(e) {
+      e.preventDefault();
+      this.classList.remove('drag-over');
+      const targetIdx = parseInt(this.dataset.index);
+      if (dragType === this.dataset.type && draggedIdx !== null && draggedIdx !== targetIdx) {
+        let arr = null;
+        if (dragType === 'routine') arr = dailyTasks.routine;
+        else if (dragType === 'special') arr = dailyTasks.special;
+        
+        if (arr) {
+          const item = arr.splice(draggedIdx, 1)[0];
+          arr.splice(targetIdx, 0, item);
+          saveDT(); renderAll();
+        }
+      }
+    });
+  });
+}
+
+// ===== FOOTER STATS UPDATE =====
+function updateFooterStats() {
+  const rt = dailyTasks.routine || [];
+  const sp = dailyTasks.special || [];
+  const td = todayISO();
+  const spToday = sp.filter(t => !t.date || t.date === td);
+  
+  const totalGoals = rt.length + spToday.length;
+  document.getElementById('ft-total-goal').textContent = totalGoals;
+
+  const y = TODAY.getFullYear(), m = TODAY.getMonth(), d = TODAY.getDate();
+  const rDone = rt.filter(t => !!taskChecks[tcKey(t.id, y, m, d)]).length;
+  const sDone = spToday.filter(t => !!taskChecks[tcKey(t.id, y, m, d)]).length;
+  
+  const doneToday = rDone + sDone;
+  
+  const pct = totalGoals ? Math.round((doneToday / totalGoals) * 100) : 0;
+  document.getElementById('ft-completion').textContent = pct + '%';
+
+  const bestStreak = calcBestStreak();
+  document.getElementById('ft-best-streak').textContent = bestStreak;
+
+  let monthDone = 0, monthTotal = 0;
+  const days = dim(vY, vM);
+  for (let dd = 1; dd <= days; dd++) {
+    if (!isFuture(vY, vM, dd)) {
+      rt.forEach(t => { monthTotal++; if (taskChecks[tcKey(t.id, vY, vM, dd)]) monthDone++; });
+    }
+  }
+  document.getElementById('ft-done').textContent = `${monthDone}/${monthTotal}`;
+}
+
+// ===== TIME PROGRESS RENDER =====
+function renderTimeProgress() {
+  const wrap = document.getElementById('tg-list-wrap');
+  const panel = document.getElementById('time-goals-panel');
+  if (!wrap || !panel) return;
+
+  const td = todayISO();
+  const allTasks = [
+    ...(dailyTasks.routine || []),
+    ...(dailyTasks.special || []).filter(t => !t.date || t.date === td)
+  ];
+  
+  const timeTasks = allTasks.filter(t => t.targetMins > 0);
+
+  if (!timeTasks.length) {
+    panel.style.display = 'none';
+    return;
+  }
+  
+  panel.style.display = 'block';
+  let h = '';
+  timeTasks.forEach(tg => {
+    const loggedMins = getTodayLoggedMins(tg.name);
+    const targetMins = tg.targetMins;
+    let pct = Math.min(100, (loggedMins / targetMins) * 100);
+    const isDone = pct >= 100;
+    
+    h += `
+    <div class="time-goal-card" data-taskid="${tg.id}">
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+        <div style="font-weight:700; font-size:14px;" class="goal-name-text">${tg.name}</div>
+        <div style="font-size:12px; color:var(--muted); font-weight:600;" class="tg-time-text">${fmtDur(loggedMins)} / ${fmtDur(targetMins)}</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div class="prog-mini-bg" style="height:8px; margin:0;"><div class="prog-mini-fill" style="width:${pct}%; background: ${isDone ? 'var(--green)' : 'var(--purple)'}"></div></div>
+        <div style="font-size:12px; font-weight:800; width:40px; text-align:right; color:${isDone ? 'var(--green)' : 'var(--text)'}" class="tg-pct-text">${Math.floor(pct)}%</div>
+      </div>
+    </div>`;
+  });
+  wrap.innerHTML = h;
+}
+
+
+// ===== MINI DATE GRID RENDER =====
+function renderMiniGrid(tasks, type, y, m, containerId) {
+  const wrap = document.getElementById(containerId);
+  if (!wrap) return;
+  if (!tasks || tasks.length === 0) { wrap.innerHTML = `<div class="empty-state">No ${type === 'routine' ? 'routine' : "today's"} tasks yet.</div>`; return; }
+
+  const days = dim(y, m);
+  let h = `<div class="mini-grid-wrap"><table class="mini-grid"><thead>`;
+  h += `<tr class="gh-row"><th style="min-width:160px;padding:0 12px;text-align:left;font-size:11px;color:var(--muted);">TASK</th>`;
+  for (let d = 1; d <= days; d++) {
+    const dt = new Date(y, m, d); const we = (dt.getDay() === 0 || dt.getDay() === 6);
+    h += `<th class="${we ? 'weekend-hdr' : ''}">${d}<br><span style="font-size:9px;opacity:.6">${DAYS_SHORT[dt.getDay()]}</span></th>`;
+  }
+  h += `<th style="width:44px;font-size:11px;color:var(--muted)">%</th><th style="width:32px"></th></tr></thead><tbody>`;
+
+  tasks.forEach((task, idx) => {
+    let done = 0, total = 0;
+    for (let d = 1; d <= days; d++) {
+      if (!isFuture(y, m, d)) { total++; if (taskChecks[tcKey(task.id, y, m, d)]) done++; }
+    }
+    const pct = total ? Math.round(done / total * 100) : 0;
+    const todayDone = taskChecks[tcKey(task.id, TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate())];
+
+    h += `<tr class="draggable-row" data-index="${idx}" data-taskid="${task.id}" data-type="${type}">
+      <td class="name-col${todayDone ? ' done-name' : ''}">
+        <span class="drag-handle" title="Drag to reorder" onmousedown="this.closest('tr').setAttribute('draggable', true)" onmouseup="this.closest('tr').removeAttribute('draggable')" onmouseleave="this.closest('tr').removeAttribute('draggable')">⋮</span> 
+        ${task.name} ${task.targetMins ? `<span style="font-size:10px;color:var(--purple);font-weight:700;margin-left:4px;">(${fmtDur(task.targetMins)})</span>` : ''}
+      </td>`;
+
+    for (let d = 1; d <= days; d++) {
+      const checked = !!taskChecks[tcKey(task.id, y, m, d)];
+      const fut = isFuture(y, m, d); const tod = isToday(y, m, d);
+      let cls = 'day-cell';
+      if (fut) cls += ' future-cell';
+      else if (checked && tod) cls += ' done-cell today-cell';
+      else if (checked) cls += ' done-cell';
+      else if (tod) cls += ' today-cell';
+      h += `<td class="${cls}" data-d="${d}" data-tid="${task.id}" data-y="${y}" data-m="${m}">${checked ? '✓' : ''}</td>`;
+    }
+    h += `<td class="pct-col">${pct}%</td><td class="del-col" data-taskid="${task.id}" data-type="${type}"><i class="fa-solid fa-xmark"></i></td></tr>`;
+  });
+
+  h += `</tbody></table></div>`;
+  wrap.innerHTML = h;
+
+  wrap.querySelectorAll('.day-cell:not(.future-cell)').forEach(el => {
+    el.addEventListener('click', () => {
+      const k = tcKey(el.dataset.tid, el.dataset.y, el.dataset.m, el.dataset.d);
+      if (taskChecks[k]) delete taskChecks[k]; else taskChecks[k] = 1;
+      saveChecks(); renderAll();
+    });
+  });
+
+  wrap.querySelectorAll('.del-col').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.taskid, tp = el.dataset.type;
+      const taskName = el.closest('tr').querySelector('.name-col').textContent.replace('⋮', '').split('(')[0].trim();
+      
+      if (!confirm(`Are you sure you want to delete "${taskName}"?`)) return;
+
+      let deletedItem = null;
+      let deletedIdx = -1;
+
+      if (tp === 'routine') {
+        deletedIdx = dailyTasks.routine.findIndex(x => x.id === id);
+        if(deletedIdx > -1) deletedItem = dailyTasks.routine.splice(deletedIdx, 1)[0];
+      } else {
+        deletedIdx = dailyTasks.special.findIndex(x => x.id === id);
+        if(deletedIdx > -1) deletedItem = dailyTasks.special.splice(deletedIdx, 1)[0];
+      }
+
+      if (deletedItem) {
+        saveDT(); renderAll();
+        showUndoToast(`Deleted "${deletedItem.name}"`, () => {
+          if (tp === 'routine') dailyTasks.routine.splice(deletedIdx, 0, deletedItem);
+          else dailyTasks.special.splice(deletedIdx, 0, deletedItem);
+          saveDT(); renderAll();
+        });
+      }
+    });
+  });
+
+  setupDragAndDrop(wrap);
+}
+
+function renderSpecialGrid() {
+  const wrap = document.getElementById('ts-grid-wrap'); if (!wrap) return;
+  const td = todayISO(); const tasks = (dailyTasks.special || []).filter(t => !t.date || t.date === td);
+  if (!tasks.length) { wrap.innerHTML = `<div class="empty-state">No special tasks for today.</div>`; return; }
+
+  const y = TODAY.getFullYear(), m = TODAY.getMonth(), d = TODAY.getDate();
+  let h = `<div class="mini-grid-wrap"><table class="mini-grid"><thead><tr class="gh-row">
+      <th style="min-width:180px;padding:0 12px;text-align:left;font-size:11px;color:var(--muted);">TODAY'S TASK</th>
+      <th style="min-width:44px;text-align:center;font-size:11px;color:var(--muted);">TODAY</th>
+      <th style="width:44px;font-size:11px;color:var(--muted)">STATUS</th>
+      <th style="width:32px"></th></tr></thead><tbody>`;
+
+  tasks.forEach((task, idx) => {
+    const checked = !!taskChecks[tcKey(task.id, y, m, d)];
+    h += `<tr class="draggable-row" data-index="${idx}" data-taskid="${task.id}" data-type="special">
+      <td class="name-col${checked ? ' done-name' : ''}">
+        <span class="drag-handle" title="Drag to reorder" onmousedown="this.closest('tr').setAttribute('draggable', true)" onmouseup="this.closest('tr').removeAttribute('draggable')" onmouseleave="this.closest('tr').removeAttribute('draggable')">⋮</span> 
+        ${task.name} ${task.targetMins ? `<span style="font-size:10px;color:var(--yellow);font-weight:700;margin-left:4px;">(${fmtDur(task.targetMins)})</span>` : ''}
+      </td>
+      <td class="day-cell${checked ? ' done-cell today-cell' : ' today-cell'}" data-tid="${task.id}" data-y="${y}" data-m="${m}" data-d="${d}" style="cursor:pointer">${checked ? '✓' : ''}</td>
+      <td class="pct-col" style="font-size:12px;color:${checked ? 'var(--green)' : 'var(--muted)'}">${checked ? 'Done' : '—'}</td>
+      <td class="del-col" data-taskid="${task.id}" data-type="special"><i class="fa-solid fa-xmark"></i></td>
+    </tr>`;
+  });
+
+  h += `</tbody></table></div>`; wrap.innerHTML = h;
+
+  wrap.querySelectorAll('.day-cell').forEach(el => {
+    el.addEventListener('click', () => {
+      const k = tcKey(el.dataset.tid, el.dataset.y, el.dataset.m, el.dataset.d);
+      if (taskChecks[k]) delete taskChecks[k]; else taskChecks[k] = 1;
+      saveChecks(); renderAll();
+    });
+  });
+
+  wrap.querySelectorAll('.del-col').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.taskid;
+      const taskName = el.closest('tr').querySelector('.name-col').textContent.replace('⋮', '').split('(')[0].trim();
+      
+      if (!confirm(`Are you sure you want to delete "${taskName}"?`)) return;
+
+      const deletedIdx = dailyTasks.special.findIndex(x => x.id === id);
+      if(deletedIdx > -1) {
+        const deletedItem = dailyTasks.special.splice(deletedIdx, 1)[0];
+        saveDT(); renderAll();
+        showUndoToast(`Deleted "${deletedItem.name}"`, () => {
+          dailyTasks.special.splice(deletedIdx, 0, deletedItem);
+          saveDT(); renderAll();
+        });
+      }
+    });
+  });
+
+  setupDragAndDrop(wrap);
+}
+
+function renderProgress() {
+  const area = document.getElementById('task-progress-area'); if (!area) return;
+  const td = todayISO(), y = TODAY.getFullYear(), m = TODAY.getMonth(), d = TODAY.getDate();
+  const rt = dailyTasks.routine || [], sp = (dailyTasks.special || []).filter(t => !t.date || t.date === td);
+  
+  const rDone = rt.filter(t => !!taskChecks[tcKey(t.id, y, m, d)]).length;
+  const sDone = sp.filter(t => !!taskChecks[tcKey(t.id, y, m, d)]).length;
+
+  const rPct = rt.length ? Math.round(rDone / rt.length * 100) : 0;
+  const sPct = sp.length ? Math.round(sDone / sp.length * 100) : 0;
+  
+  const total = rt.length + sp.length, done = rDone + sDone, allPct = total ? Math.round(done / total * 100) : 0;
+
+  let html = `
+    <div class="prog-mini"><span class="prog-mini-label" style="color:var(--blue)">Routine</span>
+      <div class="prog-mini-bg"><div class="prog-mini-fill" style="width:${rPct}%;background:var(--blue)"></div></div>
+      <span class="prog-mini-num">${rDone}/${rt.length}</span>
+    </div>
+    <div class="prog-mini"><span class="prog-mini-label" style="color:var(--yellow)">Today</span>
+      <div class="prog-mini-bg"><div class="prog-mini-fill" style="width:${sPct}%;background:var(--yellow)"></div></div>
+      <span class="prog-mini-num">${sDone}/${sp.length}</span>
+    </div>
+    <div style="margin-top:16px;font-size:14px;color:var(--muted);font-weight:500;">
+      Overall today: <b style="color:var(--text);font-size:16px">${allPct}%</b> complete
+      ${allPct === 100 && total > 0 ? ' 🎉' : ''}
+    </div>`;
+
+  area.innerHTML = html;
+  
+  if (allPct === 100 && total > 0) {
+      if (localStorage.getItem('gt_confetti_date') !== td) {
+          confetti({ particleCount: 100, spread: 70, origin: { y: 0.3 } });
+          localStorage.setItem('gt_confetti_date', td);
+      }
+  } else {
+      if (localStorage.getItem('gt_confetti_date') === td) {
+          localStorage.removeItem('gt_confetti_date');
+      }
+  }
+}
+
+function renderTodayStrip() {
+  const strip = document.getElementById('today-strip'); if (!strip) return;
+  const td = todayISO(), y = TODAY.getFullYear(), m = TODAY.getMonth(), d = TODAY.getDate();
+  const rt = dailyTasks.routine || [], sp = (dailyTasks.special || []).filter(t => !t.date || t.date === td);
+  
+  const rDone = rt.filter(t => !!taskChecks[tcKey(t.id, y, m, d)]).length;
+  const sDone = sp.filter(t => !!taskChecks[tcKey(t.id, y, m, d)]).length;
+  
+  const total = rt.length + sp.length, done = rDone + sDone;
+  const dateStr = TODAY.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+
+  strip.innerHTML = `
+    <span style="font-size:13px;color:var(--muted);font-family:var(--font-mono);">${dateStr}</span>
+    <span class="strip-badge blue"><i class="fa-solid fa-rotate"></i> Routine ${rDone}/${rt.length}</span>
+    <span class="strip-badge yellow"><i class="fa-solid fa-star"></i> Today ${sDone}/${sp.length}</span>
+    <span class="strip-badge green" style="margin-left:auto"><i class="fa-solid fa-fire"></i> All: ${total ? Math.round(done / total * 100) : 0}%</span>
+  `;
+}
+
+function updateCharts() {
+  const isLight = document.body.classList.contains('theme-light');
+  const isSpidey = document.body.classList.contains('theme-spidey');
+  const tc = isSpidey ? '#ffffff' : (isLight ? '#111' : '#e2e2f0');
+  const mc = isSpidey ? 'rgba(255,255,255,0.7)' : (isLight ? '#666677' : '#7a7a92');
+  const gridColor = isSpidey ? 'rgba(255,255,255,0.2)' : (isLight ? '#e0e0ea' : '#23232e');
+  const chartBg = isSpidey ? 'rgba(255,255,255,0.1)' : (isLight ? 'rgba(0,0,0,.05)' : 'rgba(255,255,255,.05)');
+
+  const td = todayISO(), y = TODAY.getFullYear(), m = TODAY.getMonth(), d = TODAY.getDate();
+  const rt = dailyTasks.routine || [], sp = (dailyTasks.special || []).filter(t => !t.date || t.date === td);
+  const total = rt.length + sp.length;
+  const done = rt.filter(t => !!taskChecks[tcKey(t.id, y, m, d)]).length + 
+               sp.filter(t => !!taskChecks[tcKey(t.id, y, m, d)]).length;
+
+  document.getElementById('today-pct').textContent = (total ? Math.round(done / total * 100) : 0) + '%';
+  document.getElementById('today-sub').textContent = `${done} of ${total} tasks done`;
+
+  let monthDone = 0, monthTotal = 0;
+  const days = dim(vY, vM);
+  for (let dd = 1; dd <= days; dd++) {
+    if (!isFuture(vY, vM, dd)) {
+      (dailyTasks.routine || []).forEach(t => { monthTotal++; if (taskChecks[tcKey(t.id, vY, vM, dd)]) monthDone++; });
+    }
+  }
+  document.getElementById('avg-pct').textContent = (monthTotal ? +(monthDone / monthTotal * 100).toFixed(1) : 0) + '%';
+  document.getElementById('streak-txt').textContent = `${MONTHS[vM]} ${vY}`;
+  
+  const l7L = [], l7D = [];
+  for (let i = 6; i >= 0; i--) {
+    const dt = new Date(); dt.setDate(dt.getDate() - i);
+    const dy = dt.getFullYear(), dm = dt.getMonth(), dd = dt.getDate();
+    const rtDone = (dailyTasks.routine || []).filter(t => !!taskChecks[tcKey(t.id, dy, dm, dd)]).length;
+    l7D.push((dailyTasks.routine || []).length ? Math.round(rtDone / (dailyTasks.routine || []).length * 100) : 0);
+    l7L.push(dt.toLocaleDateString('en-US', { weekday: 'short' }));
+  }
+
+  if (dailyChart) {
+    dailyChart.data.labels = l7L; dailyChart.data.datasets[0].data = l7D;
+    dailyChart.data.datasets[0].backgroundColor = tc; dailyChart.update();
+  } else {
+    dailyChart = new Chart(document.getElementById('daily-chart'), {
+      type: 'bar', data: { labels: l7L, datasets: [{ data: l7D, borderRadius: 6, backgroundColor: tc }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: mc, font: { size: 11, family: "'Inter', sans-serif" } } }, y: { display: false, max: 100 } } }
+    });
+  }
+
+  const wL = [], wD = [];
+  for (let dd = 1; dd <= days; dd += 7) {
+    wL.push(`${MONTHS[vM].slice(0, 3)} ${dd}`);
+    let wd = 0, wt = 0;
+    for (let ddd = dd; ddd < dd + 7 && ddd <= days; ddd++) {
+      if (!isFuture(vY, vM, ddd)) { (dailyTasks.routine || []).forEach(t => { wt++; if (taskChecks[tcKey(t.id, vY, vM, ddd)]) wd++; }); }
+    }
+    wD.push(wt ? Math.round(wd / wt * 100) : 0);
+  }
+
+  if (lineChart) {
+    lineChart.data.labels = wL; lineChart.data.datasets[0].data = wD;
+    lineChart.data.datasets[0].borderColor = tc; lineChart.data.datasets[0].backgroundColor = chartBg;
+    lineChart.options.scales.x.ticks.color = mc;
+    lineChart.options.scales.y.ticks.color = mc;
+    lineChart.options.scales.y.grid.color = gridColor;
+    lineChart.update();
+  } else {
+    lineChart = new Chart(document.getElementById('line-chart'), {
+      type: 'line', data: { labels: wL, datasets: [{ data: wD, borderColor: tc, backgroundColor: chartBg, fill: true, tension: .4, pointRadius: 4, pointBackgroundColor: tc }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: mc, font: { size: 11, family: "'Inter', sans-serif" } } }, y: { min: 0, max: 100, ticks: { color: mc, font: { size: 11, family: "'Inter', sans-serif" }, grid: { color: gridColor } } } }
+    }});
+  }
+
+  renderStopReasons();
+}
+
+function renderStopReasons() {
+  const body = document.getElementById('stop-body'); if (!body) return;
+  const entries = Object.entries(stopReasons);
+  if (!entries.length) { body.innerHTML = '<div style="color:var(--muted);font-size:13px;font-weight:500;">Stop the timer to see reasons here.</div>'; return; }
+  const total = entries.reduce((s, [, v]) => s + v, 0);
+  const sorted = [...entries].sort((a, b) => b[1] - a[1]);
+  const icons = { Break: '☕', Distracted: '📱', Done: '✅', Emergency: '🚨', Other: '💭' };
+  let h = `<div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;">Total stops: <b style="color:var(--text)">${total}</b></div>`;
+  sorted.forEach(([r, c]) => {
+    const pct = Math.round(c / total * 100);
+    h += `<div class="reason-row"><div class="reason-hdr"><span>${icons[r] || '💭'} ${r}</span><span style="color:var(--muted)">${c}x · ${pct}%</span></div><div class="reason-bg"><div class="reason-fill" style="width:${pct}%"></div></div></div>`;
+  });
+  body.innerHTML = h;
+}
+
+// ===== RENDER ALL =====
+function renderAll() {
+  renderMiniGrid(dailyTasks.routine || [], 'routine', vY, vM, 'dt-grid-wrap');
+  renderSpecialGrid();
+  renderTimeProgress();
+  renderProgress();
+  renderTodayStrip();
+  updateCharts();
+  updateTimerGoalTag();
+  setupSelectors();
+  updateGridHighlights();
+  updateFooterStats();
+  renderScheduleWidget();
+}
+
+// ===== SELECTORS =====
+function setupSelectors() {
+  const ms = document.getElementById('m-sel'), ys = document.getElementById('y-sel');
+  if (!ms || !ys) return;
+  ms.innerHTML = ''; ys.innerHTML = '';
+  MONTHS.forEach((m, i) => { const o = document.createElement('option'); o.value = i; o.textContent = m; if (i === vM) o.selected = true; ms.appendChild(o); });
+  for (let y = 2020; y <= 2035; y++) { const o = document.createElement('option'); o.value = y; o.textContent = y; if (y === vY) o.selected = true; ys.appendChild(o); }
+  
+  ms.onchange = () => { vM = parseInt(ms.value); updateCharts(); renderMiniGrid(dailyTasks.routine || [], 'routine', vY, vM, 'dt-grid-wrap'); updateGridHighlights(); updateFooterStats(); };
+  ys.onchange = () => { vY = parseInt(ys.value); updateCharts(); renderMiniGrid(dailyTasks.routine || [], 'routine', vY, vM, 'dt-grid-wrap'); updateGridHighlights(); updateFooterStats(); };
+}
+
+document.getElementById('prev-m').addEventListener('click', () => { vM--; if (vM < 0) { vM = 11; vY--; } setupSelectors(); updateCharts(); renderMiniGrid(dailyTasks.routine || [], 'routine', vY, vM, 'dt-grid-wrap'); updateGridHighlights(); updateFooterStats(); });
+document.getElementById('next-m').addEventListener('click', () => { vM++; if (vM > 11) { vM = 0; vY++; } setupSelectors(); updateCharts(); renderMiniGrid(dailyTasks.routine || [], 'routine', vY, vM, 'dt-grid-wrap'); updateGridHighlights(); updateFooterStats(); });
+
+// ===== TIMER LOGIC =====
+function updateTimerModeIcon() {
+  const btn = document.getElementById('timer-mode-btn');
+  if(timerMode === 'stopwatch') btn.innerHTML = '⏱️';
+  else if(timerMode === 'pomo25') btn.innerHTML = '🍅';
+  else if(timerMode === 'pomo5') btn.innerHTML = '☕';
+  updateTimerDisplay();
+}
+
+document.getElementById('timer-mode-btn').addEventListener('click', () => {
+  if (timerRunning || breakRunning) return alert("Stop timer first to change mode!");
+  if (timerMode === 'stopwatch') timerMode = 'pomo25';
+  else if (timerMode === 'pomo25') timerMode = 'pomo5';
+  else timerMode = 'stopwatch';
+  timerSecs = 0;
+  saveTimer(); updateTimerModeIcon();
+});
+
+function updateTimerGoalTag() {
+  const tag = document.getElementById('timer-goal-tag');
+  if (timerGoalId) {
+    const all = [...(dailyTasks.routine || []), ...(dailyTasks.special || [])];
+    const t = all.find(x => x.id === timerGoalId);
+    if (t) { tag.textContent = t.name; tag.classList.add('visible'); return; }
+  }
+  tag.classList.remove('visible');
+}
+
+function showGoalPicker(onPick) {
+  const modal = document.getElementById('goal-pick-modal'), grid = document.getElementById('goal-pick-grid');
+  grid.innerHTML = '';
+  const td = todayISO(), all = [ 
+      ...(dailyTasks.routine || []), 
+      ...(dailyTasks.special || []).filter(t => !t.date || t.date === td)
+  ];
+  if (!all.length) { onPick(null); return; }
+  all.forEach(t => {
+    const btn = document.createElement('button'); btn.className = 'goal-pick-btn';
+    btn.innerHTML = `<i class="fa-solid fa-check-circle" style="color:var(--muted)"></i><span>${t.name}</span>`;
+    btn.onclick = () => { modal.style.display = 'none'; onPick(t.id); }; grid.appendChild(btn);
+  });
+  modal.style.display = 'flex';
+  document.getElementById('goal-pick-skip').onclick = () => { modal.style.display = 'none'; onPick(null); };
+  modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+}
+
+function setTimerUIState(isRunning) {
+  const wrap = document.getElementById('timer-wrap');
+  const label = document.getElementById('timer-label');
+  const icon = document.getElementById('timer-icon');
+  const digits = document.getElementById('timer-digits');
+  
+  wrap.classList.remove('is-tracking', 'is-break');
+  digits.style.color = 'var(--text)';
+  
+  if (breakRunning) {
+    wrap.classList.add('is-break');
+    label.textContent = 'End Break';
+    icon.className = 'fa-solid fa-play';
+    digits.style.color = 'var(--yellow)';
+  } else if (isRunning) {
+    wrap.classList.add('is-tracking');
+    label.textContent = 'Stop';
+    icon.className = 'fa-solid fa-stop';
+  } else {
+    label.textContent = timerSecs > 0 ? 'Resume' : 'Start';
+    icon.className = 'fa-solid fa-play';
+  }
+  updateGridHighlights();
+}
+
+function updateTimerDisplay() {
+  let displaySecs = timerSecs;
+  
+  if (breakRunning) {
+      displaySecs = Math.floor((Date.now() - breakStartedAt) / 1000);
+      document.getElementById('tracking-dot').textContent = '☕ ON BREAK';
+  } else {
+      document.getElementById('tracking-dot').textContent = '● TRACKING';
+      let limit = 0;
+      if(timerMode === 'pomo25') limit = 25 * 60;
+      if(timerMode === 'pomo5') limit = 5 * 60;
+
+      if(limit > 0) {
+        displaySecs = limit - timerSecs;
+        if(displaySecs < 0) displaySecs = 0;
+      }
+  }
+
+  const h = pad(Math.floor(displaySecs / 3600)), m = pad(Math.floor((displaySecs % 3600) / 60)), s = pad(displaySecs % 60);
+  if (!breakRunning && (timerMode === 'pomo25' || timerMode === 'pomo5') && h === '00') {
+      document.getElementById('timer-digits').textContent = `${m}:${s}`;
+  } else {
+      document.getElementById('timer-digits').textContent = `${h}:${m}:${s}`;
+  }
+}
+
+function checkPomodoroLimit() {
+  let limit = 0;
+  if(timerMode === 'pomo25') limit = 25 * 60;
+  if(timerMode === 'pomo5') limit = 5 * 60;
+
+  if (limit > 0 && timerSecs >= limit) {
+    document.getElementById('timer-btn').click(); 
+  }
+}
+
+function runTicker() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => { 
+    if (timerRunning) {
+        timerSecs = timerBaseSecs + Math.floor((Date.now() - timerStartedAt) / 1000); 
+        checkPomodoroLimit();
+        if (timerSecs % 60 === 0) updateLiveProgressBars();
+    }
+    
+    updateTimerDisplay(); 
+    
+    const totalActiveSecs = timerSecs + (breakRunning ? Math.floor((Date.now() - breakStartedAt)/1000) : 0);
+    if (totalActiveSecs % 10 === 0) saveTimer(); 
+  }, 1000);
+}
+
+function stopTimerLogic() {
+  timerBaseSecs = timerSecs;
+  timerRunning = false;
+  timerStartedAt = 0;
+  saveTimer();
+}
+
+function showStopModal(onSelect) {
+  const modal = document.getElementById('stop-modal'), sub = document.getElementById('stop-modal-sub');
+  if (timerGoalId) {
+    const all = [...(dailyTasks.routine || []), ...(dailyTasks.special || [])];
+    const t = all.find(x => x.id === timerGoalId);
+    sub.innerHTML = t ? `Tracking: <b style="color:var(--text)">${t.name}</b>` : 'Pick a reason';
+  } else { sub.textContent = 'Pick a reason'; }
+  modal.onclick = (e) => {
+    if (e.target === modal) {
+      modal.style.display = 'none';
+      if (!timerRunning) { 
+          timerStartedAt = Date.now();
+          timerRunning = true; 
+          runTicker();
+          saveTimer(); 
+          setTimerUIState(true);
+      }
+    }
+  };
+  modal.style.display = 'flex';
+  modal.querySelectorAll('.r-btn').forEach(btn => {
+    const fresh = btn.cloneNode(true); btn.parentNode.replaceChild(fresh, btn);
+    fresh.onclick = () => { modal.style.display = 'none'; onSelect(fresh.dataset.r); };
+  });
+}
+
+document.getElementById('timer-btn').addEventListener('click', () => {
+  if (breakRunning) {
+      const breakMins = Math.round((Date.now() - breakStartedAt) / 60000);
+      if (breakMins >= 1) {
+          const endNow = new Date();
+          const startDt = new Date(breakStartedAt);
+          const endT = pad(endNow.getHours()) + ':' + pad(endNow.getMinutes()), startT = pad(startDt.getHours()) + ':' + pad(startDt.getMinutes());
+          const dateStr = startDt.toISOString().slice(0, 10);
+          const subj = currentBreakReason === 'Break' ? 'Break' : `Break (${currentBreakReason})`;
+          
+          studyLog.push({ date: dateStr, subject: subj, start: startT, end: endT, dur: breakMins, auto: true }); 
+          saveSL(); renderStudyLog();
+          showToast(`☕ Break of ${fmtDur(breakMins)} logged`);
+      }
+      breakRunning = false; breakStartedAt = 0; currentBreakReason = '';
+      
+      timerStartedAt = Date.now(); timerRunning = true;
+      runTicker(); saveTimer(); setTimerUIState(true);
+      return;
+  }
+
+  if (!timerRunning && timerSecs === 0) {
+    showGoalPicker((goalId) => {
+      timerGoalId = goalId; timerBaseSecs = 0; timerStartedAt = Date.now();
+      timerRunning = true; runTicker(); 
+      saveTimer(); updateTimerGoalTag(); updateGridHighlights(); setTimerUIState(true);
+    });
+  } else if (timerRunning) {
+    stopTimerLogic(); setTimerUIState(false);
+    
+    showStopModal(reason => {
+      stopReasons[reason] = (stopReasons[reason] || 0) + 1; saveSR(); renderStopReasons();
+      
+      if (reason === 'Done') {
+        const mins = Math.round(timerSecs / 60);
+        if (mins >= 1) {
+          const endNow = new Date();
+          const startDt = new Date(endNow.getTime() - timerSecs * 1000);
+          const endT = pad(endNow.getHours()) + ':' + pad(endNow.getMinutes()), startT = pad(startDt.getHours()) + ':' + pad(startDt.getMinutes());
+          const dateStr = startDt.toISOString().slice(0, 10);
+          let subjectName = 'Focus Session';
+          if (timerGoalId) { const all = [...(dailyTasks.routine || []), ...(dailyTasks.special || [])]; const t = all.find(x => x.id === timerGoalId); if (t) subjectName = t.name; }
+          studyLog.push({ date: dateStr, subject: subjectName, start: startT, end: endT, dur: mins, auto: true }); saveSL();
+          
+          if (timerGoalId) {
+            const allTasks = [...(dailyTasks.routine || []), ...(dailyTasks.special || [])];
+            if (allTasks.find(x => x.id === timerGoalId)) {
+                const k = tcKey(timerGoalId, TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate());
+                if (!taskChecks[k]) { taskChecks[k] = 1; saveChecks(); showToast(`✅ "${subjectName}" marked done + logged`); }
+                else showToast(`✓ ${fmtDur(mins)} of "${subjectName}" saved`);
+            } else { showToast(`✓ ${fmtDur(mins)} saved to Study Log`); }
+          } else showToast(`✓ ${fmtDur(mins)} saved to Study Log`);
+        }
+        
+        timerBaseSecs = 0; timerSecs = 0; timerGoalId = null; timerStartedAt = 0; timerRunning = false;
+        clearInterval(timerInterval); updateTimerDisplay(); setTimerUIState(false);
+        document.getElementById('timer-goal-tag').classList.remove('visible'); saveTimer();
+        if (currentView === 'studylog') renderStudyLog(); else renderAll();
+      } else {
+        breakRunning = true; breakStartedAt = Date.now(); currentBreakReason = reason;
+        saveTimer(); runTicker(); setTimerUIState(false); updateTimerGoalTag();
+      }
+    });
+  } else {
+    timerStartedAt = Date.now(); timerRunning = true; 
+    runTicker(); saveTimer(); updateTimerGoalTag(); updateGridHighlights(); setTimerUIState(true);
+  }
+});
+
+document.getElementById('timer-reset').addEventListener('click', () => {
+  if (!confirm('Reset timer?')) return;
+  stopTimerLogic();
+  breakRunning = false; breakStartedAt = 0; currentBreakReason = '';
+  timerBaseSecs = 0; timerSecs = 0; timerGoalId = null; timerStartedAt = 0; timerRunning = false;
+  updateTimerDisplay(); setTimerUIState(false);
+  document.getElementById('timer-goal-tag').classList.remove('visible');
+  ['gt_tsecs', 'gt_tbase', 'gt_trunning', 'gt_tstart', 'gt_tgoal', 'gt_brunning', 'gt_bstart', 'gt_breason'].forEach(k => localStorage.removeItem(k));
+  renderTimeProgress(); 
+});
+
+// ===== TASK ADD EVENTS =====
+document.getElementById('dt-add-btn').addEventListener('click', () => {
+  const inp = document.getElementById('dt-input'), name = inp.value.trim(); 
+  const hrsInput = document.getElementById('dt-hrs').value;
+  const minsInput = document.getElementById('dt-mins').value;
+  if (!name) return;
+  
+  const task = { id: 'dt' + Date.now(), name };
+  const totalMins = Math.round((parseFloat(hrsInput) || 0) * 60 + (parseFloat(minsInput) || 0));
+  if (totalMins > 0) task.targetMins = totalMins;
+  
+  dailyTasks.routine.push(task); saveDT(); 
+  inp.value = ''; document.getElementById('dt-hrs').value = ''; document.getElementById('dt-mins').value = ''; renderAll();
+});
+document.getElementById('dt-input').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('dt-add-btn').click(); });
+document.getElementById('dt-mins').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('dt-add-btn').click(); });
+
+document.getElementById('ts-add-btn').addEventListener('click', () => {
+  const inp = document.getElementById('ts-input'), name = inp.value.trim(); 
+  const hrsInput = document.getElementById('ts-hrs').value;
+  const minsInput = document.getElementById('ts-mins').value;
+  if (!name) return;
+  
+  if (!dailyTasks.special) dailyTasks.special = [];
+  const task = { id: 'ts' + Date.now(), name, date: todayISO() };
+  const totalMins = Math.round((parseFloat(hrsInput) || 0) * 60 + (parseFloat(minsInput) || 0));
+  if (totalMins > 0) task.targetMins = totalMins;
+  
+  dailyTasks.special.push(task); saveDT(); 
+  inp.value = ''; document.getElementById('ts-hrs').value = ''; document.getElementById('ts-mins').value = ''; renderAll();
+});
+document.getElementById('ts-input').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('ts-add-btn').click(); });
+document.getElementById('ts-mins').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('ts-add-btn').click(); });
+
+// ===== CALENDAR & STUDY LOG RE-RENDERS =====
+function renderCalendar() {
+  const cv = document.getElementById('cal-view'); cv.innerHTML = '';
+  const days = dim(vY, vM), firstDay = new Date(vY, vM, 1).getDay();
+  const wrap = document.createElement('div'); wrap.className = 'cal-grid';
+  ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(d => { const el = document.createElement('div'); el.className = 'cal-head'; el.textContent = d; wrap.appendChild(el); });
+  for (let i = 0; i < firstDay; i++) { const e = document.createElement('div'); wrap.appendChild(e); }
+  const rt = dailyTasks.routine || [], td = todayISO(), sp = (dailyTasks.special || []).filter(t => !t.date || t.date === td);
+  for (let d = 1; d <= days; d++) {
+    const box = document.createElement('div'); box.className = 'cal-cell' + (isToday(vY, vM, d) ? ' today' : '');
+    let html = `<div class="cal-date">${d}</div>`;
+    rt.forEach(t => { const done = !!taskChecks[tcKey(t.id, vY, vM, d)]; html += `<span class="cal-chip ${done ? 'routine-done' : 'miss'}">${t.name}</span>`; });
+    if (isToday(vY, vM, d)) { sp.forEach(t => { const done = !!taskChecks[tcKey(t.id, vY, vM, d)]; html += `<span class="cal-chip ${done ? 'special-done' : 'miss'}">${t.name}</span>`; }); }
+    box.innerHTML = html; wrap.appendChild(box);
+  }
+  cv.appendChild(wrap);
+}
+
+function renderStudyLog() {
+  const view = document.getElementById('sl-view'); if (!view) return;
+  const ts = todayISO(), todayM = studyLog.filter(x => x.date === ts).reduce((s, x) => s + x.dur, 0), totalM = studyLog.reduce((s, x) => s + x.dur, 0);
+  const subMap = {}; studyLog.forEach(x => { subMap[x.subject] = (subMap[x.subject] || 0) + x.dur; });
+  const subs = Object.keys(subMap), sorted = [...studyLog].sort((a, b) => new Date(b.date + ' ' + b.start) - new Date(a.date + ' ' + a.start));
+  const l7L = [], l7D = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i); const ds = d.toISOString().slice(0, 10);
+    l7D.push(+(studyLog.filter(x => x.date === ds).reduce((s, x) => s + x.dur, 0) / 60).toFixed(1));
+    l7L.push(d.toLocaleDateString('en-US', { weekday: 'short' }));
+  }
+  view.innerHTML = `
+  <div class="sl-title">Study / Focus Log</div>
+  <div class="sl-form">
+    <div class="sl-field"><label>Date</label><input type="date" class="sl-input" id="sl-date" value="${ts}"/></div>
+    <div class="sl-field"><label>Subject</label><input type="text" class="sl-input" id="sl-subj" placeholder="e.g. Maths..."/></div>
+    <div class="sl-field"><label>Start</label><div style="display:flex;gap:5px"><input type="time" class="sl-input" id="sl-start" style="flex:1"/><button class="now-btn" onclick="document.getElementById('sl-start').value=nowHHMM()">Now</button></div></div>
+    <div class="sl-field"><label>End</label><div style="display:flex;gap:5px"><input type="time" class="sl-input" id="sl-end" style="flex:1"/><button class="now-btn" onclick="document.getElementById('sl-end').value=nowHHMM()">Now</button></div></div>
+    <button class="btn primary" id="sl-add-btn" style="align-self:flex-end;padding:9px 18px;font-size:14px;"><i class="fa-solid fa-plus"></i> Add</button>
+  </div>
+  <div class="sl-stats">
+    <div class="sl-stat"><div class="card-label">Today</div><div class="sl-val">${fmtDur(todayM)}</div></div>
+    <div class="sl-stat"><div class="card-label">Total</div><div class="sl-val">${fmtDur(totalM)}</div></div>
+    <div class="sl-stat"><div class="card-label">Sessions</div><div class="sl-val">${studyLog.length}</div></div>
+    <div class="sl-stat"><div class="card-label">Subjects</div><div class="sl-val">${subs.length}</div></div>
+  </div>
+  <div class="sl-charts">
+    <div class="sl-chart-card"><div class="card-label">Daily Hours (7 days)</div><div class="sl-chart-wrap"><canvas id="sl-bar-c"></canvas></div></div>
+    <div class="sl-chart-card"><div class="card-label">By Subject</div><div class="sl-chart-wrap"><canvas id="sl-donut-c"></canvas></div></div>
+  </div>
+  <div class="sl-list">
+    <div class="card-label" style="margin-bottom:12px;">All Sessions</div>
+    ${sorted.length === 0 ? `<div class="sl-empty">No sessions yet. Add one above or use the timer!</div>` :
+      sorted.map(s => {
+        const isBreak = s.subject.startsWith('Break');
+        return `<div class="sl-row">
+          <div class="sl-date2">${s.date}</div>
+          <div class="sl-subj" style="${isBreak ? 'color:var(--yellow); font-weight:600;' : ''}">${s.subject}</div>
+          <div class="sl-time2">${s.start} → ${s.end}</div>
+          <div class="sl-dur2">${fmtDur(s.dur)}</div>
+          ${s.auto ? '<span class="sl-auto-badge">Auto</span>' : ''}
+          <div class="sl-del2" data-idx="${studyLog.indexOf(s)}"><i class="fa-solid fa-trash"></i></div>
+        </div>`;
+      }).join('')}
+  </div>`;
+
+  document.getElementById('sl-add-btn').onclick = () => {
+    const date = document.getElementById('sl-date').value, subject = document.getElementById('sl-subj').value.trim();
+    const start = document.getElementById('sl-start').value, end = document.getElementById('sl-end').value;
+    if (!date || !subject || !start || !end) { alert('Fill all fields!'); return; }
+    const dur = calcDur(start, end); if (dur <= 0) { alert('End time must be after start!'); return; }
+    studyLog.push({ date, subject, start, end, dur }); saveSL(); renderStudyLog();
+  };
+  
+  view.querySelectorAll('.sl-del2').forEach(el => { 
+    el.onclick = () => { 
+      if(!confirm('Are you sure you want to delete this session?')) return;
+      const idx = parseInt(el.dataset.idx);
+      const deletedItem = studyLog.splice(idx, 1)[0]; 
+      saveSL(); renderStudyLog();
+      showUndoToast('Session deleted', () => { studyLog.splice(idx, 0, deletedItem); saveSL(); renderStudyLog(); });
+    }; 
+  });
+
+  const isLight = document.body.classList.contains('theme-light');
+  const isSpidey = document.body.classList.contains('theme-spidey');
+  const tc = isSpidey ? '#ffffff' : (isLight ? '#111' : '#e2e2f0');
+  const mc = isSpidey ? 'rgba(255,255,255,0.7)' : (isLight ? '#666677' : '#7a7a92');
+  const gridColor = isSpidey ? 'rgba(255,255,255,0.2)' : (isLight ? '#e0e0ea' : '#23232e');
+
+  const barCtx = document.getElementById('sl-bar-c');
+  if (barCtx) {
+    if (slBar) slBar.destroy();
+    slBar = new Chart(barCtx, { type: 'bar', data: { labels: l7L, datasets: [{ data: l7D, borderRadius: 6, backgroundColor: tc }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: mc, font: { size: 11, family: "'Inter', sans-serif" } } }, y: { ticks: { color: mc, font: { size: 11, family: "'Inter', sans-serif" }, callback: v => v + 'h' }, grid: { color: gridColor } } } } });
+  }
+  const donutCtx = document.getElementById('sl-donut-c');
+  if (donutCtx) {
+    if (slDonut) slDonut.destroy();
+    const se = Object.entries(subMap);
+    if (se.length > 0) {
+      const cols = ['#a78bfa', '#60a5fa', '#4ade80', '#fbbf24', '#f87171', '#e2e2f0'];
+      slDonut = new Chart(donutCtx, { type: 'doughnut', data: { labels: se.map(([k]) => k), datasets: [{ data: se.map(([, v]) => v), backgroundColor: se.map((_, i) => cols[i % cols.length]), borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { display: true, position: 'right', labels: { color: mc, font: { size: 11, family: "'Inter', sans-serif" }, boxWidth: 10 } }, tooltip: { callbacks: { label: ctx => ` ${fmtDur(ctx.parsed)}` } } } } });
+    }
+  }
+}
+
+// ===== VIEW TOGGLES =====
+function showView(v) {
+  currentView = v;
+  document.getElementById('cal-view').style.display = (v === 'calendar') ? 'block' : 'none';
+  document.getElementById('sl-view').style.display = (v === 'studylog') ? 'block' : 'none';
+  document.getElementById('dashboard').style.display = (v === 'studylog' || v === 'calendar') ? 'none' : 'grid';
+  document.getElementById('tasks-view').style.display = (v === 'studylog' || v === 'calendar') ? 'none' : 'block';
+  document.getElementById('today-strip').style.display = (v === 'studylog') ? 'none' : 'flex';
+  document.getElementById('cal-btn').classList.toggle('active', v === 'calendar');
+  document.getElementById('sl-btn').classList.toggle('active', v === 'studylog');
+}
+
+document.getElementById('home-btn').addEventListener('click', () => { showView('home'); renderAll(); });
+document.getElementById('cal-btn').addEventListener('click', () => { if (currentView === 'calendar') { showView('home'); renderAll(); } else { showView('calendar'); renderCalendar(); updateCharts(); } });
+document.getElementById('sl-btn').addEventListener('click', () => { if (currentView === 'studylog') { showView('home'); renderAll(); } else { showView('studylog'); renderStudyLog(); } });
+
+// ===== THEME LOGIC =====
+function handleAutoThemeLoad() {
+    const isAuto = localStorage.getItem('gt_auto_theme') === 'true';
+    const toggleEl = document.getElementById('auto-theme-toggle');
+    if (toggleEl) toggleEl.checked = isAuto;
+    
+    if (isAuto) {
+        const todayStr = todayISO();
+        const lastDate = localStorage.getItem('gt_theme_date');
+        if (lastDate !== todayStr) {
+            const randomTheme = THEMES[Math.floor(Math.random() * THEMES.length)];
+            setTheme(randomTheme, true, false); 
+            localStorage.setItem('gt_theme_date', todayStr);
+        }
+    }
+}
+
+function setTheme(themeName, save = true, isUserAction = false) {
+  document.body.className = `theme-${themeName}`;
+  if(save) {
+    localStorage.setItem('gt_theme', themeName);
+    document.getElementById('theme-modal').style.display = 'none';
+    
+    if (isUserAction) {
+        localStorage.setItem('gt_auto_theme', 'false');
+        document.getElementById('auto-theme-toggle').checked = false;
+    }
+    
+    if (lineChart) { lineChart.destroy(); lineChart = null; }
+    if (dailyChart) { dailyChart.destroy(); dailyChart = null; }
+    if (currentView === 'studylog') renderStudyLog(); else updateCharts();
+  }
+}
+
+document.getElementById('auto-theme-toggle').addEventListener('change', (e) => {
+    const isChecked = e.target.checked;
+    localStorage.setItem('gt_auto_theme', isChecked);
+    if (isChecked) {
+        localStorage.removeItem('gt_theme_date');
+        handleAutoThemeLoad();
+    }
+});
+
+document.getElementById('theme-btn').addEventListener('click', () => {
+  document.getElementById('theme-modal').style.display = 'flex';
+});
+
+document.getElementById('theme-modal').onclick = (e) => {
+  if (e.target.id === 'theme-modal') e.target.style.display = 'none';
+};
+
+// ===== BACKUP =====
+document.getElementById('backup-btn').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify({ dailyTasks, taskChecks, studyLog, stopReasons, at: new Date().toISOString() }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `task-tracker-backup-${todayISO()}.json`; a.click();
+  showToast('✓ Backup downloaded');
+});
+document.getElementById('import-btn').addEventListener('click', () => document.getElementById('import-file').click());
+document.getElementById('import-file').addEventListener('change', e => {
+  const file = e.target.files[0]; if (!file) return;
+  const r = new FileReader(); r.onload = ev => {
+    try {
+      const d = JSON.parse(ev.target.result);
+      if (d.dailyTasks) dailyTasks = d.dailyTasks; if (d.taskChecks) taskChecks = d.taskChecks;
+      if (d.studyLog) studyLog = d.studyLog; if (d.stopReasons) stopReasons = d.stopReasons;
+      saveDT(); saveChecks(); saveSL(); saveSR(); renderAll(); showToast('✓ Backup imported');
+    } catch { alert('Invalid file!'); }
+  };
+  r.readAsText(file); e.target.value = '';
+});
+
+window.addEventListener('beforeunload', saveTimer);
+
+// ===== INIT =====
+loadAll();
+renderAll();
+
+// RESTORE TIMER ON LOAD IF IT WAS RUNNING
+if (timerRunning || breakRunning || timerSecs > 0) {
+  setTimerUIState(timerRunning);
+  if (timerRunning || breakRunning) {
+    runTicker();
+  }
+  updateTimerGoalTag();
+}
+updateTimerDisplay();
+</script>
+</body>
+</html>
