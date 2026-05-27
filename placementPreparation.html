@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SDE Roadmap — Harsh</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0a0f;--s1:#111118;--s2:#1a1a24;--bd:#2a2a3a;--bd2:#3a3a50;--tx:#e8e8f0;--mu:#7a7a9a;--ac:#6c63ff;--g:#4ade80;--o:#fb923c;--b:#60a5fa;--p:#a78bfa;--y:#ffd700;--teal:#00d4aa;--r:#f87171;--mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif}
@@ -130,7 +131,7 @@ h1 span{color:var(--ac)}
 .note-card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.15);background:var(--s2)}
 .nc-title{font-size:15px;font-weight:500;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--tx)}
 .nc-date{font-size:10px;color:var(--mu);font-family:var(--mono);margin-bottom:10px}
-.nc-preview{font-size:12px;color:var(--mu);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:4;line-clamp:4;-webkit-box-orient:vertical;flex:1}
+.nc-preview{font-size:12px;color:var(--mu);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;flex:1}
 .btn-back{background:none;border:none;color:var(--mu);cursor:pointer;font-family:var(--sans);font-size:13px;display:flex;align-items:center;gap:6px;margin-bottom:16px;padding:0;transition:color .15s;font-weight:500}
 .btn-back:hover{color:var(--tx)}
 .note-editor{background:var(--s1);border:1px solid var(--bd);border-radius:12px;overflow:hidden;width:100%}
@@ -179,29 +180,47 @@ h1 span{color:var(--ac)}
 .idx-phase-bar{height:4px;background:var(--s2);border-radius:4px;overflow:hidden;margin-bottom:6px}
 .idx-phase-fill{height:100%;border-radius:4px;transition:width .4s}
 .idx-phase-stats{font-size:11px;color:var(--mu);font-family:var(--mono)}
-.streak-box{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:1.5rem}
-.streak-days{display:flex;gap:4px;flex-wrap:wrap;margin-top:10px}
-.sday{width:13px;height:13px;border-radius:3px;background:var(--s2);border:1px solid var(--bd);cursor:pointer;transition:all .15s}
-.sday.done{background:var(--ac);border-color:var(--ac)}
-.sday:hover{border-color:var(--bd2)}
-.week-label{font-size:10px;color:var(--mu);font-family:var(--mono);margin-top:8px;margin-bottom:3px}
-.activity-heatmap{display:flex;flex-direction:column;gap:2px}
-.hmap-row{display:flex;gap:2px;align-items:center}
-.hmap-day{width:11px;height:11px;border-radius:2px;background:var(--s2)}
-.hmap-day.h1{background:rgba(108,99,255,.25)}.hmap-day.h2{background:rgba(108,99,255,.5)}.hmap-day.h3{background:rgba(108,99,255,.75)}.hmap-day.h4{background:var(--ac)}
-.hmap-label{font-size:9px;color:var(--mu);font-family:var(--mono);width:24px;flex-shrink:0}
+
+/* NEW STREAK CALENDAR (GITHUB STYLE) */
+.streak-box{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:20px;margin-bottom:1.5rem}
+.btn-log-today { background: var(--ac); color: #fff; border: none; border-radius: 8px; padding: 10px 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: var(--sans); font-size: 13px; box-shadow: 0 4px 12px rgba(108,99,255,0.3); }
+.btn-log-today:hover { background: #5a52d5; transform: translateY(-2px); }
+
+.heatmap-scroll-container { width: 100%; overflow-x: auto; padding-bottom: 8px; margin-top: 16px; scroll-behavior: smooth; border-top:1px solid var(--bd); padding-top:16px;}
+.heatmap-scroll-container::-webkit-scrollbar { height: 6px; }
+.heatmap-scroll-container::-webkit-scrollbar-track { background: var(--s2); border-radius: 4px; }
+.heatmap-scroll-container::-webkit-scrollbar-thumb { background: var(--bd2); border-radius: 4px; }
+
+.heatmap-grid { display: grid; grid-template-rows: repeat(7, 1fr); grid-auto-flow: column; gap: 4px; padding-right: 4px; }
+.sday { width: 13px; height: 13px; border-radius: 3px; background: var(--s2); border: 1px solid var(--bd); cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
+.sday.done { background: var(--ac); border-color: var(--ac); box-shadow: 0 0 6px rgba(108,99,255,0.4); }
+.sday:hover { border-color: var(--ac); transform: scale(1.2); }
+.sday.dummy { visibility: hidden; pointer-events: none; }
+.sday.future { opacity: 0.2; pointer-events: none; cursor: default; }
+
+
+.goal-panel { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; background: var(--s2); padding: 16px; border-radius: 12px; border: 1px solid var(--bd); flex-wrap: wrap; }
+.goal-col { flex: 1; min-width: 120px; }
+.goal-btn { background: var(--s1); border: 1px solid var(--bd); color: var(--tx); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+.goal-btn:hover { background: var(--bd2); }
+.goal-input-large { background: var(--s1); border: 1px solid var(--bd); border-radius: 6px; padding: 0 10px; color: var(--tx); font-family: var(--mono); font-size: 16px; font-weight: 600; width: 60px; height: 32px; text-align: center; outline: none; }
+.goal-input-large:focus { border-color: var(--ac); }
+
+/* NEW BADGES GRID */
+.badge-grid-new { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-top: 12px; }
+.badge-card { background: var(--s2); border: 1px solid var(--bd); border-radius: 12px; padding: 16px 12px; display: flex; flex-direction: column; align-items: center; text-align: center; opacity: 0.4; filter: grayscale(1); transition: all 0.3s; }
+.badge-card.earned { opacity: 1; filter: grayscale(0); box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: var(--bd2); background: var(--s1);}
+.bc-icon { font-size: 24px; margin-bottom: 10px; width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:var(--s1) }
+.bc-title { font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--tx); }
+.bc-desc { font-size: 10px; color: var(--mu); line-height: 1.4; }
+
+/* RECENT NOTES UI */
+.recent-note-row { background: var(--s2); border: 1px solid var(--bd); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.15s;}
+.recent-note-row:hover { border-color: var(--ac); transform: translateX(2px); }
+
 .timeline-bar{display:flex;height:6px;border-radius:3px;overflow:hidden;margin-bottom:12px;background:var(--s2)}
 .tbar-seg{height:100%;transition:width .4s}
-.goal-input{background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding:7px 11px;color:var(--tx);font-family:var(--mono);font-size:12px;outline:none;width:100px;margin-right:6px}
-.goal-input:focus{border-color:var(--ac)}
-.badge-grid{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.badge{padding:6px 12px;border-radius:20px;font-size:11px;font-family:var(--mono);border:1px solid;opacity:.35}
-.badge.earned{opacity:1}
-.bd-g{color:var(--g);border-color:rgba(74,222,128,.4);background:rgba(74,222,128,.08)}
-.bd-b{color:var(--b);border-color:rgba(96,165,250,.4);background:rgba(96,165,250,.08)}
-.bd-o{color:var(--o);border-color:rgba(251,146,60,.4);background:rgba(251,146,60,.08)}
-.bd-p{color:var(--p);border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.08)}
-.bd-y{color:var(--y);border-color:rgba(255,215,0,.4);background:rgba(255,215,0,.08)}
+
 footer{border-top:1px solid var(--bd);padding:1.2rem;text-align:center;font-family:var(--mono);font-size:10px;color:var(--mu)}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}
 @media(max-width:700px){.stats4{grid-template-columns:repeat(2,1fr)}.nl button{padding:5px 7px;font-size:10px}.idx-grid{grid-template-columns:repeat(2,1fr)}}
@@ -221,10 +240,9 @@ footer{border-top:1px solid var(--bd);padding:1.2rem;text-align:center;font-fami
   </div>
 </nav>
 
-<!-- HOME -->
 <div id="pg-home" class="page active">
   <div class="hero">
-    <div class="htag">🎯 TARGET: FAANG SDE</div>
+    <div class="htag"><i class="fa-solid fa-bullseye" style="margin-right:6px"></i>TARGET: FAANG SDE</div>
     <h1>Your <span>dream job</span><br>has a plan now.</h1>
     <p>Complete roadmap for DSA, System Design, CS fundamentals, AI/ML — everything needed to crack top-tier SDE interviews. Built around Fraz's sheet. Free resources only. 2 problems/day.</p>
     <div class="stats4">
@@ -237,13 +255,13 @@ footer{border-top:1px solid var(--bd);padding:1.2rem;text-align:center;font-fami
   <div class="wrap">
     <div class="stitle">What's inside</div>
     <div class="grid2" style="margin-bottom:2rem">
-      <div class="card" onclick="show('analytics')"><div class="ci" style="background:rgba(0,212,170,.1)">📊</div><h3>Analytics</h3><p>Track your SDE readiness score, progress, streaks, activity heatmap, and earned badges.</p></div>
-      <div class="card" onclick="show('dsa')"><div class="ci" style="background:rgba(74,222,128,.1)">🧩</div><h3>DSA Plan</h3><p>Fraz's sheet broken into 4 phases, week-by-week schedule, daily problems, revision days.</p></div>
-      <div class="card" onclick="show('systems')"><div class="ci" style="background:rgba(96,165,250,.1)">🏢</div><h3>Systems & CS</h3><p>System Design, CS fundamentals, OOP, OS, Networks, Behavioral prep — all free resources.</p></div>
-      <div class="card" onclick="show('aiml')"><div class="ci" style="background:rgba(251,146,60,.1)">🤖</div><h3>AI/ML Track</h3><p>Math → ML → Deep Learning → LLMs. 1 hour/day parallel to DSA. All free.</p></div>
-      <div class="card" onclick="show('projects')"><div class="ci" style="background:rgba(167,139,250,.1)">🛠️</div><h3>Projects (300+)</h3><p>Python, AI/ML, and Full-Stack projects. Beginner to Advanced. Build your portfolio.</p></div>
-      <div class="card" onclick="show('notes')"><div class="ci" style="background:rgba(255,215,0,.1)">📝</div><h3>Notes</h3><p>Personal notes system. Write, save, tag, and search your learning notes — all stored locally.</p></div>
-      <div class="card"><div class="ci" style="background:rgba(248,113,113,.1)">⚡</div><h3>The Daily Rule</h3><p>2 DSA problems Mon–Fri. Saturday = revision. Sunday = rest. Consistency over intensity.</p></div>
+      <div class="card" onclick="show('analytics')"><div class="ci" style="background:rgba(0,212,170,.1)"><i class="fa-solid fa-chart-line" style="color:var(--teal)"></i></div><h3>Analytics</h3><p>Track your SDE readiness score, progress, streaks, activity heatmap, and earned badges.</p></div>
+      <div class="card" onclick="show('dsa')"><div class="ci" style="background:rgba(74,222,128,.1)"><i class="fa-solid fa-code-branch" style="color:var(--g)"></i></div><h3>DSA Plan</h3><p>Fraz's sheet broken into 4 phases, week-by-week schedule, daily problems, revision days.</p></div>
+      <div class="card" onclick="show('systems')"><div class="ci" style="background:rgba(96,165,250,.1)"><i class="fa-solid fa-server" style="color:var(--b)"></i></div><h3>Systems & CS</h3><p>System Design, CS fundamentals, OOP, OS, Networks, Behavioral prep — all free resources.</p></div>
+      <div class="card" onclick="show('aiml')"><div class="ci" style="background:rgba(251,146,60,.1)"><i class="fa-solid fa-microchip" style="color:var(--o)"></i></div><h3>AI/ML Track</h3><p>Math → ML → Deep Learning → LLMs. 1 hour/day parallel to DSA. All free.</p></div>
+      <div class="card" onclick="show('projects')"><div class="ci" style="background:rgba(167,139,250,.1)"><i class="fa-solid fa-wrench" style="color:var(--p)"></i></div><h3>Projects (300+)</h3><p>Python, AI/ML, and Full-Stack projects. Beginner to Advanced. Build your portfolio.</p></div>
+      <div class="card" onclick="show('notes')"><div class="ci" style="background:rgba(255,215,0,.1)"><i class="fa-solid fa-pen-to-square" style="color:var(--y)"></i></div><h3>Notes</h3><p>Personal notes system. Write, save, tag, and search your learning notes — all stored locally.</p></div>
+      <div class="card"><div class="ci" style="background:rgba(248,113,113,.1)"><i class="fa-solid fa-bolt" style="color:var(--r)"></i></div><h3>The Daily Rule</h3><p>2 DSA problems Mon–Fri. Saturday = revision. Sunday = rest. Consistency over intensity.</p></div>
     </div>
     <div class="stitle">Your 10-month timeline</div>
     <div class="tl">
@@ -255,7 +273,6 @@ footer{border-top:1px solid var(--bd);padding:1.2rem;text-align:center;font-fami
   </div>
 </div>
 
-<!-- ANALYTICS / PROGRESS -->
 <div id="pg-analytics" class="page">
   <div class="wrap" style="padding-top:2rem">
     <h2 style="font-size:20px;font-weight:600;margin-bottom:5px">Progress Dashboard</h2>
@@ -273,7 +290,7 @@ footer{border-top:1px solid var(--bd);padding:1.2rem;text-align:center;font-fami
     <div class="stitle">Overall Journey</div>
     <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:1.5rem">
       <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--mu);margin-bottom:8px;font-family:var(--mono)">
-        <span>Start</span><span>Phase 1</span><span>Phase 2</span><span>Phase 3</span><span>Phase 4</span><span>Goal 🎯</span>
+        <span>Start</span><span>Phase 1</span><span>Phase 2</span><span>Phase 3</span><span>Phase 4</span><span>Goal <i class="fa-solid fa-bullseye" style="color:var(--ac)"></i></span>
       </div>
       <div class="timeline-bar" id="tbar">
         <div class="tbar-seg" style="background:var(--g);width:0%" id="tb1"></div>
@@ -283,41 +300,129 @@ footer{border-top:1px solid var(--bd);padding:1.2rem;text-align:center;font-fami
       </div>
       <div style="font-size:11px;color:var(--mu);margin-top:6px">Topics completed across all phases</div>
     </div>
-    <div class="stitle">Streak Calendar</div>
+
+    <div class="stitle">All-Time Streak Calendar</div>
     <div class="streak-box">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <span style="font-size:13px;font-weight:500">Daily Study Tracker</span>
-        <span style="font-family:var(--mono);font-size:11px;color:var(--teal)" id="streak-count">0 day streak</span>
+      <div style="display:flex; align-items: center; justify-content: space-between; flex-wrap:wrap; gap:12px;">
+         <div>
+           <div style="font-size: 28px; font-weight: 700; color: var(--tx);" id="streak-count-big">0 Days <i class="fa-solid fa-fire" style="color:#fb923c"></i></div>
+           <div style="font-size: 12px; color: var(--mu);">Current Study Streak</div>
+         </div>
+         <button class="btn-log-today" onclick="logToday()"><i class="fa-solid fa-circle-check" style="margin-right:6px"></i>Log Today's Study</button>
       </div>
-      <div style="font-size:11px;color:var(--mu);margin-bottom:10px">Click a day to mark as studied. Last 10 weeks shown.</div>
-      <div id="streak-grid"></div>
+      
+      <div style="display:flex;align-items:center;gap:10px;margin-top:16px;padding-bottom:12px;border-bottom:1px solid var(--bd)">
+        <button id="streak-prev-yr" onclick="changeStreakYear(-1)" style="background:var(--s2);border:1px solid var(--bd);color:var(--mu);width:28px;height:28px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s" title="Previous year">
+          <i class="fa-solid fa-chevron-left" style="font-size:11px"></i>
+        </button>
+        <span id="streak-year-label" style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--tx);min-width:44px;text-align:center"></span>
+        <button id="streak-next-yr" onclick="changeStreakYear(1)" style="background:var(--s2);border:1px solid var(--bd);color:var(--mu);width:28px;height:28px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s" title="Next year">
+          <i class="fa-solid fa-chevron-right" style="font-size:11px"></i>
+        </button>
+        <span id="streak-year-contrib" style="font-size:11px;color:var(--mu);font-family:var(--mono)"></span>
+      </div>
+
+      <div class="heatmap-scroll-container" id="heatmap-scroll">
+        <div id="streak-month-labels" style="display:flex;gap:4px;padding-right:4px;margin-bottom:4px;min-width:max-content"></div>
+        <div style="display:flex;gap:6px">
+          <div style="display:grid;grid-template-rows:repeat(7,13px);gap:4px;padding-top:0;flex-shrink:0">
+            <span style="font-size:9px;color:var(--mu);height:13px;line-height:13px;font-family:var(--mono)">S</span>
+            <span style="font-size:9px;color:var(--mu);height:13px;line-height:13px;font-family:var(--mono)">M</span>
+            <span style="font-size:9px;color:var(--mu);height:13px;line-height:13px;font-family:var(--mono)">T</span>
+            <span style="font-size:9px;color:var(--mu);height:13px;line-height:13px;font-family:var(--mono)">W</span>
+            <span style="font-size:9px;color:var(--mu);height:13px;line-height:13px;font-family:var(--mono)">T</span>
+            <span style="font-size:9px;color:var(--mu);height:13px;line-height:13px;font-family:var(--mono)">F</span>
+            <span style="font-size:9px;color:var(--mu);height:13px;line-height:13px;font-family:var(--mono)">S</span>
+          </div>
+          <div class="heatmap-grid" id="streak-grid"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:10px;justify-content:flex-end">
+          <span style="font-size:10px;color:var(--mu);font-family:var(--mono)">Less</span>
+          <div style="width:13px;height:13px;border-radius:3px;background:var(--s2);border:1px solid var(--bd)"></div>
+          <div style="width:13px;height:13px;border-radius:3px;background:rgba(108,99,255,.4)"></div>
+          <div style="width:13px;height:13px;border-radius:3px;background:var(--ac)"></div>
+          <span style="font-size:10px;color:var(--mu);font-family:var(--mono)">More</span>
+        </div>
+      </div>
     </div>
+
     <div class="stitle">Weekly Goals</div>
     <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:1.5rem">
-      <div style="font-size:13px;font-weight:500;margin-bottom:10px">This Week's Target</div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
-        <label style="font-size:12px;color:var(--mu)">Problems this week:</label>
-        <input type="number" class="goal-input" id="wk-done" placeholder="0" min="0">
-        <label style="font-size:12px;color:var(--mu)">/ Target:</label>
-        <input type="number" class="goal-input" id="wk-target" placeholder="10" min="1" value="10">
-        <button onclick="saveWeekGoal()" style="padding:6px 14px;font-size:12px;border-radius:7px;border:1px solid var(--ac);background:rgba(108,99,255,.1);color:var(--ac);cursor:pointer;font-family:var(--sans)">Save</button>
+      <div style="font-size:14px;font-weight:500;margin-bottom:12px">This Week's DSA Target</div>
+      
+      <div class="goal-panel">
+        <div class="goal-col">
+            <div style="font-size:12px; color:var(--mu); margin-bottom:6px">Problems Completed</div>
+            <div style="display:flex; align-items:center; gap:10px">
+                <button class="goal-btn" onclick="changeWeekDone(-1)">-</button>
+                <input type="number" id="wk-done" class="goal-input-large" value="0" onchange="saveWeekGoal()">
+                <button class="goal-btn" onclick="changeWeekDone(1)">+</button>
+            </div>
+        </div>
+        <div style="font-size:24px; color:var(--bd2); padding: 0 10px;">/</div>
+        <div class="goal-col">
+            <div style="font-size:12px; color:var(--mu); margin-bottom:6px">Weekly Target</div>
+            <input type="number" id="wk-target" class="goal-input-large" value="10" onchange="saveWeekGoal()">
+        </div>
       </div>
-      <div class="progb"><div class="progf" id="wk-fill" style="width:0%"></div></div>
-      <div style="font-size:11px;color:var(--mu);margin-top:5px" id="wk-label">0 / 10 problems this week</div>
+
+      <div class="progb" style="height:6px"><div class="progf" id="wk-fill" style="width:0%"></div></div>
+      <div style="font-size:11px;color:var(--mu);margin-top:8px; text-align:right" id="wk-label">0% completed</div>
     </div>
-    <div class="stitle">Badges</div>
-    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:1.5rem">
+
+    <div class="stitle">Weekly DSA Progress</div>
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:20px;margin-bottom:1.5rem">
+      <div style="font-size:12px;color:var(--mu);margin-bottom:16px">Har week ka progress — hover karo details dekhne ke liye</div>
+
+      <div id="wk-tooltip" style="position:fixed;display:none;background:#1a1a2e;border:1px solid var(--bd2);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--tx);pointer-events:none;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,.4);min-width:160px"></div>
+
+      <div style="overflow-x:auto;padding-bottom:8px">
+        <div id="wk-progress-grid" style="display:flex;flex-wrap:wrap;gap:8px;min-width:300px"></div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-top:16px;flex-wrap:wrap">
+        <span style="font-size:10px;color:var(--mu);font-family:var(--mono)">0%</span>
+        <div style="width:16px;height:16px;border-radius:4px;background:var(--s2);border:1px solid var(--bd)"></div>
+        <div style="width:16px;height:16px;border-radius:4px;background:rgba(251,146,60,.5)"></div>
+        <div style="width:16px;height:16px;border-radius:4px;background:rgba(108,99,255,.7)"></div>
+        <div style="width:16px;height:16px;border-radius:4px;background:var(--g)"></div>
+        <span style="font-size:10px;color:var(--mu);font-family:var(--mono)">100%</span>
+        <span style="font-size:10px;color:var(--mu);margin-left:8px">· Each box = 1 week</span>
+      </div>
+
+      <div id="week-history-list" style="display:none"></div>
+    </div>
+
+    <div class="stitle">Achievement Badges</div>
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:20px;margin-bottom:1.5rem">
       <div style="font-size:12px;color:var(--mu);margin-bottom:8px">Earn badges by completing milestones. Locked badges are shown dimmed.</div>
-      <div class="badge-grid" id="badges"></div>
+      <div class="badge-grid-new" id="badges"></div>
     </div>
-    <div class="stitle">Notes Summary</div>
-    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:1.5rem">
-      <div id="idx-notes-summary" style="font-size:12px;color:var(--mu)">No notes yet. Go to Notes tab to start writing.</div>
+
+    <div class="stitle">Recent Notes</div>
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:20px;margin-bottom:1.5rem">
+      <div id="idx-notes-summary"></div>
+      <button onclick="show('notes')" style="background:none; border:1px solid var(--bd); color:var(--tx); padding:8px 16px; border-radius:6px; font-size:12px; cursor:pointer; width:100%; margin-top:10px; transition:background 0.2s">View All Notes →</button>
     </div>
+
+    <div class="stitle">Data Management</div>
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:20px;margin-bottom:1.5rem;">
+       <div style="font-size:12px;color:var(--mu);margin-bottom:14px;line-height:1.6">
+           All your progress is stored locally in this browser. To backup your progress or move to a new device, export your data to a JSON file.
+       </div>
+       <div style="display:flex; gap:10px; flex-wrap:wrap">
+          <button class="nbtnsave" style="background: rgba(96,165,250,.1); border-color: rgba(96,165,250,.4); color: var(--b);" onclick="exportData()"><i class="fa-solid fa-download" style="margin-right:6px"></i>Export Backup (.json)</button>
+          
+          <label class="nbtn-new" style="display:inline-block; margin:0; text-align:center; padding:8px 20px; border-color:var(--bd); cursor:pointer; font-weight:500;">
+              <i class="fa-solid fa-upload" style="margin-right:6px"></i>Import Backup
+              <input type="file" accept=".json" style="display:none" onchange="importData(event)">
+          </label>
+       </div>
+    </div>
+
   </div>
 </div>
 
-<!-- DSA -->
 <div id="pg-dsa" class="page">
   <div class="wrap" style="padding-top:2rem">
     <h2 style="font-size:20px;font-weight:600;margin-bottom:5px">DSA Roadmap — Fraz's Sheet</h2>
@@ -330,7 +435,6 @@ footer{border-top:1px solid var(--bd);padding:1.2rem;text-align:center;font-fami
   </div>
 </div>
 
-<!-- SYSTEMS -->
 <div id="pg-systems" class="page">
   <div class="wrap" style="padding-top:2rem">
     <h2 style="font-size:20px;font-weight:600;margin-bottom:5px">Systems & Core CS Plan</h2>
@@ -339,24 +443,22 @@ footer{border-top:1px solid var(--bd);padding:1.2rem;text-align:center;font-fami
   </div>
 </div>
 
-<!-- AIML -->
 <div id="pg-aiml" class="page">
   <div class="wrap" style="padding-top:2rem">
-    <h2 style="font-size:20px;font-weight:600;margin-bottom:5px">AI/ML Learning Track</h2>
-    <p style="color:var(--mu);font-size:12px;margin-bottom:1.5rem">1 hour/day alongside DSA. Do NOT swap DSA time for this. All free resources.</p>
+    <h2 style="font-size:20px;font-weight:600;margin-bottom:5px">AI/ML Mastery Track (100% FAANG Ready)</h2>
+    <p style="color:var(--mu);font-size:12px;margin-bottom:1.5rem">Calibrated for 3 hours/day. Blends Udemy implementation with deep math and modern LLM architecture.</p>
     <div id="aiml-content"></div>
   </div>
 </div>
 
-<!-- PROJECTS -->
 <div id="pg-projects" class="page">
   <div class="wrap" style="padding-top:2rem">
     <h2 style="font-size:20px;font-weight:600;margin-bottom:5px">Project Ideas (300+)</h2>
     <p style="color:var(--mu);font-size:12px;margin-bottom:1.3rem">Build projects to reinforce learning and grow your GitHub portfolio. Click a project to mark as done.</p>
     <div class="proj-tabs">
-      <button class="ptab active" onclick="switchProj('py')">🐍 Python Projects</button>
-      <button class="ptab" onclick="switchProj('aiml')">🤖 AI/ML Projects</button>
-      <button class="ptab" onclick="switchProj('full')">⚡ Full-Stack / Other</button>
+      <button class="ptab active" onclick="switchProj('py')"><i class="fa-brands fa-python" style="margin-right:6px"></i>Python Projects</button>
+      <button class="ptab" onclick="switchProj('aiml')"><i class="fa-solid fa-brain" style="margin-right:6px"></i>AI/ML Projects</button>
+      <button class="ptab" onclick="switchProj('full')"><i class="fa-solid fa-layer-group" style="margin-right:6px"></i>Full-Stack / Other</button>
     </div>
     <input type="text" class="proj-search" id="proj-search" placeholder="Search projects..." oninput="filterProjects()">
     <div id="proj-py" class="proj-cat active"></div>
@@ -365,7 +467,6 @@ footer{border-top:1px solid var(--bd);padding:1.2rem;text-align:center;font-fami
   </div>
 </div>
 
-<!-- NOTES -->
 <div id="pg-notes" class="page">
   <div class="wrap" style="padding-top:1.5rem">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
@@ -375,29 +476,25 @@ footer{border-top:1px solid var(--bd);padding:1.2rem;text-align:center;font-fami
       </div>
     </div>
     
-    <!-- MASTER VIEW (Grid) -->
     <div id="notes-master">
       <div class="notes-topbar">
         <button class="btn-create-note" onclick="newNote()">+ Create New Note</button>
         <input type="text" class="notes-search" id="notes-search" placeholder="Search your notes..." oninput="filterNotes()">
       </div>
       <div class="notes-grid" id="notes-list">
-        <!-- Note Cards will render here -->
-      </div>
+        </div>
     </div>
 
-    <!-- DETAIL VIEW (Editor / Preview) -->
     <div id="notes-detail" style="display:none;">
       <button class="btn-back" onclick="closeNote()">← Back to Notes</button>
       <div id="note-editor-area">
-        <!-- Editor injects here -->
-      </div>
+        </div>
     </div>
 
   </div>
 </div>
 
-<footer>Built for Harsh · Top Tier SDE Dream · Start today, not tomorrow · All resources free 🆓</footer>
+<footer>Built for Harsh · Top Tier SDE Dream · Start today, not tomorrow · All resources free <i class="fa-solid fa-lock-open" style="color:var(--g)"></i></footer>
 
 <script>
 // ── NAV ──────────────────────────────────────────────────────────────────────
@@ -421,6 +518,34 @@ function lda(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch{retur
 function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
 const TD=ld('td'),WD=ld('wd'),GD=ld('gd'),AD=ld('ad'),PD=ld('pd');
 let SD=ld('sd'),notes=lda('notes_v2'),activeNoteId=null;
+
+// ── EXACT MAPPING LOGIC (BULLETPROOF) ──────────────────────────────────────────
+// This object maps exact week numbers to exact topic IDs. 
+// No more string matching mistakes!
+const weekToTopicsMap = {
+  1: ['p1_0'], 2: ['p1_0'], // Sorting
+  3: ['p1_1'], 4: ['p1_1'], // Two Pointers
+  5: ['p1_2'], // Prefix Sum
+  6: ['p1_3'], 7: ['p1_3', 'p1_5'], // Hashing basics, Hashing + Matrix
+  8: ['p1_4'], 9: ['p1_4'], // Sliding Window
+  
+  10: ['p2_0'], 11: ['p2_0'], // Linked List
+  12: ['p2_1', 'p2_2'], 13: ['p2_1'], // Stack (W12/13), Queue (W12)
+  14: ['p2_3'], 15: ['p2_3', 'p2_4'], // Binary Search (W14/15), Recursion (W15)
+  16: ['p2_4'], 17: ['p2_4', 'p2_5'], // Backtracking (W16/17), Tree Intro (W17)
+  18: ['p2_5'], 19: ['p2_5'], // Binary Tree
+  
+  20: ['p3_0'], // BST
+  21: ['p3_1'], // Heap
+  22: ['p3_2'], // Greedy
+  23: ['p3_3'], 24: ['p3_3'], 25: ['p3_3'], // Graphs
+  26: ['p3_4'], 27: ['p3_4'], 28: ['p3_4'], // DP Level 1
+  
+  29: ['p4_0'], // Tries
+  30: ['p4_1'], // Bit Manipulation
+  31: ['p4_2']  // DP Level 2
+};
+
 
 // ── DSA DATA ──────────────────────────────────────────────────────────────────
 const phases=[
@@ -494,11 +619,39 @@ const systemsSections=[
 ];
 
 const aimlSections=[
-  {phase:'Phase 1 — Math Foundation',color:'var(--g)',months:'Months 1–2 · 30 min/day',note:'Do not skip math. ML without math = using libraries blindly.',res:[{n:'3Blue1Brown — Essence of Linear Algebra (free)',u:'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab',h:'8h'},{n:'3Blue1Brown — Essence of Calculus (free)',u:'https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr',h:'6h'},{n:'Khan Academy — Probability & Statistics (free)',u:'https://www.khanacademy.org/math/statistics-probability',h:'10h'},{n:'StatQuest with Josh Starmer — Stats + ML (free)',u:'https://www.youtube.com/c/joshstarmer',h:'15h'},]},
-  {phase:'Phase 2 — Python for ML',color:'var(--b)',months:'Month 2 · skip if you know Python',note:'NumPy, Pandas, Matplotlib are the ML trifecta.',res:[{n:'Kaggle — Learn Python (free, interactive)',u:'https://www.kaggle.com/learn/python',h:'5h'},{n:'Kaggle — NumPy + Pandas course (free)',u:'https://www.kaggle.com/learn/pandas',h:'5h'},{n:'Kaggle — Data Visualization (free)',u:'https://www.kaggle.com/learn/data-visualization',h:'4h'},{n:'Scikit-learn official tutorial (free)',u:'https://scikit-learn.org/stable/tutorial/index.html',h:'3h'},]},
-  {phase:'Phase 3 — Core Machine Learning',color:'var(--o)',months:'Months 3–5 · 1 hour/day',note:'This is the heart of ML. Andrew Ng on YouTube is completely free.',res:[{n:'Andrew Ng — Machine Learning (Stanford, free YouTube)',u:'https://www.youtube.com/playlist?list=PLoROMvodv4rMiGQp3WXShtMGgzqpfVfbU',h:'60h'},{n:'StatQuest — Decision Trees, Random Forest, SVM (free)',u:'https://www.youtube.com/c/joshstarmer',h:'10h'},{n:'Implement Linear Regression from scratch in Python',u:'https://www.youtube.com/results?search_query=linear+regression+from+scratch+python',h:'3h'},{n:'Implement Logistic Regression from scratch',u:'https://www.youtube.com/results?search_query=logistic+regression+from+scratch+python',h:'3h'},{n:'Kaggle — Titanic ML competition (free)',u:'https://www.kaggle.com/competitions/titanic',h:'5h'},{n:'Kaggle — House Prices competition (free)',u:'https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques',h:'5h'},{n:'Cross-validation, regularization, bias-variance — StatQuest',u:'https://www.youtube.com/results?search_query=bias+variance+tradeoff+statquest',h:'4h'},]},
-  {phase:'Phase 4 — Deep Learning',color:'var(--p)',months:'Months 5–8 · 1 hour/day',note:'PyTorch is the standard — learn it.',res:[{n:'MIT 6.S191 — Deep Learning (free YouTube)',u:'https://www.youtube.com/playlist?list=PLtBw6njQRU-rwp5__7C0oIVt26ZgjG9NI',h:'20h'},{n:'fast.ai — Practical Deep Learning (completely free)',u:'https://course.fast.ai',h:'40h'},{n:'PyTorch official tutorials (free)',u:'https://pytorch.org/tutorials/',h:'15h'},{n:'Build: Image classifier CNN on MNIST from scratch',u:'https://www.youtube.com/results?search_query=CNN+MNIST+from+scratch+pytorch',h:'5h'},{n:'Build: Sentiment analysis LSTM from scratch',u:'https://www.youtube.com/results?search_query=LSTM+sentiment+analysis+pytorch+from+scratch',h:'6h'},{n:'Illustrated Transformer — Jay Alammar blog (free)',u:'https://jalammar.github.io/illustrated-transformer/',h:'3h'},{n:'Hugging Face — NLP course (completely free)',u:'https://huggingface.co/learn/nlp-course',h:'15h'},]},
-  {phase:'Phase 5 — LLMs & GenAI',color:'var(--ac)',months:'Months 8–12 · your current interest',note:'This is where your AI/ML and software engineering ambitions meet. Build real projects.',res:[{n:'Andrej Karpathy — Neural Networks: Zero to Hero (free)',u:'https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ',h:'15h'},{n:'Build GPT from scratch — Karpathy makemore series',u:'https://www.youtube.com/watch?v=kCc8FmEb1nY',h:'8h'},{n:'LangChain — build a RAG document Q&A app (free)',u:'https://python.langchain.com/docs/tutorials/',h:'8h'},{n:'Hugging Face — build and deploy a model (free)',u:'https://huggingface.co/models',h:'5h'},{n:'Read: "Attention Is All You Need" — Transformer paper',u:'https://arxiv.org/abs/1706.03762',h:'3h'},{n:'Read: GPT-3 paper (free on arXiv)',u:'https://arxiv.org/abs/2005.14165',h:'2h'},{n:'Kaggle LLM competitions — at least one (free)',u:'https://www.kaggle.com/competitions?search=llm',h:'15h'},{n:'Build 1 end-to-end ML project for GitHub',u:'https://github.com',h:'20h'},]},
+  {phase:'Phase 1 — Math & Foundations (The Missing 25%)',color:'var(--g)',months:'Weeks 1-2 · 3 hrs/day',note:'Since you already have solid Python and backend foundations, breeze through syntax. Focus heavily on this Math. It is the secret to passing FAANG ML rounds.',res:[
+    {n:'3Blue1Brown — Essence of Linear Algebra (free)',u:'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab',h:'8h'},
+    {n:'3Blue1Brown — Essence of Calculus (free)',u:'https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr',h:'6h'},
+    {n:'Khan Academy — Probability & Statistics (free)',u:'https://www.khanacademy.org/math/statistics-probability',h:'15h'},
+    {n:'Udemy ML A-Z: Part 1 - Data Preprocessing (Python only)',u:'#',h:'2h'}
+  ]},
+  {phase:'Phase 2 — Classical ML & XGBoost',color:'var(--b)',months:'Weeks 3-5 · 3 hrs/day',note:'Udemy Parts 2-5, 9-10. Skip the R tutorials entirely. Focus purely on Python and the mathematical intuition behind the algorithms.',res:[
+    {n:'Udemy ML A-Z: Part 2 - Regression (Simple, Multiple, Poly, SVR, Trees)',u:'#',h:'6h'},
+    {n:'Udemy ML A-Z: Part 3 - Classification (Logistic, KNN, SVM, Naive Bayes)',u:'#',h:'6h'},
+    {n:'Udemy ML A-Z: Part 4 & 5 - Clustering & Association Rules',u:'#',h:'4h'},
+    {n:'Udemy ML A-Z: Part 9 & 10 - Dimensionality Reduction & XGBoost',u:'#',h:'4h'},
+    {n:'StatQuest — Cross Validation & XGBoost Math (Gap filler)',u:'https://www.youtube.com/c/joshstarmer',h:'3h'}
+  ]},
+  {phase:'Phase 3 — Deep Learning & PyTorch Bridge',color:'var(--o)',months:'Weeks 6-7 · 3 hrs/day',note:'Udemy Part 8 teaches Keras/TF. The industry standard is PyTorch. Do the Udemy section for theory, then map it to PyTorch.',res:[
+    {n:'Udemy ML A-Z: Part 8 - Deep Learning (ANN & CNN)',u:'#',h:'5h'},
+    {n:'PyTorch Official "Deep Learning with PyTorch: A 60 Minute Blitz"',u:'https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html',h:'2h'},
+    {n:'fast.ai — Practical Deep Learning for Coders (Lessons 1-4)',u:'https://course.fast.ai',h:'10h'},
+    {n:'Build: Image classifier CNN from scratch in PyTorch',u:'https://pytorch.org/tutorials/',h:'4h'}
+  ]},
+  {phase:'Phase 4 — Modern NLP & GenAI (The Missing 25%)',color:'var(--p)',months:'Weeks 8-10 · 3 hrs/day',note:'Udemy Part 7 only covers basic Bag-of-Words. To hit 100% FAANG readiness, you MUST learn Transformers, Attention, and LLMs here.',res:[
+    {n:'Udemy ML A-Z: Part 7 - Natural Language Processing',u:'#',h:'2h'},
+    {n:'Andrej Karpathy — Neural Networks: Zero to Hero (makemore & GPT)',u:'https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ',h:'15h'},
+    {n:'Read: "Attention Is All You Need" (The original Transformer paper)',u:'https://arxiv.org/abs/1706.03762',h:'3h'},
+    {n:'Hugging Face NLP Course (Transformers, Datasets, Tokenizers)',u:'https://huggingface.co/learn/nlp-course',h:'10h'},
+    {n:'Build RAG Document Q&A App using LangChain',u:'https://python.langchain.com/docs/tutorials/',h:'8h'}
+  ]},
+  {phase:'Phase 5 — AWS MLOps & Production',color:'var(--ac)',months:'Weeks 11-12 · 3 hrs/day',note:'Udemy Parts 11-15. This is the absolute goldmine of the course. Learning to deploy models on AWS makes you stand out globally.',res:[
+    {n:'Udemy ML A-Z: Part 11 & 12 - AWS Data Prep & SageMaker Dev',u:'#',h:'6h'},
+    {n:'Udemy ML A-Z: Part 13 - Deployment (ECR, ECS, Fargate, Endpoints)',u:'#',h:'5h'},
+    {n:'Udemy ML A-Z: Part 14 - CI/CD Pipelines with AWS & SageMaker',u:'#',h:'4h'},
+    {n:'Udemy ML A-Z: Part 15 - Solution Monitoring, Clarify & Maintenance',u:'#',h:'4h'},
+    {n:'Final Project: Deploy your Phase 4 LLM/RAG app via AWS SageMaker',u:'#',h:'15h'}
+  ]}
 ];
 
 // ── PROJECTS DATA ─────────────────────────────────────────────────────────────
@@ -543,27 +696,76 @@ function buildDSA(){
     hdr.innerHTML=`<div class="phm"><div class="phn ${ph.nc}">${ph.id==='px'?'–':ph.id.replace('p','')}</div><div><div class="pht">${ph.lbl}</div><div class="phs">${ph.sub}</div></div></div><div style="display:flex;align-items:center;gap:7px"><span class="bdg ${ph.bc}">${ph.btext}</span><span class="chv">▾</span></div>`;
     const body=document.createElement('div');body.className='phb';
     const tg=document.createElement('div');tg.className='tgrid';
+    
+    // 1. Build Top Topic Boxes
     ph.topics.forEach((t,i)=>{
       const k=ph.id+'_'+i;
-      const item=document.createElement('div');item.className='ti'+(TD[k]?' done':'');
+      const item=document.createElement('div');
+      item.className='ti'+(TD[k]?' done':'');
+      item.id='topic_box_'+k; // Give it an ID to update easily later
       item.innerHTML=`<div class="chk">${TD[k]?'✓':''}</div><div class="tn">${t.n}</div><div class="th">${t.h}</div>`;
       item.onclick=()=>{TD[k]=!TD[k];if(!TD[k])delete TD[k];sv('td',TD);item.classList.toggle('done',!!TD[k]);item.querySelector('.chk').textContent=TD[k]?'✓':'';updDSA();};
       tg.appendChild(item);
     });
     body.appendChild(tg);
+    
+    // 2. Build Weekly Schedule
     if(ph.weeks.length){
       const wl=document.createElement('div');wl.innerHTML='<div class="wlabel">WEEKLY SCHEDULE</div>';
       const wlist=document.createElement('div');wlist.className='wlist';
       ph.weeks.forEach(wk=>{
-        const wk2=document.createElement('div');wk2.className='wc'+(WD['w'+wk.w]?' wdone':'');
+        const weekKey = 'w' + wk.w;
+        const wk2=document.createElement('div');wk2.className='wc'+(WD[weekKey]?' wdone':'');
         const wh=document.createElement('div');wh.className='wh';
-        wh.innerHTML=`<div class="whl"><span class="wnum">Week ${wk.w}</span><span class="wname">${wk.t}</span></div><div style="display:flex;align-items:center;gap:6px"><button class="mbtn${WD['w'+wk.w]?' mk':''}" data-k="${wk.w}">${WD['w'+wk.w]?'✓ done':'mark done'}</button><span class="chv" style="font-size:12px">▾</span></div>`;
+        wh.innerHTML=`<div class="whl"><span class="wnum">Week ${wk.w}</span><span class="wname">${wk.t}</span></div><div style="display:flex;align-items:center;gap:6px"><button class="mbtn${WD[weekKey]?' mk':''}" data-k="${wk.w}">${WD[weekKey]?'✓ done':'mark done'}</button><span class="chv" style="font-size:12px">▾</span></div>`;
         const wb=document.createElement('div');wb.className='wb';
         let rows='';
         wk.days.forEach(d=>{const tc={solve:'ts',learn:'tl2',rev:'tr',rest:'tt',mixed:'tm'}[d.g]||'ts';const tl={solve:'solve',learn:'learn',rev:'revise',rest:'rest',mixed:'mixed'}[d.g]||'solve';rows+=`<div class="dr"><div class="dn">${d.d}</div><div class="dt">${d.t}</div><div class="dtag ${tc}">${tl}</div></div>`;});
         if(wk.tip)rows+=`<div class="wtip">💡 ${wk.tip}</div>`;
         wb.innerHTML=rows;
-        wh.querySelector('.mbtn').addEventListener('click',e=>{e.stopPropagation();const k=e.target.dataset.k;WD[k]=!WD[k];if(!WD[k])delete WD[k];sv('wd',WD);e.target.textContent=WD[k]?'✓ done':'mark done';e.target.classList.toggle('mk',!!WD[k]);wk2.classList.toggle('wdone',!!WD[k]);updDSA();});
+        
+        // --- BUTTON CLICK LOGIC ---
+        wh.querySelector('.mbtn').addEventListener('click',e=>{
+          e.stopPropagation();
+          const wNum = e.target.dataset.k;
+          const k = 'w' + wNum;
+          WD[k]=!WD[k];
+          if(!WD[k])delete WD[k];
+          sv('wd',WD);
+          e.target.textContent=WD[k]?'✓ done':'mark done';
+          e.target.classList.toggle('mk',!!WD[k]);
+          wk2.classList.toggle('wdone',!!WD[k]);
+
+          // --- EXACT AUTO-CHECK TOPIC LOGIC ---
+          // 1. Check which topics this week affects
+          const affectedTopics = weekToTopicsMap[wNum] || [];
+          
+          affectedTopics.forEach(topicKey => {
+            // 2. Find all weeks that belong to this topic
+            const relatedWeeks = Object.keys(weekToTopicsMap).filter(w => weekToTopicsMap[w].includes(topicKey));
+            
+            // 3. Are ALL related weeks ticked?
+            const allDone = relatedWeeks.every(w => WD['w' + w]);
+            
+            if (allDone) {
+              TD[topicKey] = true;
+            } else {
+              delete TD[topicKey];
+            }
+            sv('td', TD);
+            
+            // 4. Update the actual UI box immediately
+            const tBox = document.getElementById('topic_box_' + topicKey);
+            if(tBox) {
+              tBox.classList.toggle('done', !!TD[topicKey]);
+              tBox.querySelector('.chk').textContent = TD[topicKey] ? '✓' : '';
+            }
+          });
+          // --- END AUTO-CHECK LOGIC ---
+
+          updDSA();
+        });
+        
         wh.addEventListener('click',()=>{const o=wb.classList.contains('open');wb.classList.toggle('open',!o);wh.querySelector('.chv').style.transform=o?'':'rotate(180deg)';});
         wk2.appendChild(wh);wk2.appendChild(wb);wlist.appendChild(wk2);
       });
@@ -574,6 +776,7 @@ function buildDSA(){
   });
   updDSA();
 }
+
 function updDSA(){
   const total=phases.reduce((a,p)=>a+p.topics.length,0);
   const done=Object.keys(TD).filter(k=>TD[k]).length;
@@ -581,7 +784,7 @@ function updDSA(){
   document.getElementById('dp-lbl').textContent=done+' of '+total+' topics done';
   document.getElementById('dp-pct').textContent=pct+'%';
   document.getElementById('dp-fill').style.width=pct+'%';
-  if(document.getElementById('idx-readiness')) buildAnalytics(); 
+  if(document.getElementById('idx-readiness')) buildReadinessScore();
 }
 
 // ── BUILD SYSTEMS ─────────────────────────────────────────────────────────────
@@ -597,7 +800,7 @@ function buildSystems(){
       const row=document.createElement('div');row.className='ri'+(GD[k]?' rd':'');
       row.innerHTML=`<div class="ril"><span class="rtag rfree">free</span><span class="rname">${item.n}</span></div><span style="font-size:16px;color:var(--mu);cursor:pointer">↗</span>`;
       row.querySelector('span:last-child').onclick=(e)=>{e.stopPropagation();window.open(item.u,'_blank');};
-      row.onclick=()=>{GD[k]=!GD[k];if(!GD[k])delete GD[k];sv('gd',GD);row.classList.toggle('rd',!!GD[k]);if(document.getElementById('idx-readiness')) buildAnalytics();};
+      row.onclick=()=>{GD[k]=!GD[k];if(!GD[k])delete GD[k];sv('gd',GD);row.classList.toggle('rd',!!GD[k]);if(document.getElementById('idx-readiness')) buildReadinessScore();};
       list.appendChild(row);
     });
     block.appendChild(list);cont.appendChild(block);
@@ -619,7 +822,7 @@ function buildAIML(){
       const row=document.createElement('div');row.className='ri'+(AD[k]?' rd':'');
       row.innerHTML=`<div class="ril"><span class="rtag rfree">free</span><span class="rname">${r.n}</span></div><div style="display:flex;align-items:center;gap:7px"><span class="rhr">${r.h}</span><span style="font-size:16px;color:var(--mu);cursor:pointer">↗</span></div>`;
       row.querySelector('span[style*="cursor"]').onclick=(e)=>{e.stopPropagation();window.open(r.u,'_blank');};
-      row.onclick=()=>{AD[k]=!AD[k];if(!AD[k])delete AD[k];sv('ad',AD);row.classList.toggle('rd',!!AD[k]);if(document.getElementById('idx-readiness')) buildAnalytics();};
+      row.onclick=()=>{AD[k]=!AD[k];if(!AD[k])delete AD[k];sv('ad',AD);row.classList.toggle('rd',!!AD[k]);if(document.getElementById('idx-readiness')) buildReadinessScore();};
       list.appendChild(row);
     });
     block.appendChild(list);cont.appendChild(block);
@@ -707,27 +910,22 @@ function renderNoteList(filter=''){
       <div class="nc-date">${new Date(n.updated).toLocaleDateString()}</div>
       <div class="nc-preview">${preview||'Empty note...'}</div>
     `;
-    // Default open in preview mode for existing notes
     item.onclick=()=>openNote(n.id, 'preview');
     list.appendChild(item);
   });
 }
 
-// Extremely fast custom Markdown Mini-Parser
 function parseMD(md) {
   if(!md) return '<div style="color:var(--mu);font-style:italic;text-align:center;margin-top:2rem">This note is empty. Click Edit to start writing.</div>';
   
-  // Basic XSS protection
   let html = md.replace(/</g, '&lt;').replace(/>/g, '&gt;');
   
-  // Protect Pre/Code blocks from line break replacement
   const preBlocks = [];
   html = html.replace(/```([\s\S]*?)```/g, function(match, code) {
     preBlocks.push(`<pre><code>${code}</code></pre>`);
     return `__PRE_BLOCK_${preBlocks.length - 1}__`;
   });
 
-  // Inline styling
   html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
   html = html.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
   html = html.replace(/^## (.*?)$/gm, '<h2>$1</h2>');
@@ -735,23 +933,15 @@ function parseMD(md) {
   html = html.replace(/^&gt; (.*?)$/gm, '<blockquote>$1</blockquote>');
   html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
   html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-  
-  // Lists
   html = html.replace(/^- (.*?)$/gm, '<li>$1</li>');
   html = html.replace(/(<li>.*?<\/li>\n*)+/g, '<ul>$&</ul>'); 
-  
-  // Dividers
   html = html.replace(/^---$/gm, '<hr style="border:none;border-top:1px solid var(--bd);margin:2em 0">');
-  
-  // Line breaks
   html = html.replace(/\n/g, '<br>');
   
-  // Restore Code Blocks
   preBlocks.forEach((block, i) => {
     html = html.replace(`__PRE_BLOCK_${i}__`, block);
   });
   
-  // Cleanup stray BRs inside structured tags
   html = html.replace(/<\/h1><br>/g, '</h1>');
   html = html.replace(/<\/h2><br>/g, '</h2>');
   html = html.replace(/<\/h3><br>/g, '</h3>');
@@ -817,16 +1007,12 @@ function toggleNoteMode(mode) {
   const be = document.getElementById('btn-mode-edit');
   
   if(mode === 'preview') {
-    // Generate and inject HTML
     pv.innerHTML = parseMD(ta.value);
-    
-    // UI Swaps
     ta.style.display = 'none';
     pv.style.display = 'block';
     ft.style.opacity = '0.3';
     ft.style.pointerEvents = 'none';
     
-    // Button styling
     bp.classList.add('active');
     bp.style.background = 'rgba(108,99,255,.15)';
     bp.style.color = 'var(--ac)';
@@ -837,13 +1023,11 @@ function toggleNoteMode(mode) {
     be.style.color = 'var(--mu)';
     be.style.borderColor = 'var(--bd)';
   } else {
-    // UI Swaps
     ta.style.display = 'block';
     pv.style.display = 'none';
     ft.style.opacity = '1';
     ft.style.pointerEvents = 'auto';
     
-    // Button styling
     be.classList.add('active');
     be.style.background = 'rgba(108,99,255,.15)';
     be.style.color = 'var(--ac)';
@@ -890,7 +1074,6 @@ function newNote(){
   const n={id:'n_'+Date.now(),title:'',content:'',created:Date.now(),updated:Date.now(),tags:[]};
   notes.unshift(n);
   saveNotes();
-  // Open specifically in edit mode for new notes
   openNote(n.id, 'edit');
   setTimeout(()=>{const t=document.getElementById('note-title');if(t)t.focus();},50);
 }
@@ -914,9 +1097,52 @@ function insertMD(before,after){
   ta.focus();autoSave();
 }
 
+// ── DATA MANAGEMENT (IMPORT / EXPORT) ─────────────────────────────────────────
+function exportData() {
+    const data = {
+        td: ld('td'), wd: ld('wd'), gd: ld('gd'),
+        ad: ld('ad'), pd: ld('pd'), sd: ld('sd'),
+        notes_v2: lda('notes_v2'), wk_goal: ld('wk_goal')
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `sde_tracker_backup_${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function importData(event) {
+    const file = event.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            if(data.td) sv('td', data.td);
+            if(data.wd) sv('wd', data.wd);
+            if(data.gd) sv('gd', data.gd);
+            if(data.ad) sv('ad', data.ad);
+            if(data.pd) sv('pd', data.pd);
+            if(data.sd) sv('sd', data.sd);
+            if(data.notes_v2) sv('notes_v2', data.notes_v2);
+            if(data.wk_goal) sv('wk_goal', data.wk_goal);
+            
+            alert('Backup imported successfully! The page will now reload.');
+            location.reload();
+        } catch(err) {
+            alert('Error importing data. Please ensure it is a valid backup JSON file.');
+        }
+    };
+    reader.readAsText(file);
+}
+
 // ── ANALYTICS / PROGRESS ──────────────────────────────────────────────────────────
 function buildAnalytics(){
-  buildReadinessScore();buildIdxStats();buildIdxPhases();buildStreak();buildBadges();buildIdxNotesSummary();loadWeekGoal();
+  buildReadinessScore();buildIdxStats();buildIdxPhases();buildStreak();buildBadges();buildIdxNotesSummary();loadWeekGoal();buildWeekHistory();
 }
 function buildReadinessScore(){
   const topicTotal=phases.reduce((a,p)=>a+p.topics.length,0);
@@ -928,7 +1154,8 @@ function buildReadinessScore(){
   const sScore = sysTotal > 0 ? (sysDone / sysTotal) : 0;
   const readiness = Math.round((dsaScore * 0.6 + sScore * 0.4) * 100) || 0;
   
-  document.getElementById('idx-readiness').textContent = readiness + '%';
+  const el = document.getElementById('idx-readiness');
+  if(el) el.textContent = readiness + '%';
 }
 function buildIdxStats(){
   const topicTotal=phases.reduce((a,p)=>a+p.topics.length,0);
@@ -945,11 +1172,13 @@ function buildIdxStats(){
     {l:'Topics Done',v:topicDone+'/'+topicTotal,s:Math.round(topicDone/topicTotal*100)+'% complete'},
     {l:'Weeks Completed',v:weeksDone+'/31',s:'weekly milestones'},
     {l:'Projects Built',v:projDone+'/'+projTotal,s:'portfolio projects'},
-    {l:'Study Streak',v:streakDays+'d',s:'days tracked'},
+    {l:'Total Study Days',v:streakDays+'d',s:'days tracked'},
     {l:'Notes Written',v:noteCount,s:'learning notes'},
     {l:'Resources Done',v:Object.keys(GD).filter(k=>GD[k]).length+Object.keys(AD).filter(k=>AD[k]).length,s:'resources completed'},
   ];
-  const cont=document.getElementById('idx-stats');cont.innerHTML='';
+  const cont=document.getElementById('idx-stats');
+  if(!cont) return;
+  cont.innerHTML='';
   stats.forEach(s=>{
     const c=document.createElement('div');c.className='idx-card';
     c.innerHTML=`<div class="idx-label">${s.l}</div><div class="idx-val" style="color:var(--ac)">${s.v}</div><div class="idx-sub">${s.s}</div>`;
@@ -961,13 +1190,16 @@ function buildIdxStats(){
   const ph4=phases[3].topics.filter((_,i)=>TD['p4_'+i]).length/phases[3].topics.length;
   const total=topicTotal;
   const p=[phases[0].topics.length,phases[1].topics.length,phases[2].topics.length,phases[3].topics.length];
-  document.getElementById('tb1').style.width=(ph1*p[0]/total*100)+'%';
-  document.getElementById('tb2').style.width=(ph2*p[1]/total*100)+'%';
-  document.getElementById('tb3').style.width=(ph3*p[2]/total*100)+'%';
-  document.getElementById('tb4').style.width=(ph4*p[3]/total*100)+'%';
+  
+  if(document.getElementById('tb1')) document.getElementById('tb1').style.width=(ph1*p[0]/total*100)+'%';
+  if(document.getElementById('tb2')) document.getElementById('tb2').style.width=(ph2*p[1]/total*100)+'%';
+  if(document.getElementById('tb3')) document.getElementById('tb3').style.width=(ph3*p[2]/total*100)+'%';
+  if(document.getElementById('tb4')) document.getElementById('tb4').style.width=(ph4*p[3]/total*100)+'%';
 }
 function buildIdxPhases(){
-  const cont=document.getElementById('idx-phases');cont.innerHTML='';
+  const cont=document.getElementById('idx-phases');
+  if(!cont) return;
+  cont.innerHTML='';
   const phaseInfo=[
     {name:'Phase 1 — Foundation',color:getComputedStyle(document.documentElement).getPropertyValue('--g'),id:'p1',topics:phases[0].topics,weeks:[1,2,3,4,5,6,7,8,9]},
     {name:'Phase 2 — Core Patterns',color:getComputedStyle(document.documentElement).getPropertyValue('--b'),id:'p2',topics:phases[1].topics,weeks:[10,11,12,13,14,15,16,17,18,19]},
@@ -983,82 +1215,383 @@ function buildIdxPhases(){
     cont.appendChild(card);
   });
 }
+
+function logToday() {
+  const d = new Date(); d.setHours(0,0,0,0);
+  const k = d.toISOString().slice(0,10);
+  SD[k] = true;
+  sv('sd', SD);
+  buildAnalytics();
+}
+
+// ── STREAK YEAR STATE ─────────────────────────────────────────────────────────
+const STREAK_START_YEAR = 2026; // Year the user started — never go before this
+let streakViewYear = new Date().getFullYear();
+
+function changeStreakYear(delta) {
+  const currentYear = new Date().getFullYear();
+  const newYear = streakViewYear + delta;
+  if (newYear < STREAK_START_YEAR) return; // can't go before start year
+  if (newYear > currentYear) return;       // can't go into the future
+  streakViewYear = newYear;
+  buildStreak();
+}
+
 function buildStreak(){
-  const grid=document.getElementById('streak-grid');grid.innerHTML='';
-  const today=new Date();today.setHours(0,0,0,0);
-  const days=70;
-  let streak=0,counting=true;
-  const weeks=[];let w=[];
-  for(let i=days-1;i>=0;i--){
-    const d=new Date(today);d.setDate(d.getDate()-i);
-    const k=d.toISOString().slice(0,10);
-    const done=!!SD[k];
-    if(counting){if(done)streak++;else counting=false;}
-    w.push({k,done,d});
-    if(w.length===7){weeks.push(w);w=[];}
+  const grid=document.getElementById('streak-grid');
+  if(!grid) return;
+  grid.innerHTML='';
+
+  const todayReal = new Date(); todayReal.setHours(0,0,0,0);
+  const currentYear = todayReal.getFullYear();
+
+  // Clamp viewed year
+  if(streakViewYear < STREAK_START_YEAR) streakViewYear = STREAK_START_YEAR;
+  if(streakViewYear > currentYear) streakViewYear = currentYear;
+
+  // Update year label
+  const lbl = document.getElementById('streak-year-label');
+  if(lbl) lbl.textContent = streakViewYear;
+
+  // Update arrow disabled states
+  const prevBtn = document.getElementById('streak-prev-yr');
+  const nextBtn = document.getElementById('streak-next-yr');
+  if(prevBtn) {
+    prevBtn.style.opacity = streakViewYear <= STREAK_START_YEAR ? '0.3' : '1';
+    prevBtn.style.cursor  = streakViewYear <= STREAK_START_YEAR ? 'not-allowed' : 'pointer';
   }
-  if(w.length)weeks.push(w);
-  document.getElementById('streak-count').textContent=streak+' day streak 🔥';
-  weeks.forEach(week=>{
-    const row=document.createElement('div');row.style.cssText='display:flex;gap:4px;margin-bottom:3px;align-items:center';
-    week.forEach(day=>{
-      const el=document.createElement('div');el.className='sday'+(day.done?' done':'');
-      el.title=day.d.toDateString();
-      el.onclick=()=>{SD[day.k]=!SD[day.k];if(!SD[day.k])delete SD[day.k];sv('sd',SD);buildStreak();};
-      row.appendChild(el);
+  if(nextBtn) {
+    nextBtn.style.opacity = streakViewYear >= currentYear ? '0.3' : '1';
+    nextBtn.style.cursor  = streakViewYear >= currentYear ? 'not-allowed' : 'pointer';
+  }
+
+  // Determine the range for the viewed year
+  const yearStart = new Date(streakViewYear, 0, 1); // Jan 1
+  let yearEnd;
+  if(streakViewYear === currentYear) {
+    yearEnd = new Date(todayReal); // up to today for current year
+  } else {
+    yearEnd = new Date(streakViewYear, 11, 31); // Dec 31 for past years
+  }
+
+  // Pad the grid so Jan 1 starts on the right weekday column
+  const padDays = yearStart.getDay(); // 0=Sun
+  for(let i=0;i<padDays;i++){
+    const d=document.createElement('div'); d.className='sday dummy'; grid.appendChild(d);
+  }
+
+  // Count contributions for this year
+  let yearContrib = 0;
+  // Build month label positions
+  const monthLabelsEl = document.getElementById('streak-month-labels');
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  let monthCols = []; // [colIndex, monthName]
+  let colIdx = padDays; // track current column position in 7-row grid
+
+  let dayCount = 0;
+  let d = new Date(yearStart);
+  while(d <= yearEnd) {
+    const k = d.toISOString().slice(0,10);
+    const done = !!SD[k];
+    if(done) yearContrib++;
+
+    // Track month label position (first day of each month after Jan)
+    if(d.getDate()===1 && d.getMonth()>0) {
+      monthCols.push({ col: Math.floor(colIdx/7), name: monthNames[d.getMonth()] });
+    } else if(d.getDate()===1 && d.getMonth()===0) {
+      monthCols.push({ col: 0, name: monthNames[0] });
+    }
+
+    const el=document.createElement('div');
+    const isFuture = d > todayReal;
+    el.className='sday'+(done?' done':'')+(isFuture?' future':'');
+    el.title=d.toDateString()+(done?' ✓':'');
+    if(!isFuture){
+      const kc=k;
+      el.onclick=()=>{SD[kc]=!SD[kc];if(!SD[kc])delete SD[kc];sv('sd',SD);buildStreak();buildBadges();};
+    }
+    grid.appendChild(el);
+    colIdx++;
+    d.setDate(d.getDate()+1);
+    dayCount++;
+  }
+
+  // Render month labels
+  if(monthLabelsEl){
+    monthLabelsEl.innerHTML='';
+    // build array of week columns
+    const totalWeeks = Math.ceil((padDays + dayCount) / 7);
+    // Build label positions
+    let lastLabel = '';
+    for(let w=0;w<totalWeeks;w++){
+      const labelSpan = document.createElement('div');
+      labelSpan.style.cssText='width:13px;height:13px;flex-shrink:0;font-size:9px;color:var(--mu);font-family:var(--mono);white-space:nowrap;overflow:visible;';
+      // Find if any month starts in this week
+      const mc = monthCols.find(m=>m.col===w);
+      if(mc && mc.name !== lastLabel){ labelSpan.textContent=mc.name; lastLabel=mc.name; }
+      monthLabelsEl.appendChild(labelSpan);
+    }
+    // Add day-of-week padding spacer at start to align
+    const spacer = document.createElement('div');
+    spacer.style.cssText='width:22px;flex-shrink:0'; // width of day labels column
+    monthLabelsEl.insertBefore(spacer, monthLabelsEl.firstChild);
+  }
+
+  // Contribution count label
+  const contribEl = document.getElementById('streak-year-contrib');
+  if(contribEl) contribEl.textContent = yearContrib + ' contributions' + (streakViewYear===currentYear?' this year':' in '+streakViewYear);
+
+  // Calculate current streak (always based on real today, regardless of viewed year)
+  let currentStreak=0, counting=true;
+  for(let i=0;i<365;i++){
+    const td=new Date(todayReal); td.setDate(td.getDate()-i);
+    const k=td.toISOString().slice(0,10);
+    if(i===0&&!SD[k]){const y=new Date(todayReal);y.setDate(y.getDate()-1);if(!SD[y.toISOString().slice(0,10)])counting=false;}
+    else if(counting){if(SD[k])currentStreak++;else counting=false;}
+  }
+
+  const sc = document.getElementById('streak-count-big');
+  if(sc) sc.innerHTML = currentStreak + ' Days <i class="fa-solid fa-fire" style="color:#fb923c"></i>';
+
+  // Auto-scroll to end if viewing current year
+  const scrollContainer = document.getElementById('heatmap-scroll');
+  if(scrollContainer && streakViewYear === currentYear) {
+    setTimeout(()=>{ scrollContainer.scrollLeft = scrollContainer.scrollWidth; }, 50);
+  }
+}
+
+function getWeekKey(date){
+  const d = new Date(date); d.setHours(0,0,0,0);
+  const day = d.getDay();
+  const monday = new Date(d); monday.setDate(d.getDate() - (day===0?6:day-1));
+  return monday.toISOString().slice(0,10);
+}
+
+// ── WEEK HISTORY LOG ──────────────────────────────────────────────────────────
+function buildWeekHistory(){
+  var cont = document.getElementById('wk-progress-grid');
+  if(!cont) return;
+
+  var weekLog = ld('dsa_week_log');
+  var goalLog = ld('wk_goal_history');
+
+  // Collect all week start dates
+  var weekKeys = {};
+  Object.keys(weekLog).forEach(function(k){
+    weekKeys[k.slice(0,10)] = true;
+  });
+  Object.keys(goalLog).forEach(function(wk){ weekKeys[wk] = true; });
+  weekKeys[getWeekKey(new Date())] = true;
+
+  var sorted = Object.keys(weekKeys).sort(); // oldest first
+  var currentWK = getWeekKey(new Date());
+
+  cont.innerHTML = '';
+
+  if(sorted.length === 0){
+    cont.innerHTML = '<div style="font-size:12px;color:var(--mu)">Koi week track nahi ki abhi tak. Upar target set karo!</div>';
+    return;
+  }
+
+  var monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  sorted.forEach(function(wk, idx){
+    var isCurrentWeek = (wk === currentWK);
+
+    // Get target and done values based on history or current goal state
+    var done = 0;
+    var target = 10;
+
+    if(isCurrentWeek){
+      var g = ld('wk_goal'); 
+      target = g.target || 10;
+      done = g.done || 0;
+    } else if(goalLog[wk]){
+      target = goalLog[wk].target || 10;
+      done = goalLog[wk].done || 0;
+    } else {
+      // Fallback for legacy data without goal history
+      for(var i=0;i<5;i++){
+        var row = weekLog[wk+'_'+i]||{};
+        if(row.p1) done++;
+        if(row.p2) done++;
+      }
+    }
+
+    var pct = target > 0 ? Math.min(100, Math.round(done/target*100)) : 0;
+
+    // Color based on %
+    var bgColor;
+    if(done === 0 && !isCurrentWeek){
+      bgColor = 'var(--s2)';
+    } else if(pct >= 100){
+      bgColor = 'var(--g)';
+    } else if(pct >= 70){
+      bgColor = 'rgba(74,222,128,.55)';
+    } else if(pct >= 40){
+      bgColor = 'rgba(108,99,255,.7)';
+    } else if(pct > 0){
+      bgColor = 'rgba(251,146,60,.5)';
+    } else {
+      bgColor = isCurrentWeek ? 'rgba(108,99,255,.15)' : 'var(--s2)';
+    }
+
+    var d = new Date(wk + 'T00:00:00');
+    var weekLabel = 'Week ' + (idx+1);
+    var dateStr = monthNames[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+    var statusText = isCurrentWeek ? ' (Current)' : (done===0 ? ' — Not started' : '');
+
+    var box = document.createElement('div');
+    box.style.cssText = 'width:42px;height:42px;border-radius:8px;background:' + bgColor + ';border:' + (isCurrentWeek?'2px solid var(--ac)':'1px solid rgba(255,255,255,.08)') + ';cursor:pointer;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform .15s,box-shadow .15s;flex-shrink:0';
+
+    // Week number label inside box
+    box.innerHTML =
+      '<div style="font-family:var(--mono);font-size:9px;font-weight:700;color:' + (pct>=40?'rgba(0,0,0,.7)':'var(--mu)') + ';line-height:1">W' + (idx+1) + '</div>' +
+      '<div style="font-family:var(--mono);font-size:8px;color:' + (pct>=40?'rgba(0,0,0,.6)':'var(--mu)') + ';margin-top:2px">' + done + '/' + target + '</div>';
+
+    // Tooltip on hover
+    box.addEventListener('mouseenter', function(e){
+      var tip = document.getElementById('wk-tooltip');
+      tip.innerHTML =
+        '<div style="font-weight:600;margin-bottom:4px;color:var(--ac)">' + weekLabel + statusText + '</div>' +
+        '<div style="color:var(--mu);font-size:10px;margin-bottom:6px">' + dateStr + '</div>' +
+        '<div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--tx)">' + done + ' <span style="color:var(--mu);font-weight:400">/ ' + target + ' solved</span></div>' +
+        '<div style="margin-top:6px;height:4px;background:var(--bd);border-radius:3px;overflow:hidden"><div style="height:100%;width:' + pct + '%;background:' + bgColor + ';border-radius:3px"></div></div>' +
+        '<div style="font-size:10px;color:var(--mu);margin-top:4px;text-align:right">' + pct + '% complete</div>';
+      tip.style.display = 'block';
+      tip.style.left = (e.clientX + 12) + 'px';
+      tip.style.top = (e.clientY - 10) + 'px';
     });
-    grid.appendChild(row);
+    box.addEventListener('mousemove', function(e){
+      var tip = document.getElementById('wk-tooltip');
+      tip.style.left = (e.clientX + 12) + 'px';
+      tip.style.top = (e.clientY - 10) + 'px';
+    });
+    box.addEventListener('mouseleave', function(){
+      document.getElementById('wk-tooltip').style.display = 'none';
+    });
+    box.addEventListener('mouseenter', function(){ this.style.transform='scale(1.18)'; this.style.boxShadow='0 4px 14px rgba(0,0,0,.3)'; }, true);
+    // re-add mouseleave for scale reset (override)
+    box.addEventListener('mouseleave', function(){
+      document.getElementById('wk-tooltip').style.display='none';
+      this.style.transform='scale(1)';
+      this.style.boxShadow='none';
+    });
+
+    cont.appendChild(box);
   });
 }
+
+
 function buildBadges(){
   const topicDone=Object.keys(TD).filter(k=>TD[k]).length;
-  const weeksDone=Object.keys(WD).filter(k=>WD[k]).length;
+  const sysDone=Object.keys(GD).filter(k=>GD[k]).length;
+  const aiDone=Object.keys(AD).filter(k=>AD[k]).length;
   const projDone=Object.keys(PD).filter(k=>PD[k]).length;
   const noteCount=notes.length;
-  const streakDays=Object.keys(SD).filter(k=>SD[k]).length;
+  
+  const today=new Date();today.setHours(0,0,0,0);
+  let currentStreak=0;
+  for(let i=0; i<365; i++) {
+     const d=new Date(today); d.setDate(d.getDate()-i);
+     const k=d.toISOString().slice(0,10);
+     if(i===0 && !SD[k]) continue; 
+     if(SD[k]) { currentStreak++; } else { break; }
+  }
+
   const badgeList=[
-    {l:'🚀 First Step',desc:'Complete 1 topic',earned:topicDone>=1,cl:'bd-g'},
-    {l:'📗 Phase 1 Done',desc:'Complete all Phase 1 topics',earned:phases[0].topics.filter((_,i)=>TD['p1_'+i]).length===phases[0].topics.length,cl:'bd-g'},
-    {l:'📘 Phase 2 Done',desc:'Complete all Phase 2 topics',earned:phases[1].topics.filter((_,i)=>TD['p2_'+i]).length===phases[1].topics.length,cl:'bd-b'},
-    {l:'📙 Phase 3 Done',desc:'Complete all Phase 3 topics',earned:phases[2].topics.filter((_,i)=>TD['p3_'+i]).length===phases[2].topics.length,cl:'bd-o'},
-    {l:'📕 Phase 4 Done',desc:'Complete all Phase 4 topics',earned:phases[3].topics.filter((_,i)=>TD['p4_'+i]).length===phases[3].topics.length,cl:'bd-p'},
-    {l:'📅 7-Day Streak',desc:'7 consecutive study days',earned:streakDays>=7,cl:'bd-g'},
-    {l:'🔥 30-Day Streak',desc:'30 consecutive study days',earned:streakDays>=30,cl:'bd-o'},
-    {l:'🛠️ Builder',desc:'Complete 5 projects',earned:projDone>=5,cl:'bd-b'},
-    {l:'🏗️ Architect',desc:'Complete 25 projects',earned:projDone>=25,cl:'bd-p'},
-    {l:'✍️ Notetaker',desc:'Write 5 notes',earned:noteCount>=5,cl:'bd-g'},
-    {l:'📆 Consistent',desc:'Complete 10 weeks',earned:weeksDone>=10,cl:'bd-b'},
-    {l:'🏆 All DSA Done',desc:'Complete all 24 topics',earned:topicDone>=24,cl:'bd-y'},
+    { icon: '<i class="fa-solid fa-rocket"></i>', l: 'First Step', desc: 'Complete 1 DSA topic', earned: topicDone >= 1 },
+    { icon: '<i class="fa-solid fa-medal" style="color:#cd7f32"></i>', l: 'Bronze Coder', desc: 'Complete 5 DSA topics', earned: topicDone >= 5 },
+    { icon: '<i class="fa-solid fa-medal" style="color:#c0c0c0"></i>', l: 'Silver Coder', desc: 'Complete 15 DSA topics', earned: topicDone >= 15 },
+    { icon: '<i class="fa-solid fa-trophy" style="color:#ffd700"></i>', l: 'DSA Master', desc: 'Complete all 24 topics', earned: topicDone >= 24 },
+    { icon: '<i class="fa-solid fa-fire"></i>', l: 'Spark', desc: '3-Day Study Streak', earned: currentStreak >= 3 },
+    { icon: '<i class="fa-solid fa-calendar-week"></i>', l: '1 Week', desc: '7-Day Study Streak', earned: currentStreak >= 7 },
+    { icon: '<i class="fa-solid fa-calendar-days"></i>', l: '2 Weeks', desc: '14-Day Study Streak', earned: currentStreak >= 14 },
+    { icon: '<i class="fa-solid fa-meteor"></i>', l: 'On Fire', desc: '30-Day Study Streak', earned: currentStreak >= 30 },
+    { icon: '<i class="fa-solid fa-screwdriver-wrench"></i>', l: 'Builder', desc: 'Build 1 Project', earned: projDone >= 1 },
+    { icon: '<i class="fa-solid fa-hard-hat"></i>', l: 'Engineer', desc: 'Build 5 Projects', earned: projDone >= 5 },
+    { icon: '<i class="fa-solid fa-building-columns"></i>', l: 'Architect', desc: 'Build 15 Projects', earned: projDone >= 15 },
+    { icon: '<i class="fa-solid fa-crown"></i>', l: 'Visionary', desc: 'Build 30 Projects', earned: projDone >= 30 },
+    { icon: '<i class="fa-solid fa-gears"></i>', l: 'Systems Thinker', desc: 'Complete 5 Systems modules', earned: sysDone >= 5 },
+    { icon: '<i class="fa-solid fa-robot"></i>', l: 'AI Pioneer', desc: 'Complete 10 AI/ML modules', earned: aiDone >= 10 },
+    { icon: '<i class="fa-solid fa-pen-to-square"></i>', l: 'Scribe', desc: 'Write 1 note', earned: noteCount >= 1 },
+    { icon: '<i class="fa-solid fa-book-open"></i>', l: 'Scholar', desc: 'Write 10 notes', earned: noteCount >= 10 },
   ];
-  const cont=document.getElementById('badges');cont.innerHTML='';
+  
+  const cont=document.getElementById('badges');
+  if(!cont) return;
+  cont.innerHTML='';
   badgeList.forEach(b=>{
-    const el=document.createElement('div');el.className=`badge ${b.cl}${b.earned?' earned':''}`;
-    el.title=b.desc;el.textContent=b.l;
+    const el=document.createElement('div');
+    el.className=`badge-card ${b.earned?' earned':''}`;
+    el.innerHTML = `
+        <div class="bc-icon">${b.icon}</div>
+        <div class="bc-title">${b.l}</div>
+        <div class="bc-desc">${b.desc}</div>
+    `;
     cont.appendChild(el);
   });
 }
+
 function buildIdxNotesSummary(){
   const cont=document.getElementById('idx-notes-summary');
-  if(!notes.length){cont.innerHTML='<div style="font-size:12px;color:var(--mu)">No notes yet. Go to Notes tab to start writing.</div>';return;}
+  if(!cont) return;
+  if(!notes.length){cont.innerHTML='<div style="font-size:13px;color:var(--mu);text-align:center;padding:1rem 0">No notes yet. Click below to start writing.</div>';return;}
   const recent=notes.sort((a,b)=>b.updated-a.updated).slice(0,3);
-  cont.innerHTML=`<div style="font-size:12px;color:var(--mu);margin-bottom:8px">${notes.length} notes · Last updated ${new Date(notes[0].updated).toLocaleDateString()}</div>`+recent.map(n=>`<div style="font-size:12px;padding:6px 0;border-top:1px solid var(--bd)">${n.title||'Untitled'} <span style="font-size:10px;color:var(--mu);font-family:var(--mono)">${new Date(n.updated).toLocaleDateString()}</span></div>`).join('');
+  
+  let html = `<div style="font-size:12px;color:var(--mu);margin-bottom:12px">${notes.length} total notes · Most recent:</div>`;
+  
+  html += recent.map(n=>{
+      return `<div class="recent-note-row" onclick="show('notes'); setTimeout(()=>openNote('${n.id}', 'preview'), 50)">
+          <div style="font-size:13px;font-weight:500;color:var(--tx)">${n.title||'Untitled Note'}</div>
+          <div style="font-size:10px;color:var(--mu);font-family:var(--mono)">${new Date(n.updated).toLocaleDateString()}</div>
+      </div>`;
+  }).join('');
+  
+  cont.innerHTML = html;
 }
+
+function changeWeekDone(delta) {
+   const input = document.getElementById('wk-done');
+   let val = parseInt(input.value) || 0;
+   val += delta;
+   if(val < 0) val = 0;
+   input.value = val;
+   saveWeekGoal();
+}
+
 function saveWeekGoal(){
   const done=parseInt(document.getElementById('wk-done').value)||0;
   const target=parseInt(document.getElementById('wk-target').value)||10;
   sv('wk_goal',{done,target});
+  // Snapshot this week into history so it always appears in all weeks list
+  const wk = getWeekKey(new Date());
+  const hist = ld('wk_goal_history');
+  hist[wk] = {target, done};
+  sv('wk_goal_history', hist);
+  // Also mark this week in dsa_week_log so buildWeekHistory picks it up even with no daily entries
+  const weekLog = ld('dsa_week_log');
+  const sentinelKey = wk + '_sentinel';
+  if(!weekLog[sentinelKey]){ weekLog[sentinelKey] = {sentinel:true}; sv('dsa_week_log', weekLog); }
   updateWeekGoalUI(done,target);
+  buildWeekHistory();
 }
 function loadWeekGoal(){
   const g=ld('wk_goal');const done=g.done||0;const target=g.target||10;
-  document.getElementById('wk-done').value=done;
-  document.getElementById('wk-target').value=target;
+  const dw = document.getElementById('wk-done');
+  const tw = document.getElementById('wk-target');
+  if(dw) dw.value=done;
+  if(tw) tw.value=target;
   updateWeekGoalUI(done,target);
 }
 function updateWeekGoalUI(done,target){
-  const pct=Math.min(100,Math.round(done/target*100));
-  document.getElementById('wk-fill').style.width=pct+'%';
-  document.getElementById('wk-label').textContent=done+' / '+target+' problems this week ('+pct+'%)';
+  const elFill = document.getElementById('wk-fill');
+  const elLabel = document.getElementById('wk-label');
+  if(!elFill || !elLabel) return;
+  
+  const pct=Math.min(100,Math.round(done/target*100)) || 0;
+  elFill.style.width=pct+'%';
+  elLabel.textContent=pct+'% completed this week';
 }
 
 buildDSA();buildSystems();buildAIML();buildProjects();renderNoteList();
